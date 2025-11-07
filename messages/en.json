@@ -1,0 +1,65 @@
+{
+  "navigation": {
+    "home": "Home",
+    "about": "About Us",
+    "schedule": "Schedule",
+    "vineKids": "Vine Kids",
+    "gallery": "Gallery",
+    "words": "Words",
+    "cells": "Cell Groups",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Vine Church Cambridge",
+    "subtitle": "A Church of Overcomers",
+    "description": "Building a church of overcomers, where every member is a priest and every home an extension of the church, conquering our generation for Christ through multiplying cells.",
+    "cta": "Learn More",
+    "address": "55 Dickson St, Cambridge, ON N1R 7A5",
+    "serviceTime": "Service every Sunday at 10 AM"
+  },
+  "about": {
+    "title": "About Us",
+    "subtitle": "A Church of Overcomers",
+    "content": "What does it mean to be a church of overcomers? It means being a church that fulfills God's purpose. And what is that purpose? To have a group of people in His image and likeness. God desires to fill man with Himself, with His life, in order to express Himself. So that man may have His dominion and represent Him on Earth.",
+    "content2": "Man was created as a vessel to contain God within himself. We were made like a glove to contain God. The glove is the image and likeness of the hand, but the hand is the reality of the glove. A glove is created according to the likeness of the hand for the purpose of containing it. Likewise, man was created in the image of the Lord for the purpose of containing Divinity.",
+    "content3": "Once man receives the Person of God as life within himself, he becomes an instrument in His hands.",
+    "content4": "For man to be used as an instrument, God gave him the following command: Be fruitful, multiply, fill the earth and subdue it; rule over the fish of the sea, over the birds of the heavens, and over every animal that crawls on the earth. (Gen 1:28)",
+    "vision": "Vision",
+    "visionText": "Building a church of overcomers, where every member is a priest and every home an extension of the church, conquering our generation for Christ through multiplying cells.",
+    "pastor": "Pastor Boris Carvalho"
+  },
+  "values": {
+    "title": "What we value",
+    "subtitle": "Based on the Early Church of Acts of the Apostles",
+    "unity": "Unity",
+    "unityDesc": "We realize that one of the characteristics of the Early Church was unity. The Bible says they were unanimous in everything they did.",
+    "teaching": "Teaching",
+    "teachingDesc": "We believe that the Bible is the Word of God. Therefore, we always value faithful teaching of the Scriptures from the youngest to the oldest.",
+    "prayer": "Prayer",
+    "prayerDesc": "We were created to have a relationship of intimacy with God. One of the ways we obtain this intimacy is through prayer.",
+    "service": "Service",
+    "serviceDesc": "According to God's Word we should do good to all, especially to those of the family of faith. We love to be blessers.",
+    "fellowship": "Fellowship",
+    "fellowshipDesc": "More than a church, Christ's disciples lived a shared life, for one another. It was the Community of Disciples.",
+    "discipleship": "Discipleship",
+    "discipleshipDesc": "Go and make disciples. This is the Great Commission. More than preaching the Gospel, we want to make disciples of Christ Jesus.",
+    "love": "Love",
+    "loveDesc": "Love God above all things and love your neighbor as yourself. Two commandments that we seek to live in a practical way.",
+    "children": "Children",
+    "childrenDesc": "We believe we should teach children to walk in the Lord's way. Our motto is: children don't give trouble, children bear fruit.",
+    "multiplication": "Multiplication",
+    "multiplicationDesc": "God's will is that all should be saved and come to the full knowledge of the Truth. We want to make a difference in our generation."
+  },
+  "contact": {
+    "title": "Contact",
+    "address": "Address",
+    "addressText": "55 Dickson St, Cambridge, ON N1R 7A5",
+    "service": "Service",
+    "serviceText": "Sunday at 10 AM",
+    "pastor": "Pastor",
+    "pastorText": "Pastor Boris Carvalho"
+  },
+  "footer": {
+    "copyright": "© 2025 Vine Church Cambridge. All rights reserved."
+  }
+}

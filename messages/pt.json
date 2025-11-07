@@ -1,0 +1,65 @@
+{
+  "navigation": {
+    "home": "Início",
+    "about": "Quem Somos",
+    "schedule": "Agenda",
+    "vineKids": "Vine Kids",
+    "gallery": "Galeria",
+    "words": "Palavras",
+    "cells": "Células",
+    "contact": "Contato"
+  },
+  "hero": {
+    "title": "Vine Church Cambridge",
+    "subtitle": "Uma Igreja de Vencedores",
+    "description": "Edificar uma igreja de vencedores, onde cada membro é um sacerdote e cada casa uma extensão da igreja, conquistando nossa geração para Cristo através das células que se multiplicam.",
+    "cta": "Conheça Mais",
+    "address": "55 Dickson St, Cambridge, ON N1R 7A5",
+    "serviceTime": "Culto todo domingo às 10 AM"
+  },
+  "about": {
+    "title": "Quem Somos",
+    "subtitle": "Uma Igreja de Vencedores",
+    "content": "O que é ser uma igreja de vencedores? É ser uma igreja que cumpre o propósito de Deus. E qual é esse propósito? Ter um grupo de pessoas à Sua imagem e semelhança. Deus deseja encher o homem com Ele mesmo, com Sua vida, a fim de expressá-lo. Para que assim o homem tenha o Seu domínio e O represente na Terra.",
+    "content2": "O homem foi criado como um vaso para conter Deus dentro de si. Fomos feitos como uma luva para conter a Deus. A luva é imagem e semelhança da mão, mas a mão é a realidade da luva. Uma luva é criada conforme a semelhança da mão com o propósito de contê-la. Igualmente, o homem foi criado à imagem do Senhor com o propósito de conter a Divindade.",
+    "content3": "Uma vez que o homem recebe a Pessoa de Deus como vida dentro de si mesmo, ele se torna um instrumento nas mãos dEle.",
+    "content4": "Para que o homem fosse usado como instrumento, Deus deu a ele a seguinte ordem: Sede fecundos, multiplicai-vos, enchei a terra e sujeitai-a; dominai sobre os peixes do mar, sobre as aves dos céus e sobre todo animal que rasteja pela terra. (Gn 1.28)",
+    "vision": "Visão",
+    "visionText": "Edificar uma igreja de vencedores, onde cada membro é um sacerdote e cada casa uma extensão da igreja, conquistando nossa geração para Cristo através das células que se multiplicam.",
+    "pastor": "Pr Boris Carvalho"
+  },
+  "values": {
+    "title": "O que nós valorizamos",
+    "subtitle": "Com base na Igreja Primitiva de Atos dos Apóstolos",
+    "unity": "Unidade",
+    "unityDesc": "Percebemos que uma das características da Igreja Primitiva era unidade. A Bíblia diz que eles eram unânimes em tudo o que faziam.",
+    "teaching": "Ensino",
+    "teachingDesc": "Cremos que a Bíblia é a Palavra de Deus. Por isso, prezamos sempre pelo ensino fiel das Escrituras desde os mais novos até os mais velhos.",
+    "prayer": "Oração",
+    "prayerDesc": "Fomos criados para termos um relacionamento de intimidade com Deus. Uma das maneiras de obtermos esta intimidade é através da oração.",
+    "service": "Serviço",
+    "serviceDesc": "De acordo com a Palavra de Deus devemos fazer o bem a todos principalmente aos da família de fé. Amamos ser abençoadores.",
+    "fellowship": "Comunhão",
+    "fellowshipDesc": "Mais do que uma igreja, os discípulos de Cristo viviam uma vida compartilhada, de uns pelos outros. Era a Comunidade dos Discípulos.",
+    "discipleship": "Discipulado",
+    "discipleshipDesc": "Ide e fazei discípulos. Essa é a Grande Comissão. Mais do que pregarmos o Evangelho, queremos fazer discípulos de Cristo Jesus.",
+    "love": "Amor",
+    "loveDesc": "Amar a Deus acima de todas as coisas e amar ao próximo como a nós mesmos. Dois mandamentos que procuramos viver de maneira prática.",
+    "children": "Crianças",
+    "childrenDesc": "Cremos que devemos ensinar as crianças a andarem no caminho do Senhor. O nosso lema é: criança não dá trabalho, criança dá frutos.",
+    "multiplication": "Multiplicação",
+    "multiplicationDesc": "A vontade de Deus é que todos sejam salvos e cheguem ao pleno conhecimento da Verdade. Queremos fazer a diferença na nossa geração."
+  },
+  "contact": {
+    "title": "Contato",
+    "address": "Endereço",
+    "addressText": "55 Dickson St, Cambridge, ON N1R 7A5",
+    "service": "Culto",
+    "serviceText": "Domingo às 10 AM",
+    "pastor": "Pastor",
+    "pastorText": "Pr Boris Carvalho"
+  },
+  "footer": {
+    "copyright": "© 2025 Vine Church Cambridge. Todos os direitos reservados."
+  }
+}

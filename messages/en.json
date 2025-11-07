@@ -6,7 +6,7 @@
     "vineKids": "Vine Kids",
     "gallery": "Gallery",
     "words": "Words",
-    "cells": "Cell Groups",
+    "cells": "Life Groups",
     "contact": "Contact"
   },
   "hero": {
@@ -25,7 +25,11 @@
     "content3": "Once man receives the Person of God as life within himself, he becomes an instrument in His hands.",
     "content4": "For man to be used as an instrument, God gave him the following command: Be fruitful, multiply, fill the earth and subdue it; rule over the fish of the sea, over the birds of the heavens, and over every animal that crawls on the earth. (Gen 1:28)",
     "vision": "Vision",
-    "visionText": "Building a church of overcomers, where every member is a priest and every home an extension of the church, conquering our generation for Christ through multiplying cells.",
+    "visionText": "Our mission is to build a church of overcomers, where every member is a priest and every home an extension of the church, conquering our generation for Christ through multiplying life groups.",
+    "cellChurch": "Life Groups",
+    "cellChurchText": "We gather not only in the church building, but also in homes where we break bread together and share in each other's lives, following the model of Acts 2:42-44.",
+    "history": "History",
+    "historyText": "Vine Church began in 1997 in the city of Goiânia, Goiás, Brazil. In recent years, God has blessed us in an extraordinary way and today we are more than 1300 churches and about 300 thousand members spread throughout the world. In Canada we are present in Toronto and Cambridge for the glory of the Lord Jesus.",
     "pastor": "Pastor Boris Carvalho"
   },
   "values": {
@@ -58,6 +62,27 @@
     "serviceText": "Sunday at 10 AM",
     "pastor": "Pastor",
     "pastorText": "Pastor Boris Carvalho"
+  },
+  "schedule": {
+    "title": "Schedule",
+    "subtitle": "Our weekly gatherings",
+    "tuesday": "Tuesday",
+    "tuesdayTime": "7:30 PM",
+    "tuesdayEvent": "Maturity Course and CTL",
+    "friday": "Friday",
+    "fridayTime": "8:00 PM",
+    "fridayEvent": "Life Groups",
+    "sunday": "Sunday",
+    "sundayTime": "10:00 AM",
+    "sundayEvent": "Celebration Service",
+    "familyService": "Family Service",
+    "familyServiceDesc": "First Sunday of each month",
+    "baptism": "Baptism",
+    "baptismDate": "November 16, 2025",
+    "baptismTime": "During service",
+    "specialEvents": "Special Events",
+    "location": "Location",
+    "allEventsLocation": "55 Dickson St, Cambridge, ON N1R 7A5"
   },
   "footer": {
     "copyright": "© 2025 Vine Church Cambridge. All rights reserved."

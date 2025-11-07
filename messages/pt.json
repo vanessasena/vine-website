@@ -12,7 +12,7 @@
   "hero": {
     "title": "Vine Church Cambridge",
     "subtitle": "Uma Igreja de Vencedores",
-    "description": "Edificar uma igreja de vencedores, onde cada membro é um sacerdote e cada casa uma extensão da igreja, conquistando nossa geração para Cristo através das células que se multiplicam.",
+    "description": "Nosso encargo é edificar uma igreja de vencedores, onde cada membro é um sacerdote e cada casa uma extensão da igreja, conquistando nossa geração para Cristo através das células que se multiplicam.",
     "cta": "Conheça Mais",
     "address": "55 Dickson St, Cambridge, ON N1R 7A5",
     "serviceTime": "Culto todo domingo às 10 AM"
@@ -25,7 +25,11 @@
     "content3": "Uma vez que o homem recebe a Pessoa de Deus como vida dentro de si mesmo, ele se torna um instrumento nas mãos dEle.",
     "content4": "Para que o homem fosse usado como instrumento, Deus deu a ele a seguinte ordem: Sede fecundos, multiplicai-vos, enchei a terra e sujeitai-a; dominai sobre os peixes do mar, sobre as aves dos céus e sobre todo animal que rasteja pela terra. (Gn 1.28)",
     "vision": "Visão",
-    "visionText": "Edificar uma igreja de vencedores, onde cada membro é um sacerdote e cada casa uma extensão da igreja, conquistando nossa geração para Cristo através das células que se multiplicam.",
+    "visionText": "Nosso encargo é edificar uma igreja de vencedores, onde cada membro é um sacerdote e cada casa uma extensão da igreja, conquistando nossa geração para Cristo através das células que se multiplicam.",
+    "cellChurch": "Igreja em Células",
+    "cellChurchText": "Nos reunimos não apenas no prédio da igreja, mas também nas casas onde partimos o pão juntos e compartilhamos na vida uns dos outros, seguindo o modelo de Atos 2:42-44.",
+    "history": "História",
+    "historyText": "A Igreja Videira teve seu início em 1997 na cidade de Goiânia, Goiás, Brasil. Nos últimos anos, Deus tem nos abençoado de uma maneira extraordinária e hoje somos mais de 1300 igrejas e cerca de 300 mil membros espalhados por todo o mundo. No Canadá estamos presentes em Toronto e Cambridge para a glória do Senhor Jesus.",
     "pastor": "Pr Boris Carvalho"
   },
   "values": {
@@ -58,6 +62,27 @@
     "serviceText": "Domingo às 10 AM",
     "pastor": "Pastor",
     "pastorText": "Pr Boris Carvalho"
+  },
+  "schedule": {
+    "title": "Agenda",
+    "subtitle": "Nossos encontros semanais",
+    "tuesday": "Terça-feira",
+    "tuesdayTime": "19:30",
+    "tuesdayEvent": "Curso de Maturidade e CTL",
+    "friday": "Sexta-feira",
+    "fridayTime": "20:00",
+    "fridayEvent": "Células",
+    "sunday": "Domingo",
+    "sundayTime": "10:00",
+    "sundayEvent": "Culto de Celebração",
+    "familyService": "Culto da Família",
+    "familyServiceDesc": "Primeiro domingo de cada mês",
+    "baptism": "Batismo",
+    "baptismDate": "16 de Novembro, 2025",
+    "baptismTime": "Durante o culto",
+    "specialEvents": "Eventos Especiais",
+    "location": "Localização",
+    "allEventsLocation": "55 Dickson St, Cambridge, ON N1R 7A5"
   },
   "footer": {
     "copyright": "© 2025 Vine Church Cambridge. Todos os direitos reservados."

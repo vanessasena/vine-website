@@ -84,4 +84,4 @@ This website represents Vine Church Cambridge, part of the international Vine Ch
 
 ## License
 
-© 2024 Vine Church Cambridge. All rights reserved.
+© 2025 Vine Church Cambridge. All rights reserved.

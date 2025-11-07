@@ -1,6 +1,23 @@
 import { useTranslations } from 'next-intl';
 import Navigation from '@/components/Navigation';
 import Hero from '@/components/Hero';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInstagram, faWhatsapp } from '@fortawesome/free-brands-svg-icons';
+import {
+  faHandshake,
+  faBook,
+  faPrayingHands,
+  faHeart,
+  faUsers,
+  faChalkboardTeacher,
+  faChild,
+  faSeedling,
+  faMapMarkerAlt,
+  faClock,
+  faUserTie,
+  faEnvelope
+} from '@fortawesome/free-solid-svg-icons';
+import '@/lib/fontawesome';
 
 interface PageProps {
   params: {
@@ -71,7 +88,9 @@ export default function HomePage({ params: { locale } }: PageProps) {
           <div className="grid md:grid-cols-3 gap-8">
             {/* Unity */}
             <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <div className="text-4xl mb-4">🤝</div>
+              <div className="text-4xl mb-4 text-primary-600">
+                <FontAwesomeIcon icon={faHandshake} />
+              </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">Unidade</h3>
               <p className="text-gray-700">
                 Percebemos que uma das características da Igreja Primitiva era unidade. A Bíblia diz que eles eram unânimes em tudo o que faziam.
@@ -80,7 +99,9 @@ export default function HomePage({ params: { locale } }: PageProps) {
 
             {/* Teaching */}
             <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <div className="text-4xl mb-4">📚</div>
+              <div className="text-4xl mb-4 text-primary-600">
+                <FontAwesomeIcon icon={faBook} />
+              </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">Ensino</h3>
               <p className="text-gray-700">
                 Cremos que a Bíblia é a Palavra de Deus. Por isso, prezamos sempre pelo ensino fiel das Escrituras desde os mais novos até os mais velhos.
@@ -89,7 +110,9 @@ export default function HomePage({ params: { locale } }: PageProps) {
 
             {/* Prayer */}
             <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <div className="text-4xl mb-4">🙏</div>
+              <div className="text-4xl mb-4 text-primary-600">
+                <FontAwesomeIcon icon={faPrayingHands} />
+              </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">Oração</h3>
               <p className="text-gray-700">
                 Fomos criados para termos um relacionamento de intimidade com Deus. Uma das maneiras de obtermos esta intimidade é através da oração.
@@ -107,7 +130,9 @@ export default function HomePage({ params: { locale } }: PageProps) {
 
             {/* Fellowship */}
             <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <div className="text-4xl mb-4">👥</div>
+              <div className="text-4xl mb-4 text-primary-600">
+                <FontAwesomeIcon icon={faUsers} />
+              </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">Comunhão</h3>
               <p className="text-gray-700">
                 Mais do que uma igreja, os discípulos de Cristo viviam uma vida compartilhada, de uns pelos outros. Era a Comunidade dos Discípulos.
@@ -116,7 +141,9 @@ export default function HomePage({ params: { locale } }: PageProps) {
 
             {/* Discipleship */}
             <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <div className="text-4xl mb-4">👨‍🏫</div>
+              <div className="text-4xl mb-4 text-primary-600">
+                <FontAwesomeIcon icon={faChalkboardTeacher} />
+              </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">Discipulado</h3>
               <p className="text-gray-700">
                 Ide e fazei discípulos. Essa é a Grande Comissão. Mais do que pregarmos o Evangelho, queremos fazer discípulos de Cristo Jesus.
@@ -125,7 +152,9 @@ export default function HomePage({ params: { locale } }: PageProps) {
 
             {/* Love */}
             <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <div className="text-4xl mb-4">❤️</div>
+              <div className="text-4xl mb-4 text-primary-600">
+                <FontAwesomeIcon icon={faHeart} />
+              </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">Amor</h3>
               <p className="text-gray-700">
                 Amar a Deus acima de todas as coisas e amar ao próximo como a nós mesmos. Dois mandamentos que procuramos viver de maneira prática.
@@ -158,23 +187,59 @@ export default function HomePage({ params: { locale } }: PageProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-12">Contato</h2>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             <div>
-              <div className="text-4xl mb-4">📍</div>
+              <div className="text-4xl mb-4 text-white">
+                <FontAwesomeIcon icon={faMapMarkerAlt} />
+              </div>
               <h3 className="text-xl font-bold mb-2">Endereço</h3>
               <p className="text-lg">55 Dickson St, Cambridge, ON N1R 7A5</p>
             </div>
 
             <div>
-              <div className="text-4xl mb-4">⏰</div>
+              <div className="text-4xl mb-4 text-white">
+                <FontAwesomeIcon icon={faClock} />
+              </div>
               <h3 className="text-xl font-bold mb-2">Culto</h3>
               <p className="text-lg">Domingo às 10 AM</p>
             </div>
 
             <div>
-              <div className="text-4xl mb-4">👨‍💼</div>
+              <div className="text-4xl mb-4 text-white">
+                <FontAwesomeIcon icon={faUserTie} />
+              </div>
               <h3 className="text-xl font-bold mb-2">Pastor</h3>
               <p className="text-lg">Pr Boris Carvalho</p>
+            </div>
+
+            <div>
+              <div className="text-4xl mb-4 text-white">
+                <FontAwesomeIcon icon={faWhatsapp} />
+              </div>
+              <h3 className="text-xl font-bold mb-2">WhatsApp</h3>
+              <a href="https://wa.me/13652282980" target="_blank" className="text-lg hover:text-secondary-200">
+                +1 365 228 2980
+              </a>
+            </div>
+
+            <div>
+              <div className="text-4xl mb-4 text-white">
+                <FontAwesomeIcon icon={faEnvelope} />
+              </div>
+              <h3 className="text-xl font-bold mb-2">E-mail</h3>
+              <a href="mailto:videiracanada@gmail.com" className="text-lg hover:text-secondary-200">
+                videiracanada@gmail.com
+              </a>
+            </div>
+
+            <div>
+              <div className="text-4xl mb-4 text-white">
+                <FontAwesomeIcon icon={faInstagram} />
+              </div>
+              <h3 className="text-xl font-bold mb-2">Instagram</h3>
+              <a href="https://www.instagram.com/vine_cambridge/" target="_blank" className="text-lg hover:text-secondary-200">
+                @vine_cambridge
+              </a>
             </div>
           </div>
         </div>

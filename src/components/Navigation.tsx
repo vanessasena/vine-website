@@ -4,6 +4,8 @@ import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 interface NavigationProps {
   locale: string;
@@ -76,9 +78,10 @@ export default function Navigation({ locale }: NavigationProps) {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="text-gray-700 hover:text-primary-600"
             >
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
+              <FontAwesomeIcon
+                icon={isMenuOpen ? faTimes : faBars}
+                className="h-6 w-6"
+              />
             </button>
           </div>
         </div>

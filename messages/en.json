@@ -56,12 +56,23 @@
   },
   "contact": {
     "title": "Contact",
+    "subtitle": "Get in touch with us",
     "address": "Address",
     "addressText": "55 Dickson St, Cambridge, ON N1R 7A5",
     "service": "Service",
     "serviceText": "Sunday at 10 AM",
     "pastor": "Pastor",
-    "pastorText": "Pastor Boris Carvalho"
+    "pastorText": "Pastor Boris Carvalho",
+    "phone": "WhatsApp",
+    "phoneNumber": "+1 365 228 2980",
+    "email": "Email",
+    "emailAddress": "videiracanada@gmail.com",
+    "social": "Social Media",
+    "instagram": "Instagram",
+    "instagramUrl": "https://www.instagram.com/vine_cambridge/",
+    "instagramHandle": "@vine_cambridge",
+    "getInTouch": "Get In Touch",
+    "visitUs": "Visit Us"
   },
   "schedule": {
     "title": "Schedule",

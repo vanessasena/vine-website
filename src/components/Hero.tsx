@@ -2,6 +2,8 @@
 
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMapMarkerAlt, faClock } from '@fortawesome/free-solid-svg-icons';
 
 export default function Hero() {
   const t = useTranslations('hero');
@@ -34,10 +36,16 @@ export default function Hero() {
 
           <div className="grid md:grid-cols-2 gap-6 mt-12 text-center">
             <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-6">
-              <h3 className="text-xl font-semibold mb-2">📍 {t('address')}</h3>
+              <h3 className="text-xl font-semibold mb-2 flex items-center justify-center">
+                <FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2" />
+                {t('address')}
+              </h3>
             </div>
             <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-6">
-              <h3 className="text-xl font-semibold mb-2">⏰ {t('serviceTime')}</h3>
+              <h3 className="text-xl font-semibold mb-2 flex items-center justify-center">
+                <FontAwesomeIcon icon={faClock} className="mr-2" />
+                {t('serviceTime')}
+              </h3>
             </div>
           </div>
         </div>

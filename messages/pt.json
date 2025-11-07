@@ -56,12 +56,23 @@
   },
   "contact": {
     "title": "Contato",
+    "subtitle": "Entre em contato conosco",
     "address": "Endereço",
     "addressText": "55 Dickson St, Cambridge, ON N1R 7A5",
     "service": "Culto",
     "serviceText": "Domingo às 10 AM",
     "pastor": "Pastor",
-    "pastorText": "Pr Boris Carvalho"
+    "pastorText": "Pr Boris Carvalho",
+    "phone": "WhatsApp",
+    "phoneNumber": "+1 365 228 2980",
+    "email": "E-mail",
+    "emailAddress": "videiracanada@gmail.com",
+    "social": "Redes Sociais",
+    "instagram": "Instagram",
+    "instagramUrl": "https://www.instagram.com/vine_cambridge/",
+    "instagramHandle": "@vine_cambridge",
+    "getInTouch": "Fale Conosco",
+    "visitUs": "Nos Visite"
   },
   "schedule": {
     "title": "Agenda",
@@ -75,7 +86,7 @@
     "sunday": "Domingo",
     "sundayTime": "10:00",
     "sundayEvent": "Culto de Celebração",
-    "familyService": "Culto da Família",
+    "familyService": "Culto da Família e Santa Ceia",
     "familyServiceDesc": "Primeiro domingo de cada mês",
     "baptism": "Batismo",
     "baptismDate": "16 de Novembro, 2025",

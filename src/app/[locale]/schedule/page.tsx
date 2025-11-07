@@ -1,5 +1,17 @@
 import { useTranslations } from 'next-intl';
 import Navigation from '@/components/Navigation';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faBook,
+  faHome,
+  faChurch,
+  faUsers,
+  faTint,
+  faMapMarkerAlt,
+  faMap,
+  faPhone,
+  faHandshake
+} from '@fortawesome/free-solid-svg-icons';
 
 interface PageProps {
   params: {
@@ -36,7 +48,9 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
 
             {/* Tuesday */}
             <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-              <div className="text-4xl mb-4">📚</div>
+              <div className="text-4xl mb-4 text-primary-600">
+                <FontAwesomeIcon icon={faBook} />
+              </div>
               <h3 className="text-2xl font-bold text-primary-700 mb-4">
                 {t('tuesday')}
               </h3>
@@ -50,7 +64,9 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
 
             {/* Friday */}
             <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-              <div className="text-4xl mb-4">🏠</div>
+              <div className="text-4xl mb-4 text-primary-600">
+                <FontAwesomeIcon icon={faHome} />
+              </div>
               <h3 className="text-2xl font-bold text-primary-700 mb-4">
                 {t('friday')}
               </h3>
@@ -64,7 +80,9 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
 
             {/* Sunday */}
             <div className="bg-white rounded-lg shadow-lg p-8 text-center border-2 border-primary-500">
-              <div className="text-4xl mb-4">⛪</div>
+              <div className="text-4xl mb-4 text-primary-600">
+                <FontAwesomeIcon icon={faChurch} />
+              </div>
               <h3 className="text-2xl font-bold text-primary-700 mb-4">
                 {t('sunday')}
               </h3>
@@ -87,7 +105,9 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
 
               {/* Monthly Family Service */}
               <div className="bg-gradient-to-br from-secondary-100 to-secondary-200 rounded-lg shadow-lg p-8 text-center">
-                <div className="text-4xl mb-4">👨‍👩‍👧‍👦</div>
+                <div className="text-4xl mb-4 text-primary-600">
+                  <FontAwesomeIcon icon={faUsers} />
+                </div>
                 <h3 className="text-2xl font-bold text-primary-700 mb-4">
                   {t('familyService')}
                 </h3>
@@ -101,7 +121,9 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
 
               {/* Baptism */}
               <div className="bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg shadow-lg p-8 text-center border-2 border-blue-400">
-                <div className="text-4xl mb-4">💧</div>
+                <div className="text-4xl mb-4 text-blue-600">
+                  <FontAwesomeIcon icon={faTint} />
+                </div>
                 <h3 className="text-2xl font-bold text-primary-700 mb-4">
                   {t('baptism')}
                 </h3>
@@ -118,7 +140,9 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
 
           {/* Location Info */}
           <div className="mt-12 bg-white rounded-lg shadow-lg p-8 text-center">
-            <div className="text-4xl mb-4">📍</div>
+            <div className="text-4xl mb-4 text-primary-600">
+              <FontAwesomeIcon icon={faMapMarkerAlt} />
+            </div>
             <h3 className="text-2xl font-bold text-primary-700 mb-4">
               {t('location')}
             </h3>
@@ -129,7 +153,9 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
             {/* Map Embed - You can replace this with actual Google Maps embed */}
             <div className="aspect-w-16 aspect-h-9 bg-gray-200 rounded-lg flex items-center justify-center">
               <div className="text-center">
-                <div className="text-6xl mb-4">🗺️</div>
+                <div className="text-6xl mb-4 text-gray-500">
+                  <FontAwesomeIcon icon={faMap} />
+                </div>
                 <p className="text-gray-600">
                   {locale === 'pt' ? 'Mapa em breve' : 'Map coming soon'}
                 </p>
@@ -170,8 +196,8 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
               </h4>
               <p className="text-gray-700">
                 {locale === 'pt'
-                  ? 'Uma celebração especial no primeiro domingo de cada mês, focada na família e na comunhão. Um momento especial para toda a família de Deus.'
-                  : 'A special celebration on the first Sunday of each month, focused on family and fellowship. A special time for the whole family of God.'
+                  ? 'Uma celebração especial no primeiro domingo de cada mês, focada na família e na comunhão. Um momento especial para toda a família de Deus. Neste dia não temos o Domingo Kids.'
+                  : 'A special celebration on the first Sunday of each month, focused on family and fellowship. A special time for the whole family of God. In this day, we don\'t have the Sunday Kids.'
                 }
               </p>
             </div>
@@ -195,14 +221,16 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
           </p>
           <div className="grid md:grid-cols-2 gap-8">
             <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-6">
-              <h3 className="text-xl font-semibold mb-2">
-                {locale === 'pt' ? '📞 Contato' : '📞 Contact'}
+              <h3 className="text-xl font-semibold mb-2 flex items-center justify-center">
+                <FontAwesomeIcon icon={faPhone} className="mr-2" />
+                {locale === 'pt' ? 'Contato' : 'Contact'}
               </h3>
               <p>{locale === 'pt' ? 'Entre em contato conosco' : 'Get in touch with us'}</p>
             </div>
             <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-6">
-              <h3 className="text-xl font-semibold mb-2">
-                {locale === 'pt' ? '🤝 Primeira Visita' : '🤝 First Visit'}
+              <h3 className="text-xl font-semibold mb-2 flex items-center justify-center">
+                <FontAwesomeIcon icon={faHandshake} className="mr-2" />
+                {locale === 'pt' ? 'Primeira Visita' : 'First Visit'}
               </h3>
               <p>{locale === 'pt' ? 'Não se preocupe, te ajudaremos' : "Don't worry, we'll help you"}</p>
             </div>

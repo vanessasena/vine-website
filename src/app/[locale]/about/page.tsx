@@ -1,6 +1,14 @@
 import { useTranslations } from 'next-intl';
 import Navigation from '@/components/Navigation';
 import Image from 'next/image';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faBullseye,
+  faHome,
+  faBook,
+  faMapMarkerAlt,
+  faClock
+} from '@fortawesome/free-solid-svg-icons';
 
 interface PageProps {
   params: {
@@ -66,7 +74,9 @@ export default function AboutPage({ params: { locale } }: PageProps) {
             {/* Vision */}
             <div className="bg-white rounded-lg shadow-lg p-8">
               <div className="text-center mb-6">
-                <div className="text-4xl mb-4">🎯</div>
+                <div className="text-4xl mb-4 text-primary-600">
+                  <FontAwesomeIcon icon={faBullseye} />
+                </div>
                 <h3 className="text-2xl font-bold text-primary-700">
                   {t('vision')}
                 </h3>
@@ -79,7 +89,9 @@ export default function AboutPage({ params: { locale } }: PageProps) {
             {/* Cell Church */}
             <div className="bg-white rounded-lg shadow-lg p-8">
               <div className="text-center mb-6">
-                <div className="text-4xl mb-4">🏠</div>
+                <div className="text-4xl mb-4 text-primary-600">
+                  <FontAwesomeIcon icon={faHome} />
+                </div>
                 <h3 className="text-2xl font-bold text-primary-700">
                   {t('cellChurch')}
                 </h3>
@@ -92,7 +104,9 @@ export default function AboutPage({ params: { locale } }: PageProps) {
             {/* History */}
             <div className="bg-white rounded-lg shadow-lg p-8">
               <div className="text-center mb-6">
-                <div className="text-4xl mb-4">📚</div>
+                <div className="text-4xl mb-4 text-primary-600">
+                  <FontAwesomeIcon icon={faBook} />
+                </div>
                 <h3 className="text-2xl font-bold text-primary-700">
                   {t('history')}
                 </h3>
@@ -140,11 +154,17 @@ export default function AboutPage({ params: { locale } }: PageProps) {
           </p>
           <div className="grid md:grid-cols-2 gap-8">
             <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-6">
-              <h3 className="text-xl font-semibold mb-2">📍 Localização</h3>
+              <h3 className="text-xl font-semibold mb-2 flex items-center justify-center">
+                <FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2" />
+                Localização
+              </h3>
               <p>55 Dickson St, Cambridge, ON N1R 7A5</p>
             </div>
             <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-6">
-              <h3 className="text-xl font-semibold mb-2">⏰ Horário do Culto</h3>
+              <h3 className="text-xl font-semibold mb-2 flex items-center justify-center">
+                <FontAwesomeIcon icon={faClock} className="mr-2" />
+                Horário do Culto
+              </h3>
               <p>Domingo às 10 AM</p>
             </div>
           </div>

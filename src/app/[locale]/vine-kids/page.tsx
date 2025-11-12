@@ -1,3 +1,5 @@
+'use client';
+
 import { useTranslations } from 'next-intl';
 import Navigation from '@/components/Navigation';
 import Image from 'next/image';
@@ -10,8 +12,11 @@ import {
   faBook,
   faPray,
   faHandsHelping,
-  faUsers
+  faUsers,
+  faChevronLeft,
+  faChevronRight
 } from '@fortawesome/free-solid-svg-icons';
+import { useState } from 'react';
 
 interface PageProps {
   params: {
@@ -21,6 +26,34 @@ interface PageProps {
 
 export default function VineKidsPage({ params: { locale } }: PageProps) {
   const t = useTranslations('vineKids');
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const images = [
+    {
+      src: "https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/IMG-20250405-WA0002.jpg",
+      alt: "Kids playing and learning"
+    },
+    {
+      src: "https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/domingo%20kids.jpg",
+      alt: "Domingo Kids"
+    },
+    {
+      src: "https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/IMG-20250930-WA0048.jpg",
+      alt: "Evento Royal Kids"
+    },
+    {
+      src: "https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/IMG-20250406-WA0008.jpg",
+      alt: "Vine Kids Activities"
+    }
+  ];
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % images.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + images.length) % images.length);
+  };
 
   return (
     <main>
@@ -55,34 +88,46 @@ export default function VineKidsPage({ params: { locale } }: PageProps) {
             </p>
           </div>
 
-          {/* Image Gallery */}
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
-            <div className="rounded-lg overflow-hidden shadow-lg">
+          {/* Image Carousel */}
+          <div className="relative max-w-lg mx-auto mb-16">
+            <div className="relative h-80 rounded-lg overflow-hidden shadow-lg">
               <Image
-                src="https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/IMG-20250405-WA0002.jpg"
-                alt="Kids playing and learning"
-                width={400}
-                height={300}
-                className="w-full h-64 object-cover"
+                src={images[currentSlide].src}
+                alt={images[currentSlide].alt}
+                width={800}
+                height={600}
+                className="w-full h-full object-cover transition-all duration-500"
               />
+
+              {/* Navigation buttons */}
+              <button
+                onClick={prevSlide}
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full p-3 shadow-lg transition-all duration-200"
+              >
+                <FontAwesomeIcon icon={faChevronLeft} className="text-gray-800 text-xl" />
+              </button>
+
+              <button
+                onClick={nextSlide}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full p-3 shadow-lg transition-all duration-200"
+              >
+                <FontAwesomeIcon icon={faChevronRight} className="text-gray-800 text-xl" />
+              </button>
             </div>
-            <div className="rounded-lg overflow-hidden shadow-lg">
-              <Image
-                src="https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/domingo%20kids.jpg"
-                alt="Domingo Kids"
-                width={400}
-                height={300}
-                className="w-full h-64 object-cover"
-              />
-            </div>
-            <div className="rounded-lg overflow-hidden shadow-lg">
-              <Image
-                src="https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/IMG-20250930-WA0048.jpg"
-                alt="Evento Royal Kids"
-                width={400}
-                height={300}
-                className="w-full h-64 object-cover"
-              />
+
+            {/* Dots indicator */}
+            <div className="flex justify-center mt-6 space-x-2">
+              {images.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentSlide(index)}
+                  className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                    index === currentSlide
+                      ? 'bg-primary-600 scale-125'
+                      : 'bg-gray-300 hover:bg-gray-400'
+                  }`}
+                />
+              ))}
             </div>
           </div>
         </div>

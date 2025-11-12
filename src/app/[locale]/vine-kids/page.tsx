@@ -88,32 +88,6 @@ export default function VineKidsPage({ params: { locale } }: PageProps) {
         </div>
       </section>
 
-      {/* Video Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              {locale === 'pt' ? 'Nosso Material Lúdico' : 'Our Exclusive Material'}
-            </h2>
-            <p className="text-lg text-gray-600">
-              {locale === 'pt'
-                ? 'Conheça nosso desenho animado especial, criado exclusivamente para educar e ensinar as nossas crianças'
-                : 'Meet our special cartoon, created exclusively to educate and teach the children of our church'
-              }
-            </p>
-          </div>
-          <div className="relative w-full" style={{ paddingBottom: '56.25%' /* 16:9 aspect ratio */ }}>
-            <iframe
-              className="absolute top-0 left-0 w-full h-full rounded-lg shadow-lg"
-              src="https://www.youtube.com/embed/VUnUSpZwRA8"
-              title="Vine Kids Video"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-            ></iframe>
-          </div>
-        </div>
-      </section>
 
       {/* Programs Section */}
       <section className="py-16 bg-white">
@@ -152,6 +126,33 @@ export default function VineKidsPage({ params: { locale } }: PageProps) {
                 {t('cellsKidsDescription')}
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+{/* Video Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              {locale === 'pt' ? 'Nosso Material Lúdico' : 'Our Exclusive Material'}
+            </h2>
+            <p className="text-lg text-gray-600">
+              {locale === 'pt'
+                ? 'Conheça nosso desenho animado especial, criado exclusivamente para educar e ensinar as nossas crianças'
+                : 'Meet our special cartoon, created exclusively to educate and teach the children of our church'
+              }
+            </p>
+          </div>
+          <div className="relative w-full" style={{ paddingBottom: '56.25%' /* 16:9 aspect ratio */ }}>
+            <iframe
+              className="absolute top-0 left-0 w-full h-full rounded-lg shadow-lg"
+              src="https://www.youtube.com/embed/VUnUSpZwRA8"
+              title="Vine Kids Video"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            ></iframe>
           </div>
         </div>
       </section>

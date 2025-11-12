@@ -45,7 +45,7 @@ export default function Navigation({ locale }: NavigationProps) {
             <Link href={`/${locale}/vine-kids`} className="text-gray-700 hover:text-primary-600">
               {t('vineKids')}
             </Link>
-            <Link href={`/${locale}/words`} className="text-gray-700 hover:text-primary-600">
+            <Link href={`/${locale}/sermons`} className="text-gray-700 hover:text-primary-600">
               {t('words')}
             </Link>
             <Link href={`/${locale}/cells`} className="text-gray-700 hover:text-primary-600">
@@ -102,7 +102,7 @@ export default function Navigation({ locale }: NavigationProps) {
               <Link href={`/${locale}/vine-kids`} className="text-gray-700 hover:text-primary-600 py-2">
                 {t('vineKids')}
               </Link>
-              <Link href={`/${locale}/words`} className="text-gray-700 hover:text-primary-600 py-2">
+              <Link href={`/${locale}/sermons`} className="text-gray-700 hover:text-primary-600 py-2">
                 {t('words')}
               </Link>
               <Link href={`/${locale}/cells`} className="text-gray-700 hover:text-primary-600 py-2">

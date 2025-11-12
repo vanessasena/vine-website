@@ -1,8 +1,10 @@
 import { useTranslations } from 'next-intl';
 import Navigation from '@/components/Navigation';
 import Hero from '@/components/Hero';
+import Footer from '@/components/Footer';
+import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInstagram, faWhatsapp } from '@fortawesome/free-brands-svg-icons';
+import { faInstagram } from '@fortawesome/free-brands-svg-icons';
 import {
   faHandshake,
   faBook,
@@ -14,8 +16,6 @@ import {
   faSeedling,
   faMapMarkerAlt,
   faClock,
-  faUserTie,
-  faEnvelope,
   faHandsHelping
 } from '@fortawesome/free-solid-svg-icons';
 import '@/lib/fontawesome';
@@ -28,6 +28,8 @@ interface PageProps {
 
 export default function HomePage({ params: { locale } }: PageProps) {
   const t = useTranslations('about');
+  const v = useTranslations('values');
+  const c = useTranslations('contact');
 
   return (
     <main className="min-h-screen">
@@ -79,10 +81,10 @@ export default function HomePage({ params: { locale } }: PageProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              O que nós valorizamos
+              {v('title')}
             </h2>
             <p className="text-xl text-gray-600">
-              Com base na Igreja Primitiva de Atos dos Apóstolos
+              {v('subtitle')}
             </p>
           </div>
 
@@ -92,9 +94,9 @@ export default function HomePage({ params: { locale } }: PageProps) {
               <div className="text-4xl mb-4 text-primary-600">
                 <FontAwesomeIcon icon={faHandshake} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Unidade</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">{v('unity')}</h3>
               <p className="text-gray-700">
-                Percebemos que uma das características da Igreja Primitiva era unidade. A Bíblia diz que eles eram unânimes em tudo o que faziam.
+                {v('unityDesc')}
               </p>
             </div>
 
@@ -103,9 +105,9 @@ export default function HomePage({ params: { locale } }: PageProps) {
               <div className="text-4xl mb-4 text-primary-600">
                 <FontAwesomeIcon icon={faBook} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Ensino</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">{v('teaching')}</h3>
               <p className="text-gray-700">
-                Cremos que a Bíblia é a Palavra de Deus. Por isso, prezamos sempre pelo ensino fiel das Escrituras desde os mais novos até os mais velhos.
+                {v('teachingDesc')}
               </p>
             </div>
 
@@ -114,9 +116,9 @@ export default function HomePage({ params: { locale } }: PageProps) {
               <div className="text-4xl mb-4 text-primary-600">
                 <FontAwesomeIcon icon={faPrayingHands} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Oração</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">{v('prayer')}</h3>
               <p className="text-gray-700">
-                Fomos criados para termos um relacionamento de intimidade com Deus. Uma das maneiras de obtermos esta intimidade é através da oração.
+                {v('prayerDesc')}
               </p>
             </div>
 
@@ -125,9 +127,9 @@ export default function HomePage({ params: { locale } }: PageProps) {
               <div className="text-4xl mb-4 text-primary-600">
                 <FontAwesomeIcon icon={faHandsHelping} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Serviço</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">{v('service')}</h3>
               <p className="text-gray-700">
-                De acordo com a Palavra de Deus devemos fazer o bem a todos principalmente aos da família de fé. Amamos ser abençoadores.
+                {v('serviceDesc')}
               </p>
             </div>
 
@@ -136,9 +138,9 @@ export default function HomePage({ params: { locale } }: PageProps) {
               <div className="text-4xl mb-4 text-primary-600">
                 <FontAwesomeIcon icon={faUsers} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Comunhão</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">{v('fellowship')}</h3>
               <p className="text-gray-700">
-                Mais do que uma igreja, os discípulos de Cristo viviam uma vida compartilhada, de uns pelos outros. Era a Comunidade dos Discípulos.
+                {v('fellowshipDesc')}
               </p>
             </div>
 
@@ -147,9 +149,9 @@ export default function HomePage({ params: { locale } }: PageProps) {
               <div className="text-4xl mb-4 text-primary-600">
                 <FontAwesomeIcon icon={faChalkboardTeacher} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Discipulado</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">{v('discipleship')}</h3>
               <p className="text-gray-700">
-                Ide e fazei discípulos. Essa é a Grande Comissão. Mais do que pregarmos o Evangelho, queremos fazer discípulos de Cristo Jesus.
+                {v('discipleshipDesc')}
               </p>
             </div>
 
@@ -158,9 +160,9 @@ export default function HomePage({ params: { locale } }: PageProps) {
               <div className="text-4xl mb-4 text-primary-600">
                 <FontAwesomeIcon icon={faHeart} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Amor</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">{v('love')}</h3>
               <p className="text-gray-700">
-                Amar a Deus acima de todas as coisas e amar ao próximo como a nós mesmos. Dois mandamentos que procuramos viver de maneira prática.
+                {v('loveDesc')}
               </p>
             </div>
 
@@ -169,9 +171,9 @@ export default function HomePage({ params: { locale } }: PageProps) {
               <div className="text-4xl mb-4 text-primary-600">
                 <FontAwesomeIcon icon={faChild} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Crianças</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">{v('children')}</h3>
               <p className="text-gray-700">
-                Cremos que devemos ensinar as crianças a andarem no caminho do Senhor. O nosso lema é: criança não dá trabalho, criança dá frutos.
+                {v('childrenDesc')}
               </p>
             </div>
 
@@ -180,9 +182,9 @@ export default function HomePage({ params: { locale } }: PageProps) {
               <div className="text-4xl mb-4 text-primary-600">
                 <FontAwesomeIcon icon={faSeedling} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Multiplicação</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">{v('multiplication')}</h3>
               <p className="text-gray-700">
-                A vontade de Deus é que todos sejam salvos e cheguem ao pleno conhecimento da Verdade. Queremos fazer a diferença na nossa geração.
+                {v('multiplicationDesc')}
               </p>
             </div>
           </div>
@@ -190,74 +192,61 @@ export default function HomePage({ params: { locale } }: PageProps) {
       </section>
 
       {/* Contact Section */}
-      <section className="py-16 bg-primary-600 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-12">Contato</h2>
+      <section className="py-16 bg-gradient-to-r from-primary-600 to-primary-800 text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            <div>
-              <div className="text-4xl mb-4 text-white">
+          <div className="grid md:grid-cols-3 gap-8 mb-12">
+            {/* Address */}
+            <div className="flex flex-col items-center">
+              <div className="text-3xl mb-3 text-secondary-200">
                 <FontAwesomeIcon icon={faMapMarkerAlt} />
               </div>
-              <h3 className="text-xl font-bold mb-2">Endereço</h3>
-              <p className="text-lg">55 Dickson St, Cambridge, ON N1R 7A5</p>
+              <h3 className="text-lg font-semibold mb-1">{c('address')}</h3>
+              <p className="text-secondary-100 text-sm">{c('addressText')}</p>
             </div>
 
-            <div>
-              <div className="text-4xl mb-4 text-white">
+            {/* Service Time */}
+            <div className="flex flex-col items-center">
+              <div className="text-3xl mb-3 text-secondary-200">
                 <FontAwesomeIcon icon={faClock} />
               </div>
-              <h3 className="text-xl font-bold mb-2">Culto</h3>
-              <p className="text-lg">Domingo às 10 AM</p>
+              <h3 className="text-lg font-semibold mb-1">{c('service')}</h3>
+              <p className="text-secondary-100 text-sm">{c('serviceText')}</p>
             </div>
 
-            <div>
-              <div className="text-4xl mb-4 text-white">
-                <FontAwesomeIcon icon={faUserTie} />
-              </div>
-              <h3 className="text-xl font-bold mb-2">Pastor</h3>
-              <p className="text-lg">Pr Boris Carvalho</p>
-            </div>
-
-            <div>
-              <div className="text-4xl mb-4 text-white">
-                <FontAwesomeIcon icon={faWhatsapp} />
-              </div>
-              <h3 className="text-xl font-bold mb-2">WhatsApp</h3>
-              <a href="https://wa.me/13652282980" target="_blank" className="text-lg hover:text-secondary-200">
-                +1 365 228 2980
-              </a>
-            </div>
-
-            <div>
-              <div className="text-4xl mb-4 text-white">
-                <FontAwesomeIcon icon={faEnvelope} />
-              </div>
-              <h3 className="text-xl font-bold mb-2">E-mail</h3>
-              <a href="mailto:videiracanada@gmail.com" className="text-lg hover:text-secondary-200">
-                videiracanada@gmail.com
-              </a>
-            </div>
-
-            <div>
-              <div className="text-4xl mb-4 text-white">
+            {/* Instagram */}
+            <div className="flex flex-col items-center">
+              <div className="text-3xl mb-3 text-secondary-200">
                 <FontAwesomeIcon icon={faInstagram} />
               </div>
-              <h3 className="text-xl font-bold mb-2">Instagram</h3>
-              <a href="https://www.instagram.com/vine_cambridge/" target="_blank" className="text-lg hover:text-secondary-200">
-                @vine_cambridge
+              <h3 className="text-lg font-semibold mb-1">{c('instagram')}</h3>
+              <a
+                href={c('instagramUrl')}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-secondary-100 text-sm hover:text-white transition-colors duration-200"
+              >
+                {c('instagramHandle')}
               </a>
             </div>
+          </div>
+
+          {/* Call to Action */}
+          <div className="pt-8 border-t border-white border-opacity-20">
+            <Link
+              href={`/${locale}/contact`}
+              className="inline-flex items-center bg-white text-primary-600 px-8 py-3 rounded-full font-semibold hover:bg-secondary-100 transition-colors duration-200 shadow-lg"
+            >
+              {c('title')}
+              <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p>&copy; 2025 Vine Church Cambridge. Todos os direitos reservados.</p>
-        </div>
-      </footer>
+      <Footer locale={locale} />
     </main>
   );
 }

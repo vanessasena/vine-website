@@ -30,7 +30,9 @@
     "cellChurchText": "Nos reunimos não apenas no prédio da igreja, mas também nas casas onde partimos o pão juntos e compartilhamos na vida uns dos outros, seguindo o modelo de Atos 2:42-44.",
     "history": "História",
     "historyText": "A Igreja Videira teve seu início em 1997 na cidade de Goiânia, Goiás, Brasil. Nos últimos anos, Deus tem nos abençoado de uma maneira extraordinária e hoje somos mais de 1300 igrejas e cerca de 300 mil membros espalhados por todo o mundo. No Canadá estamos presentes em Toronto e Cambridge para a glória do Senhor Jesus.",
-    "pastor": "Pr Boris Carvalho"
+    "pastor": "Pr Boris Carvalho",
+    "pastorTitle": "Pastor Titular",
+    "pastorDescription": "Pastor Boris Carvalho lidera a Vine Church Cambridge com paixão pelo Reino de Deus e pelo crescimento espiritual de cada membro da igreja."
   },
   "values": {
     "title": "O que nós valorizamos",
@@ -57,6 +59,7 @@
   "contact": {
     "title": "Contato",
     "subtitle": "Entre em contato conosco",
+    "moreInfo": "Mais Informações",
     "address": "Endereço",
     "addressText": "55 Dickson St, Cambridge, ON N1R 7A5",
     "service": "Culto",

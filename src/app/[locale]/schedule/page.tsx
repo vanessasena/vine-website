@@ -1,5 +1,7 @@
 import { useTranslations } from 'next-intl';
 import Navigation from '@/components/Navigation';
+import Footer from '@/components/Footer';
+import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBook,
@@ -79,7 +81,7 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
             </div>
 
             {/* Sunday */}
-            <div className="bg-white rounded-lg shadow-lg p-8 text-center border-2 border-primary-500">
+            <div className="bg-white rounded-lg shadow-lg p-8 text-center">
               <div className="text-4xl mb-4 text-primary-600">
                 <FontAwesomeIcon icon={faChurch} />
               </div>
@@ -120,7 +122,7 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
               </div>
 
               {/* Baptism */}
-              <div className="bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg shadow-lg p-8 text-center border-2 border-blue-400">
+              <div className="bg-gradient-to-br from-secondary-100 to-secondary-200 rounded-lg shadow-lg p-8 text-center">
                 <div className="text-4xl mb-4 text-blue-600">
                   <FontAwesomeIcon icon={faTint} />
                 </div>
@@ -220,13 +222,22 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
             }
           </p>
           <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-6">
+            <Link
+              href={`/${locale}/contact`}
+              className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-6 hover:bg-opacity-20 transition-all duration-200 block"
+            >
               <h3 className="text-xl font-semibold mb-2 flex items-center justify-center">
                 <FontAwesomeIcon icon={faPhone} className="mr-2" />
                 {locale === 'pt' ? 'Contato' : 'Contact'}
               </h3>
-              <p>{locale === 'pt' ? 'Entre em contato conosco' : 'Get in touch with us'}</p>
-            </div>
+              <p className="mb-2">{locale === 'pt' ? 'Entre em contato conosco' : 'Get in touch with us'}</p>
+              <div className="flex items-center justify-center text-sm text-secondary-200">
+                {locale === 'pt' ? 'Clique para mais informações' : 'Click for more information'}
+                <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </Link>
             <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-6">
               <h3 className="text-xl font-semibold mb-2 flex items-center justify-center">
                 <FontAwesomeIcon icon={faHandshake} className="mr-2" />
@@ -238,12 +249,7 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p>&copy; 2025 Vine Church Cambridge. {locale === 'pt' ? 'Todos os direitos reservados.' : 'All rights reserved.'}</p>
-        </div>
-      </footer>
+      <Footer locale={locale} />
     </main>
   );
 }

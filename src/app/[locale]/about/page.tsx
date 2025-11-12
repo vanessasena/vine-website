@@ -1,14 +1,16 @@
 import { useTranslations } from 'next-intl';
 import Navigation from '@/components/Navigation';
 import Image from 'next/image';
+import Footer from '@/components/Footer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBullseye,
   faHome,
   faBook,
-  faMapMarkerAlt,
-  faClock
+  faPhone,
+  faHandshake
 } from '@fortawesome/free-solid-svg-icons';
+import Link from 'next/link';
 
 interface PageProps {
   params: {
@@ -132,10 +134,10 @@ export default function AboutPage({ params: { locale } }: PageProps) {
                 <h3 className="text-2xl font-bold text-primary-700 mb-2">
                   {t('pastor')}
                 </h3>
-                <p className="text-gray-600">Pastor Titular</p>
+                <p className="text-gray-600">{t('pastorTitle')}</p>
               </div>
               <p className="text-gray-700 text-lg leading-relaxed">
-                Pastor Boris Carvalho lidera a Vine Church Cambridge com paixão pelo Reino de Deus e pelo crescimento espiritual de cada membro da igreja.
+                {t('pastorDescription')}
               </p>
             </div>
           </div>
@@ -147,36 +149,43 @@ export default function AboutPage({ params: { locale } }: PageProps) {
       <section className="py-16 bg-primary-600 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Faça Parte da Nossa Família
+            {locale === 'pt' ? 'Venha Participar!' : 'Come Join Us!'}
           </h2>
           <p className="text-xl mb-8">
-            Venha conhecer nossa igreja e fazer parte desta família de vencedores!
+            {locale === 'pt'
+              ? 'Todos são bem-vindos em nossos encontros. Venha fazer parte desta família!'
+              : 'Everyone is welcome at our gatherings. Come be part of this family!'
+            }
           </p>
           <div className="grid md:grid-cols-2 gap-8">
+            <Link
+              href={`/${locale}/contact`}
+              className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-6 hover:bg-opacity-20 transition-all duration-200 block"
+            >
+              <h3 className="text-xl font-semibold mb-2 flex items-center justify-center">
+                <FontAwesomeIcon icon={faPhone} className="mr-2" />
+                {locale === 'pt' ? 'Contato' : 'Contact'}
+              </h3>
+              <p className="mb-2">{locale === 'pt' ? 'Entre em contato conosco' : 'Get in touch with us'}</p>
+              <div className="flex items-center justify-center text-sm text-secondary-200">
+                {locale === 'pt' ? 'Clique para mais informações' : 'Click for more information'}
+                <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </Link>
             <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-6">
               <h3 className="text-xl font-semibold mb-2 flex items-center justify-center">
-                <FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2" />
-                Localização
+                <FontAwesomeIcon icon={faHandshake} className="mr-2" />
+                {locale === 'pt' ? 'Primeira Visita' : 'First Visit'}
               </h3>
-              <p>55 Dickson St, Cambridge, ON N1R 7A5</p>
-            </div>
-            <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-6">
-              <h3 className="text-xl font-semibold mb-2 flex items-center justify-center">
-                <FontAwesomeIcon icon={faClock} className="mr-2" />
-                Horário do Culto
-              </h3>
-              <p>Domingo às 10 AM</p>
+              <p>{locale === 'pt' ? 'Não se preocupe, te ajudaremos' : "Don't worry, we'll help you"}</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p>&copy; 2025 Vine Church Cambridge. Todos os direitos reservados.</p>
-        </div>
-      </footer>
+      <Footer locale={locale} />
     </main>
   );
 }

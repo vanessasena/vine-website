@@ -1,6 +1,7 @@
 import { useTranslations } from 'next-intl';
 import Navigation from '@/components/Navigation';
 import Link from 'next/link';
+import Footer from '@/components/Footer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faMapMarkerAlt,
@@ -237,12 +238,7 @@ export default function ContactPage({ params: { locale } }: PageProps) {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p>&copy; 2025 Vine Church Cambridge. {locale === 'pt' ? 'Todos os direitos reservados.' : 'All rights reserved.'}</p>
-        </div>
-      </footer>
+      <Footer locale={locale} />
     </main>
   );
 }

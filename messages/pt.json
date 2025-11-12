@@ -98,6 +98,27 @@
     "location": "Localização",
     "allEventsLocation": "55 Dickson St, Cambridge, ON N1R 7A5"
   },
+  "vineKids": {
+    "title": "Vine Kids",
+    "subtitle": "Ministério Infantil",
+    "intro": "As crianças e juvenis são alvo do nosso trabalho. Nosso propósito é levá-los a ter um encontro com Cristo, torná-los discípulos de Jesus e treiná-los para se tornarem líderes no tempo certo. Porque crianças não dão trabalho, elas geram frutos.",
+    "sundayKids": "Domingo Kids (Culto)",
+    "sundayKidsDescription": "Os cultos para crianças e juvenis acontecem no prédio da igreja no mesmo dia e horário do culto de adultos e jovens. O culto de crianças não é um entretenimento ou algo que fazemos apenas para elas não atrapalharem o culto dos adultos. Entendemos que as crianças podem cultuar e se relacionar com Deus de forma espontânea e verdadeira.",
+    "sundayKidsContent": "No domingo elas participam de um culto com histórias, teatros, que também tem louvor, palavra, oração e até mesmo dízimos e ofertas. No momento do culto elas têm a oportunidade de participar e aprender esses elementos da vida cristã, e elas realmente praticam tudo isso!",
+    "cellsKids": "Células Kids",
+    "cellsKidsDescription": "A célula é a igreja que se reúne nas casas semanalmente. As células kids se reúnem ao mesmo tempo que as células de adulto, no mesmo dia e local. A célula tem como objetivo o suprimento espiritual das crianças através da comunhão, edificação, serviço e evangelismo.",
+    "spiritualProcess": "Processo Espiritual na Infância",
+    "spiritualProcessDescription": "Trabalhamos por meio de um processo planejado, que alcance até os 12 anos da vida da criança, é o processo espiritual na infância. Investimos nesse processo evangelizando, ensinando e treinando.",
+    "evangelism": "Evangelismo",
+    "evangelismVerse": "E disse-lhes: Ide por todo o mundo e pregai o evangelho a toda criatura. Marcos 16.15",
+    "evangelismDescription": "O material que usamos para ministrar nas células contém várias lições com uma mensagem evangelística. O evangelismo acontece nas células, cultos, encontros, e eventos evangelísticos (projetos).",
+    "teaching": "Ensino",
+    "teachingDescription": "Concentramos em três aspectos bem práticos na aprendizagem: o conteúdo, a repetição e a prática. O ensino da Palavra de Deus é o mesmo na célula e no culto, e acontece através de princípios espirituais que são tirados das histórias bíblicas.",
+    "training": "Treinamento",
+    "trainingDescription": "O alvo do treinamento é o sacerdócio de cada crente. Nosso objetivo não é apenas ensinar sobre salvação, mas queremos ver crianças sendo salvas. Não queremos apenas ensinar sobre oração, mas queremos que as crianças aprendam a orar, que se sintam amadas, perdoadas e aceitas por Deus.",
+    "trainingMethod": "Treinar o sacerdócio de cada crente significa praticar a Palavra, desde o mais simples ato de orar até profetizar. Assim como é preciso fé para evangelizar, também o é para treinar. O treinamento de crianças e juvenis acontece por meio de projetos.",
+    "projects": "Os projetos são realizados nas células e também nos cultos. Todas as células de crianças realizam simultaneamente os projetos e objetivam o treinamento."
+  },
   "footer": {
     "copyright": "© 2025 Vine Church Cambridge. Todos os direitos reservados."
   }

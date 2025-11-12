@@ -98,6 +98,27 @@
     "location": "Location",
     "allEventsLocation": "55 Dickson St, Cambridge, ON N1R 7A5"
   },
+  "vineKids": {
+    "title": "Vine Kids",
+    "subtitle": "Children's Ministry",
+    "intro": "Children and teens are the target of our work. Our purpose is to lead them to have an encounter with Christ, make them disciples of Jesus and train them to become leaders at the right time. Because children don't give trouble, they bear fruit.",
+    "sundayKids": "Sunday Kids (Service)",
+    "sundayKidsDescription": "Services for children and teens take place in the church building on the same day and time as adult and youth services. Children's service is not entertainment or something we do just so they don't disturb the adult service. We understand that children can worship and relate to God spontaneously and genuinely.",
+    "sundayKidsContent": "On Sundays they participate in a service with stories, plays, which also includes worship, word, prayer and even tithes and offerings. During the service they have the opportunity to participate and learn these elements of Christian life, and they really practice all of this!",
+    "cellsKids": "Kids Life Groups",
+    "cellsKidsDescription": "Life groups are the church that meets in homes weekly. Kids life groups meet at the same time as adult life groups, on the same day and location. The life group aims at spiritual supply for children through fellowship, edification, service and evangelism.",
+    "spiritualProcess": "Spiritual Process in Childhood",
+    "spiritualProcessDescription": "We work through a planned process that reaches up to 12 years of the child's life, it is the spiritual process in childhood. We invest in this process by evangelizing, teaching and training.",
+    "evangelism": "Evangelism",
+    "evangelismVerse": "And he said unto them, Go ye into all the world, and preach the gospel to every creature. Mark 16:15",
+    "evangelismDescription": "The material we use to minister in life groups contains several lessons with an evangelistic message. Evangelism happens in life groups, services, meetings, and evangelistic events (projects).",
+    "teaching": "Teaching",
+    "teachingDescription": "We focus on three very practical aspects of learning: content, repetition and practice. The teaching of God's Word is the same in life groups and services, and happens through spiritual principles that are drawn from biblical stories.",
+    "training": "Training",
+    "trainingDescription": "The goal of training is the priesthood of every believer. Our objective is not just to teach about salvation, but we want to see children being saved. We don't just want to teach about prayer, but we want children to learn to pray, to feel loved, forgiven and accepted by God.",
+    "trainingMethod": "Training the priesthood of every believer means practicing the Word, from the simplest act of praying to prophesying. Just as faith is needed to evangelize, so it is to train. Training of children and teens happens through projects.",
+    "projects": "Projects are carried out in life groups and also in services. All children's life groups simultaneously carry out projects and aim at training."
+  },
   "footer": {
     "copyright": "© 2025 Vine Church Cambridge. All rights reserved."
   }

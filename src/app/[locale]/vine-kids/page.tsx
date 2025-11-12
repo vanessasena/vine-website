@@ -59,7 +59,7 @@ export default function VineKidsPage({ params: { locale } }: PageProps) {
           <div className="grid md:grid-cols-3 gap-8 mb-16">
             <div className="rounded-lg overflow-hidden shadow-lg">
               <Image
-                src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                src="https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/IMG-20250406-WA0008.jpg"
                 alt="Kids playing and learning"
                 width={400}
                 height={300}
@@ -84,6 +84,33 @@ export default function VineKidsPage({ params: { locale } }: PageProps) {
                 className="w-full h-64 object-cover"
               />
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Video Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              {locale === 'pt' ? 'Nosso Material Lúdico' : 'Our Exclusive Material'}
+            </h2>
+            <p className="text-lg text-gray-600">
+              {locale === 'pt'
+                ? 'Conheça nosso desenho animado especial, criado exclusivamente para educar e ensinar as nossas crianças'
+                : 'Meet our special cartoon, created exclusively to educate and teach the children of our church'
+              }
+            </p>
+          </div>
+          <div className="relative w-full" style={{ paddingBottom: '56.25%' /* 16:9 aspect ratio */ }}>
+            <iframe
+              className="absolute top-0 left-0 w-full h-full rounded-lg shadow-lg"
+              src="https://www.youtube.com/embed/VUnUSpZwRA8"
+              title="Vine Kids Video"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            ></iframe>
           </div>
         </div>
       </section>

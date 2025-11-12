@@ -146,7 +146,7 @@ export default function AboutPage({ params: { locale } }: PageProps) {
       </section>
 
       {/* Call to Action */}
-      <section className="py-16 bg-primary-600 text-white">
+      <section className="py-16 from-teal-300 to-indigo-800 bg-gradient-to-r text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             {locale === 'pt' ? 'Venha Participar!' : 'Come Join Us!'}

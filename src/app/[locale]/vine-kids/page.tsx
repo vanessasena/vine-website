@@ -27,21 +27,20 @@ export default function VineKidsPage({ params: { locale } }: PageProps) {
       <Navigation locale={locale} />
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-blue-600 to-green-700 text-white py-12">
-        <div className="absolute inset-0 bg-black opacity-20"></div>
+      <section className="relative bg-gradient-to-r from-yellow-50 to-yellow-100 text-white py-12">
+        <div className="absolute inset-0 bg-gray-200 opacity-20"></div>
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="mb-6">
-            <div className="bg-white rounded-full p-4 inline-block shadow-2xl mb-4">
+
               <Image
-                src="https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/Radicais-Kids-P-300x300-resized.jpg"
+                src="https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/new%20vine%20kids.png"
                 alt="Vine Kids Logo"
                 width={150}
                 height={150}
-                className="mx-auto rounded-full"
+                className="mx-auto"
               />
-            </div>
           </div>
-          <h2 className="text-xl md:text-2xl text-secondary-100 mb-6">
+          <h2 className="text-xl md:text-2xl text-cyan-600 mb-6">
             {t('subtitle')}
           </h2>
         </div>
@@ -69,8 +68,8 @@ export default function VineKidsPage({ params: { locale } }: PageProps) {
             </div>
             <div className="rounded-lg overflow-hidden shadow-lg">
               <Image
-                src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                alt="Children in worship"
+                src="https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/domingo%20kids.jpg"
+                alt="Domingo Kids"
                 width={400}
                 height={300}
                 className="w-full h-64 object-cover"
@@ -78,8 +77,8 @@ export default function VineKidsPage({ params: { locale } }: PageProps) {
             </div>
             <div className="rounded-lg overflow-hidden shadow-lg">
               <Image
-                src="https://images.unsplash.com/photo-1544717305-2782549b5136?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                alt="Kids learning Bible stories"
+                src="https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/IMG-20250930-WA0048.jpg"
+                alt="Evento Royal Kids"
                 width={400}
                 height={300}
                 className="w-full h-64 object-cover"
@@ -208,6 +207,20 @@ export default function VineKidsPage({ params: { locale } }: PageProps) {
           <div className="mb-8">
             <FontAwesomeIcon icon={faUsers} className="text-6xl mb-6" />
           </div>
+
+          {/* Bible Verse */}
+          <div className="mb-10">
+            <blockquote className="text-lg md:text-xl italic font-medium mb-4 text-yellow-100">
+              {locale === 'pt'
+                ? '"Mas Jesus disse: \'Deixem as crianças virem a mim, e não as impeçam; pois o Reino dos Céus pertence aos que são como estas crianças\'."'
+                : '"But Jesus said, \'Let the little children come to me, and do not hinder them, for the kingdom of heaven belongs to such as these.\'"'
+              }
+            </blockquote>
+            <cite className="text-sm font-semibold text-yellow-200">
+              {locale === 'pt' ? 'Mateus 19:14' : 'Matthew 19:14'}
+            </cite>
+          </div>
+
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             {locale === 'pt'
               ? 'Tragam suas crianças!'

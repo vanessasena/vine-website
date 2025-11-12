@@ -29,7 +29,15 @@ export default function Hero() {
           </p>
 
           <div className="mb-8">
-            <button className="bg-secondary-500 hover:bg-secondary-600 text-white font-bold py-3 px-8 rounded-lg text-lg transition duration-300 shadow-lg">
+            <button 
+              onClick={() => {
+                const aboutSection = document.getElementById('about');
+                if (aboutSection) {
+                  aboutSection.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              className="bg-secondary-500 hover:bg-secondary-600 text-white font-bold py-3 px-8 rounded-lg text-lg transition duration-300 shadow-lg"
+            >
               {t('cta')}
             </button>
           </div>

@@ -45,14 +45,14 @@ export default function Navigation({ locale }: NavigationProps) {
             <Link href={`/${locale}/vine-kids`} className="text-gray-700 hover:text-primary-600">
               {t('vineKids')}
             </Link>
-            {/* <Link href={`/${locale}/gallery`} className="text-gray-700 hover:text-primary-600">
-              {t('gallery')}
-            </Link> */}
             <Link href={`/${locale}/words`} className="text-gray-700 hover:text-primary-600">
               {t('words')}
             </Link>
             <Link href={`/${locale}/cells`} className="text-gray-700 hover:text-primary-600">
               {t('cells')}
+            </Link>
+            <Link href={`/${locale}/contact`} className="text-gray-700 hover:text-primary-600">
+              {t('contact')}
             </Link>
 
             {/* Language Switcher */}
@@ -102,14 +102,14 @@ export default function Navigation({ locale }: NavigationProps) {
               <Link href={`/${locale}/vine-kids`} className="text-gray-700 hover:text-primary-600 py-2">
                 {t('vineKids')}
               </Link>
-              <Link href={`/${locale}/gallery`} className="text-gray-700 hover:text-primary-600 py-2">
-                {t('gallery')}
-              </Link>
               <Link href={`/${locale}/words`} className="text-gray-700 hover:text-primary-600 py-2">
                 {t('words')}
               </Link>
               <Link href={`/${locale}/cells`} className="text-gray-700 hover:text-primary-600 py-2">
                 {t('cells')}
+              </Link>
+              <Link href={`/${locale}/contact`} className="text-gray-700 hover:text-primary-600 py-2">
+                {t('contact')}
               </Link>
               <div className="flex space-x-2 pt-2">
                 <Link

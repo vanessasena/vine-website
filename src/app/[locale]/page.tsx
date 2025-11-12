@@ -15,7 +15,8 @@ import {
   faMapMarkerAlt,
   faClock,
   faUserTie,
-  faEnvelope
+  faEnvelope,
+  faHandsHelping
 } from '@fortawesome/free-solid-svg-icons';
 import '@/lib/fontawesome';
 
@@ -121,7 +122,9 @@ export default function HomePage({ params: { locale } }: PageProps) {
 
             {/* Service */}
             <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <div className="text-4xl mb-4">💚</div>
+              <div className="text-4xl mb-4 text-primary-600">
+                <FontAwesomeIcon icon={faHandsHelping} />
+              </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">Serviço</h3>
               <p className="text-gray-700">
                 De acordo com a Palavra de Deus devemos fazer o bem a todos principalmente aos da família de fé. Amamos ser abençoadores.
@@ -163,7 +166,9 @@ export default function HomePage({ params: { locale } }: PageProps) {
 
             {/* Children */}
             <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <div className="text-4xl mb-4">👶</div>
+              <div className="text-4xl mb-4 text-primary-600">
+                <FontAwesomeIcon icon={faChild} />
+              </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">Crianças</h3>
               <p className="text-gray-700">
                 Cremos que devemos ensinar as crianças a andarem no caminho do Senhor. O nosso lema é: criança não dá trabalho, criança dá frutos.
@@ -172,7 +177,9 @@ export default function HomePage({ params: { locale } }: PageProps) {
 
             {/* Multiplication */}
             <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <div className="text-4xl mb-4">🌱</div>
+              <div className="text-4xl mb-4 text-primary-600">
+                <FontAwesomeIcon icon={faSeedling} />
+              </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">Multiplicação</h3>
               <p className="text-gray-700">
                 A vontade de Deus é que todos sejam salvos e cheguem ao pleno conhecimento da Verdade. Queremos fazer a diferença na nossa geração.

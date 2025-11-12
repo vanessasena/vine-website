@@ -59,7 +59,7 @@ export default function VineKidsPage({ params: { locale } }: PageProps) {
           <div className="grid md:grid-cols-3 gap-8 mb-16">
             <div className="rounded-lg overflow-hidden shadow-lg">
               <Image
-                src="https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/IMG-20250406-WA0008.jpg"
+                src="https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/IMG-20250405-WA0002.jpg"
                 alt="Kids playing and learning"
                 width={400}
                 height={300}

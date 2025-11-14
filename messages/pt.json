@@ -119,6 +119,46 @@
     "trainingMethod": "Treinar o sacerdócio de cada crente significa praticar a Palavra, desde o mais simples ato de orar até profetizar. Assim como é preciso fé para evangelizar, também o é para treinar. O treinamento de crianças e juvenis acontece por meio de projetos.",
     "projects": "Os projetos são realizados nas células e também nos cultos. Todas as células de crianças realizam simultaneamente os projetos e objetivam o treinamento."
   },
+  "cells": {
+    "title": "Células",
+    "subtitle": "Grupos de Vida",
+    "description": "Nossas células são pequenos grupos que se reúnem nas casas para comunhão, estudo da Palavra, oração e evangelismo. Cada célula é uma extensão da igreja local.",
+    "whatIsCell": "O que é uma célula?",
+    "whatIsCellDescription": "Uma célula é um grupo pequeno de pessoas que se reúne regularmente para compartilhar a vida, crescer na fé e alcançar outras pessoas para Cristo. Esses grupos são semelhantes aos primeiros encontros dos cristãos descritos no Novo Testamento, onde se reuniam em casas para comunhão, ensino e oração (Atos 2:46-47). Cada célula funciona como uma \"igreja em miniatura\", proporcionando um ambiente acolhedor e familiar, onde cada pessoa pode ser cuidada e discipulada de maneira pessoal.",
+    "whyCells": "Por que temos células?",
+    "whyCellsDescription": "A estratégia de células é fundamental para a Igreja Videira porque segue o modelo bíblico de crescimento e multiplicação. Jesus fez discípulos em pequenos grupos e os enviou para fazer o mesmo. O propósito das células é promover a edificação espiritual, desenvolver relacionamentos saudáveis e fortalecer o corpo de Cristo. Além disso, as células permitem que a igreja seja mais eficaz na evangelização, alcançando pessoas que talvez nunca frequentariam um culto tradicional. Através do formato de células, a Igreja não apenas cresce em números, mas também em maturidade espiritual e comunhão.",
+    "leaders": "Líderes",
+    "address": "Endereço",
+    "findGroup": "Encontre seu Grupo",
+    "joinUs": "Faça Parte",
+    "groups": {
+      "roots": {
+        "name": "Célula de Kitchener (Roots)",
+        "leaders": "Bruno e Mary",
+        "address": "56-105 Pinnacle Drive, Kitchener"
+      },
+      "kitchener": {
+        "name": "Célula de Kitchener (Doon South)",
+        "leaders": "Eduardo e Nathalia",
+        "address": "Casa da Alessandra e Thiago - 855 Robert Ferrie Drive, Kitchener"
+      },
+      "cambridge": {
+        "name": "Célula de Cambridge (Morada 70)",
+        "leaders": "Hector e Dani",
+        "address": "70 Elmwood Avenue, Cambridge"
+      },
+      "waterloo": {
+        "name": "Célula de Waterloo (Sinai)",
+        "leaders": "Lucas e Flavia",
+        "address": "Casa da Karin e Marcelo - 437 Woodrow Drive, Waterloo"
+      },
+      "youth": {
+        "name": "Célula dos Adolescentes (Next Generation)",
+        "leaders": "Pastores Boris e Elisangela",
+        "address": "15 Dressage Trail"
+      }
+    }
+  },
   "footer": {
     "copyright": "© 2025 Vine Church Cambridge. Todos os direitos reservados.",
     "quickLinks": "Links Rápidos",

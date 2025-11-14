@@ -159,6 +159,18 @@
       }
     }
   },
+  "sermons": {
+    "title": "Palavras",
+    "subtitle": "Mensagens e Ensinamentos",
+    "description": "Confira as mensagens pregadas em nossa igreja. Cada palavra é compartilhada com o propósito de edificar, ensinar e fortalecer sua fé.",
+    "readMore": "Leia Mais",
+    "readFull": "Leia a Mensagem Completa",
+    "backToSermons": "Voltar para Palavras",
+    "preachedOn": "Pregado em",
+    "preachedBy": "Pregado por",
+    "noSermons": "Nenhuma mensagem disponível no momento.",
+    "latestSermons": "Últimas Mensagens"
+  },
   "footer": {
     "copyright": "© 2025 Vine Church Cambridge. Todos os direitos reservados.",
     "quickLinks": "Links Rápidos",

@@ -53,12 +53,7 @@ export default function HomePage({ params: { locale } }: PageProps) {
               <p className="text-gray-700 text-lg leading-relaxed">
                 {t('content')}
               </p>
-              <p className="text-gray-700 text-lg leading-relaxed">
-                {t('content2')}
-              </p>
-              <p className="text-gray-700 text-lg leading-relaxed">
-                {t('content3')}
-              </p>
+
               <p className="text-gray-700 text-lg leading-relaxed italic border-l-4 border-primary-500 pl-4">
                 {t('content4')}
               </p>

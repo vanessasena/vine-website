@@ -159,6 +159,18 @@
       }
     }
   },
+  "sermons": {
+    "title": "Sermons",
+    "subtitle": "Messages and Teachings",
+    "description": "Check out the messages preached at our church. Each word is shared with the purpose of edifying, teaching and strengthening your faith.",
+    "readMore": "Read More",
+    "readFull": "Read the Full Message",
+    "backToSermons": "Back to Sermons",
+    "preachedOn": "Preached on",
+    "preachedBy": "Preached by",
+    "noSermons": "No messages available at the moment.",
+    "latestSermons": "Latest Messages"
+  },
   "footer": {
     "copyright": "© 2025 Vine Church Cambridge. All rights reserved.",
     "quickLinks": "Quick Links",

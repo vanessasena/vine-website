@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,6 +15,26 @@ interface NavigationProps {
 export default function Navigation({ locale }: NavigationProps) {
   const t = useTranslations('navigation');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Function to check if a link is active
+  const isActive = (path: string): boolean => {
+    if (path === `/${locale}`) {
+      // For home page, check exact match
+      return pathname === `/${locale}` || pathname === '/pt' || pathname === '/en';
+    }
+    // For other pages, check if pathname starts with the path
+    return pathname.startsWith(path);
+  };
+
+  // Function to get link classes based on active state
+  const getLinkClasses = (path: string, isMobile: boolean = false): string => {
+    const baseClasses = isMobile ? 'py-2 px-3 rounded-md transition-colors duration-200' : 'px-3 py-2 rounded-md transition-colors duration-200';
+    const activeClasses = 'bg-primary-600 text-white font-medium';
+    const inactiveClasses = 'text-gray-700 hover:text-primary-600 hover:bg-primary-50';
+
+    return `${baseClasses} ${isActive(path) ? activeClasses : inactiveClasses}`;
+  };
 
   return (
     <nav className="bg-white shadow-lg sticky top-0 z-50">
@@ -33,25 +54,25 @@ export default function Navigation({ locale }: NavigationProps) {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link href={`/${locale}`} className="text-gray-700 hover:text-primary-600">
+            <Link href={`/${locale}`} className={getLinkClasses(`/${locale}`)}>
               {t('home')}
             </Link>
-            <Link href={`/${locale}/about`} className="text-gray-700 hover:text-primary-600">
+            <Link href={`/${locale}/about`} className={getLinkClasses(`/${locale}/about`)}>
               {t('about')}
             </Link>
-            <Link href={`/${locale}/schedule`} className="text-gray-700 hover:text-primary-600">
+            <Link href={`/${locale}/schedule`} className={getLinkClasses(`/${locale}/schedule`)}>
               {t('schedule')}
             </Link>
-            <Link href={`/${locale}/vine-kids`} className="text-gray-700 hover:text-primary-600">
+            <Link href={`/${locale}/vine-kids`} className={getLinkClasses(`/${locale}/vine-kids`)}>
               {t('vineKids')}
             </Link>
-            <Link href={`/${locale}/sermons`} className="text-gray-700 hover:text-primary-600">
+            <Link href={`/${locale}/sermons`} className={getLinkClasses(`/${locale}/sermons`)}>
               {t('words')}
             </Link>
-            <Link href={`/${locale}/cells`} className="text-gray-700 hover:text-primary-600">
+            <Link href={`/${locale}/cells`} className={getLinkClasses(`/${locale}/cells`)}>
               {t('cells')}
             </Link>
-            <Link href={`/${locale}/contact`} className="text-gray-700 hover:text-primary-600">
+            <Link href={`/${locale}/contact`} className={getLinkClasses(`/${locale}/contact`)}>
               {t('contact')}
             </Link>
 
@@ -90,25 +111,25 @@ export default function Navigation({ locale }: NavigationProps) {
         {isMenuOpen && (
           <div className="md:hidden pb-4">
             <div className="flex flex-col space-y-2">
-              <Link href={`/${locale}`} className="text-gray-700 hover:text-primary-600 py-2">
+              <Link href={`/${locale}`} className={getLinkClasses(`/${locale}`, true)}>
                 {t('home')}
               </Link>
-              <Link href={`/${locale}/about`} className="text-gray-700 hover:text-primary-600 py-2">
+              <Link href={`/${locale}/about`} className={getLinkClasses(`/${locale}/about`, true)}>
                 {t('about')}
               </Link>
-              <Link href={`/${locale}/schedule`} className="text-gray-700 hover:text-primary-600 py-2">
+              <Link href={`/${locale}/schedule`} className={getLinkClasses(`/${locale}/schedule`, true)}>
                 {t('schedule')}
               </Link>
-              <Link href={`/${locale}/vine-kids`} className="text-gray-700 hover:text-primary-600 py-2">
+              <Link href={`/${locale}/vine-kids`} className={getLinkClasses(`/${locale}/vine-kids`, true)}>
                 {t('vineKids')}
               </Link>
-              <Link href={`/${locale}/sermons`} className="text-gray-700 hover:text-primary-600 py-2">
+              <Link href={`/${locale}/sermons`} className={getLinkClasses(`/${locale}/sermons`, true)}>
                 {t('words')}
               </Link>
-              <Link href={`/${locale}/cells`} className="text-gray-700 hover:text-primary-600 py-2">
+              <Link href={`/${locale}/cells`} className={getLinkClasses(`/${locale}/cells`, true)}>
                 {t('cells')}
               </Link>
-              <Link href={`/${locale}/contact`} className="text-gray-700 hover:text-primary-600 py-2">
+              <Link href={`/${locale}/contact`} className={getLinkClasses(`/${locale}/contact`, true)}>
                 {t('contact')}
               </Link>
               <div className="flex space-x-2 pt-2">

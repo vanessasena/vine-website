@@ -169,7 +169,18 @@
     "preachedOn": "Pregado em",
     "preachedBy": "Pregado por",
     "noSermons": "Nenhuma mensagem disponível no momento.",
-    "latestSermons": "Últimas Mensagens"
+    "latestSermons": "Últimas Mensagens",
+    "searchPlaceholder": "Buscar mensagens...",
+    "allYears": "Todos os anos",
+    "allPreachers": "Todos os pregadores",
+    "allSeries": "Todas as séries",
+    "clearFilters": "Limpar filtros",
+    "noResults": "Nenhum resultado encontrado",
+    "showingResults": "Mostrando {count} de {total} mensagens (página {page})",
+    "noSearchResults": "Nenhum resultado encontrado para '{query}'",
+    "noSermonsDesc": "Novas mensagens serão adicionadas em breve.",
+    "previous": "Anterior",
+    "next": "Próxima"
   },
   "footer": {
     "copyright": "© 2025 Vine Church Cambridge. Todos os direitos reservados.",

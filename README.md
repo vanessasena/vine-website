@@ -66,7 +66,7 @@ The website includes:
 ## Church Information
 
 - **Location**: Cambridge, Ontario, Canada
-- **Address**: 55 Dickson St, Cambridge, ON N1R 7A5
+- **Address**: 55 Dickson Street, 8 Petty Pl, Cambridge, ON N1R 7A5
 - **Service Time**: Sunday at 10 AM
 - **Pastor**: Pr Boris Carvalho
 

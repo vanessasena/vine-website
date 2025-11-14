@@ -97,7 +97,7 @@ export default function RootLayout({
     "image": "https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/logotipo-videira-small-1.png",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "55 Dickson St",
+      "streetAddress": "55 Dickson Street, 8 Petty Pl",
       "addressLocality": "Cambridge",
       "addressRegion": "ON",
       "postalCode": "N1R 7A5",
@@ -142,7 +142,7 @@ export default function RootLayout({
         "name": "Vine Church Cambridge",
         "address": {
           "@type": "PostalAddress",
-          "streetAddress": "55 Dickson St",
+          "streetAddress": "55 Dickson Street, 8 Petty Pl",
           "addressLocality": "Cambridge",
           "addressRegion": "ON",
           "postalCode": "N1R 7A5",
@@ -156,7 +156,7 @@ export default function RootLayout({
   };
 
   return (
-    <html>
+    <html lang="pt-BR">
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="shortcut icon" href="/favicon.ico" />
@@ -167,7 +167,7 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         {children}
-        <Analytics  />
+        <Analytics />
       </body>
     </html>
   );

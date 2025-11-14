@@ -130,7 +130,7 @@ export default function SermonsPage({ params: { locale } }: PageProps) {
               <p className="font-semibold text-lg">
                 {locale === 'pt' ? 'Culto de Domingo' : 'Sunday Service'}
               </p>
-              <p>55 Dickson St, Cambridge, ON N1R 7A5</p>
+              <p>55 Dickson Street, 8 Petty Pl, Cambridge, ON N1R 7A5</p>
               <p className="text-secondary-200">
                 {locale === 'pt' ? 'Domingo às 10:00' : 'Sunday at 10:00 AM'}
               </p>

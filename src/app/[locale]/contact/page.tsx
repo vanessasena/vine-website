@@ -2,13 +2,13 @@ import { useTranslations } from 'next-intl';
 import Navigation from '@/components/Navigation';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
+import GoogleMapEmbed from '@/components/GoogleMapEmbed';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faMapMarkerAlt,
   faClock,
   faUserTie,
   faEnvelope,
-  faMap,
   faHandshake
 } from '@fortawesome/free-solid-svg-icons';
 import { faWhatsapp, faInstagram } from '@fortawesome/free-brands-svg-icons';
@@ -187,28 +187,21 @@ export default function ContactPage({ params: { locale } }: PageProps) {
                 {t('visitUs')}
               </h2>
 
-              {/* Map Placeholder */}
-              <div className="bg-white rounded-lg shadow-lg p-6">
-                <div className="aspect-w-16 aspect-h-12 bg-gray-200 rounded-lg flex items-center justify-center mb-4">
-                  <div className="text-center">
-                    <div className="text-6xl mb-4 text-gray-500">
-                      <FontAwesomeIcon icon={faMap} />
-                    </div>
-                    <p className="text-gray-600 text-lg">
-                      {locale === 'pt' ? 'Mapa em breve' : 'Map coming soon'}
-                    </p>
-                    <p className="text-sm text-gray-500 mt-2">
-                      55 Dickson St, Cambridge, ON N1R 7A5
-                    </p>
-                  </div>
+              {/* Google Map */}
+              <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+                <GoogleMapEmbed className="w-full h-80" />
+                <div className="p-4">
+                  <p className="text-sm text-gray-500 mb-4">
+                    55 Dickson Street, 8 Petty Pl, Cambridge, ON N1R 7A5
+                  </p>
+                  <Link
+                    href="https://maps.app.goo.gl/ZQ9P9QdjNfw31eCc7"
+                    target="_blank"
+                    className="inline-block bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition duration-300"
+                  >
+                    {locale === 'pt' ? 'Abrir no Google Maps' : 'Open in Google Maps'}
+                  </Link>
                 </div>
-                <Link
-                  href="https://maps.google.com/?q=55+Dickson+St,+Cambridge,+ON+N1R+7A5"
-                  target="_blank"
-                  className="inline-block bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition duration-300"
-                >
-                  {locale === 'pt' ? 'Abrir no Google Maps' : 'Open in Google Maps'}
-                </Link>
               </div>
 
               {/* First Visit Info */}

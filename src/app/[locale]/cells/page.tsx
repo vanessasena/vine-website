@@ -1,6 +1,7 @@
 import { useTranslations } from 'next-intl';
 import Navigation from '@/components/Navigation';
 import Image from 'next/image';
+import Link from 'next/link';
 import Footer from '@/components/Footer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -10,7 +11,8 @@ import {
   faUserFriends,
   faHandsHelping,
   faPray,
-  faBook
+  faBook,
+  faExternalLinkAlt
 } from '@fortawesome/free-solid-svg-icons';
 
 interface PageProps {
@@ -119,9 +121,18 @@ export default function CellsPage({ params: { locale } }: PageProps) {
                           icon={faMapMarkerAlt}
                           className="text-primary-600 mt-1 mr-3 flex-shrink-0"
                         />
-                        <div>
+                        <div className="flex-1">
                           <p className="font-semibold text-gray-700 mb-1">{t('address')}:</p>
-                          <p className="text-gray-600">{t(`groups.${group.id}.address`)}</p>
+                          <p className="text-gray-600 mb-2">{t(`groups.${group.id}.address`)}</p>
+                          <Link
+                            href={`https://maps.google.com/?q=${encodeURIComponent(t(`groups.${group.id}.address`))}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center text-sm text-primary-600 hover:text-primary-800 font-medium"
+                          >
+                            <FontAwesomeIcon icon={faExternalLinkAlt} className="mr-1" />
+                            {locale === 'pt' ? 'Abrir no Google Maps' : 'Open in Google Maps'}
+                          </Link>
                         </div>
                       </div>
                     )}

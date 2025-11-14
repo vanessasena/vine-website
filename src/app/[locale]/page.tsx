@@ -43,7 +43,7 @@ export default function HomePage({ params: { locale } }: PageProps) {
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               {t('title')}
             </h2>
-            <h3 className="text-xl md:text-2xl text-primary-600 mb-8">
+            <h3 className="text-xl md:text-2xl text-accent-600 mb-8">
               {t('subtitle')}
             </h3>
           </div>
@@ -97,7 +97,7 @@ export default function HomePage({ params: { locale } }: PageProps) {
 
             {/* Teaching */}
             <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <div className="text-4xl mb-4 text-primary-600">
+              <div className="text-4xl mb-4 text-accent-600">
                 <FontAwesomeIcon icon={faBook} />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">{v('teaching')}</h3>
@@ -108,7 +108,7 @@ export default function HomePage({ params: { locale } }: PageProps) {
 
             {/* Prayer */}
             <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <div className="text-4xl mb-4 text-primary-600">
+              <div className="text-4xl mb-4 text-secondary-600">
                 <FontAwesomeIcon icon={faPrayingHands} />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">{v('prayer')}</h3>
@@ -130,7 +130,7 @@ export default function HomePage({ params: { locale } }: PageProps) {
 
             {/* Fellowship */}
             <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <div className="text-4xl mb-4 text-primary-600">
+              <div className="text-4xl mb-4 text-accent-600">
                 <FontAwesomeIcon icon={faUsers} />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">{v('fellowship')}</h3>
@@ -141,7 +141,7 @@ export default function HomePage({ params: { locale } }: PageProps) {
 
             {/* Discipleship */}
             <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <div className="text-4xl mb-4 text-primary-600">
+              <div className="text-4xl mb-4 text-secondary-600">
                 <FontAwesomeIcon icon={faChalkboardTeacher} />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">{v('discipleship')}</h3>
@@ -152,7 +152,7 @@ export default function HomePage({ params: { locale } }: PageProps) {
 
             {/* Love */}
             <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <div className="text-4xl mb-4 text-primary-600">
+              <div className="text-4xl mb-4 text-accent-600">
                 <FontAwesomeIcon icon={faHeart} />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">{v('love')}</h3>
@@ -163,7 +163,7 @@ export default function HomePage({ params: { locale } }: PageProps) {
 
             {/* Children */}
             <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <div className="text-4xl mb-4 text-primary-600">
+              <div className="text-4xl mb-4 text-secondary-600">
                 <FontAwesomeIcon icon={faChild} />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">{v('children')}</h3>
@@ -174,7 +174,7 @@ export default function HomePage({ params: { locale } }: PageProps) {
 
             {/* Multiplication */}
             <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <div className="text-4xl mb-4 text-primary-600">
+              <div className="text-4xl mb-4 text-accent-600">
                 <FontAwesomeIcon icon={faSeedling} />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">{v('multiplication')}</h3>
@@ -187,7 +187,7 @@ export default function HomePage({ params: { locale } }: PageProps) {
       </section>
 
       {/* Contact Section */}
-      <section className="py-16 bg-gradient-to-r from-blue-600 to-green-700 text-white">
+      <section className="py-16 bg-gradient-to-r from-accent-600 via-secondary-600 to-primary-600 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
 
           <div className="grid md:grid-cols-3 gap-8 mb-12">

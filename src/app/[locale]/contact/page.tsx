@@ -27,7 +27,7 @@ export default function ContactPage({ params: { locale } }: PageProps) {
       <Navigation locale={locale} />
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-teal-100 to-indigo-800 text-white py-20">
+      <section className="relative bg-gradient-to-r from-primary-600 via-secondary-600 to-accent-600 text-white py-20">
         <div className="absolute inset-0 bg-black opacity-20"></div>
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">

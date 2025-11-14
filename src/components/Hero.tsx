@@ -9,8 +9,8 @@ export default function Hero() {
   const t = useTranslations('hero');
 
   return (
-    <section className="relative bg-gradient-to-r from-primary-600 to-primary-800 text-white">
-      <div className="absolute inset-0 bg-black opacity-40"></div>
+    <section className="relative bg-gradient-to-r from-primary-600 via-secondary-600 to-accent-600 text-white">
+      <div className="absolute inset-0 bg-black opacity-30"></div>
       <div
         className="relative h-screen bg-cover bg-center flex items-center"
         style={{
@@ -21,7 +21,7 @@ export default function Hero() {
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
             {t('title')}
           </h1>
-          <h2 className="text-2xl md:text-3xl mb-8 text-secondary-100">
+          <h2 className="text-2xl md:text-3xl mb-8 text-white text-opacity-90">
             {t('subtitle')}
           </h2>
           <p className="text-lg md:text-xl mb-8 max-w-3xl mx-auto leading-relaxed">
@@ -29,14 +29,14 @@ export default function Hero() {
           </p>
 
           <div className="mb-8">
-            <button 
+            <button
               onClick={() => {
                 const aboutSection = document.getElementById('about');
                 if (aboutSection) {
                   aboutSection.scrollIntoView({ behavior: 'smooth' });
                 }
               }}
-              className="bg-secondary-500 hover:bg-secondary-600 text-white font-bold py-3 px-8 rounded-lg text-lg transition duration-300 shadow-lg"
+              className="bg-white hover:bg-accent-50 text-accent-700 font-bold py-3 px-8 rounded-lg text-lg transition duration-300 shadow-lg"
             >
               {t('cta')}
             </button>

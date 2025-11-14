@@ -91,12 +91,12 @@ export default function SermonDetailPage({ params: { locale, id } }: PageProps) 
       <Navigation locale={locale} />
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-primary-600 to-primary-800 text-white py-16">
+      <section className="relative bg-gradient-to-r from-primary-600 via-secondary-600 to-accent-600 text-white py-16">
         <div className="absolute inset-0 bg-black opacity-20"></div>
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link
             href={`/${locale}/sermons`}
-            className="inline-flex items-center text-secondary-100 hover:text-white mb-6 transition-colors duration-200"
+            className="inline-flex items-center text-white text-opacity-80 hover:text-white mb-6 transition-colors duration-200"
           >
             <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
             {t('backToSermons')}
@@ -110,7 +110,7 @@ export default function SermonDetailPage({ params: { locale, id } }: PageProps) 
               {sermon.title[locale as 'pt' | 'en']}
             </h1>
             {sermon.scripture && (
-              <p className="text-xl md:text-2xl text-secondary-100 mb-6">
+              <p className="text-xl md:text-2xl text-white text-opacity-90 mb-6">
                 {sermon.scripture}
               </p>
             )}

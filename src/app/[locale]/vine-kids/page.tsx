@@ -60,8 +60,8 @@ export default function VineKidsPage({ params: { locale } }: PageProps) {
       <Navigation locale={locale} />
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-yellow-50 to-yellow-100 text-white py-12">
-        <div className="absolute inset-0 bg-gray-200 opacity-20"></div>
+      <section className="relative bg-gradient-to-r from-primary-100 via-secondary-100 to-accent-100 py-12">
+        <div className="absolute inset-0 bg-white opacity-60"></div>
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="mb-6">
 
@@ -73,7 +73,7 @@ export default function VineKidsPage({ params: { locale } }: PageProps) {
                 className="mx-auto"
               />
           </div>
-          <h2 className="text-xl md:text-2xl text-cyan-600 mb-6">
+          <h2 className="text-xl md:text-2xl text-accent-700 mb-6 font-semibold">
             {t('subtitle')}
           </h2>
         </div>
@@ -275,7 +275,7 @@ export default function VineKidsPage({ params: { locale } }: PageProps) {
       </section>
 
       {/* Call to Action */}
-      <section className="py-16 bg-gradient-to-r from-blue-600 to-green-700 text-white">
+      <section className="py-16 bg-gradient-to-r from-accent-600 via-secondary-600 to-primary-600 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="mb-8">
             <FontAwesomeIcon icon={faUsers} className="text-6xl mb-6" />

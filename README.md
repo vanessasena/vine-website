@@ -16,6 +16,7 @@ A modern, bilingual church website built with Next.js for Vine Church in Cambrid
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
 - **Internationalization**: next-intl
+- **Database**: Supabase (PostgreSQL)
 - **Deployment**: Ready for Vercel
 
 ## Getting Started
@@ -25,12 +26,24 @@ A modern, bilingual church website built with Next.js for Vine Church in Cambrid
    npm install
    ```
 
-2. Run the development server:
+2. Configure environment variables (optional for database integration):
+   ```bash
+   cp .env.example .env.local
+   ```
+   See `SUPABASE_SETUP.md` for database configuration details.
+
+3. Run the development server:
    ```bash
    npm run dev
    ```
 
-3. Open [http://localhost:3000](http://localhost:3000) in your browser
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+## Database Setup
+
+The sermons feature uses Supabase (PostgreSQL) for data storage. See [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) for detailed setup instructions.
+
+**Note**: The application includes a fallback mechanism, so it will work with static data even without database configuration.
 
 ## Project Structure
 

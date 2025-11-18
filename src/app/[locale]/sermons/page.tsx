@@ -1,4 +1,4 @@
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import Navigation from '@/components/Navigation';
 import Image from 'next/image';
 import Footer from '@/components/Footer';
@@ -11,7 +11,8 @@ import {
   faArrowRight,
   faBible
 } from '@fortawesome/free-solid-svg-icons';
-import { getSortedSermons, formatDate, type Sermon } from '@/data/sermons';
+import { getSortedSermons, formatDate } from '@/lib/sermons';
+import type { Sermon } from '@/data/sermons';
 
 interface PageProps {
   params: {
@@ -19,9 +20,9 @@ interface PageProps {
   };
 }
 
-export default function SermonsPage({ params: { locale } }: PageProps) {
-  const t = useTranslations('sermons');
-  const sermons = getSortedSermons();
+export default async function SermonsPage({ params: { locale } }: PageProps) {
+  const t = await getTranslations('sermons');
+  const sermons = await getSortedSermons();
 
   return (
     <main>

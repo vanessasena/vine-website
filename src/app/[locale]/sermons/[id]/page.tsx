@@ -1,4 +1,4 @@
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
@@ -9,7 +9,7 @@ import {
   faUser,
   faBible
 } from '@fortawesome/free-solid-svg-icons';
-import { getSermonById, formatDate } from '@/data/sermons';
+import { getSermonById, formatDate } from '@/lib/sermons';
 import { notFound } from 'next/navigation';
 
 interface PageProps {
@@ -78,9 +78,9 @@ function SermonContent({ content }: { content: string }) {
   return <div className="space-y-2">{formatContent(content)}</div>;
 }
 
-export default function SermonDetailPage({ params: { locale, id } }: PageProps) {
-  const t = useTranslations('sermons');
-  const sermon = getSermonById(id);
+export default async function SermonDetailPage({ params: { locale, id } }: PageProps) {
+  const t = await getTranslations('sermons');
+  const sermon = await getSermonById(id);
 
   if (!sermon) {
     notFound();

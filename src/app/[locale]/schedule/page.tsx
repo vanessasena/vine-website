@@ -122,7 +122,7 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
               </div>
 
               {/* Baptism */}
-              <div className="bg-gradient-to-br from-secondary-100 to-secondary-200 rounded-lg shadow-lg p-8 text-center">
+              {/* <div className="bg-gradient-to-br from-secondary-100 to-secondary-200 rounded-lg shadow-lg p-8 text-center">
                 <div className="text-4xl mb-4 text-blue-600">
                   <FontAwesomeIcon icon={faTint} />
                 </div>
@@ -135,33 +135,8 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
                 <div className="text-lg text-gray-700">
                   {t('baptismTime')}
                 </div>
-              </div>
+              </div> */}
 
-            </div>
-          </div>
-
-          {/* Location Info */}
-          <div className="mt-12 bg-white rounded-lg shadow-lg p-8 text-center">
-            <div className="text-4xl mb-4 text-primary-600">
-              <FontAwesomeIcon icon={faMapMarkerAlt} />
-            </div>
-            <h3 className="text-2xl font-bold text-primary-700 mb-4">
-              {t('location')}
-            </h3>
-            <p className="text-xl text-gray-700 mb-6">
-              {t('allEventsLocation')}
-            </p>
-
-            {/* Map Embed - You can replace this with actual Google Maps embed */}
-            <div className="aspect-w-16 aspect-h-9 bg-gray-200 rounded-lg flex items-center justify-center">
-              <div className="text-center">
-                <div className="text-6xl mb-4 text-gray-500">
-                  <FontAwesomeIcon icon={faMap} />
-                </div>
-                <p className="text-gray-600">
-                  {locale === 'pt' ? 'Mapa em breve' : 'Map coming soon'}
-                </p>
-              </div>
             </div>
           </div>
 
@@ -182,7 +157,7 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
 
             <div className="bg-secondary-50 rounded-lg p-6">
               <h4 className="text-xl font-bold text-primary-700 mb-4">
-                {locale === 'pt' ? 'Células nas Casas' : 'Home Life Groups'}
+                {locale === 'pt' ? 'Células nas Casas' : 'Life Groups'}
               </h4>
               <p className="text-gray-700">
                 {locale === 'pt'

@@ -138,9 +138,9 @@
         "address": "56-105 Pinnacle Drive, Kitchener"
       },
       "kitchener": {
-        "name": "Kitchener Life Group (Doon South)",
+        "name": "Kitchener Life Group (Escolhidos)",
         "leaders": "Eduardo and Nathalia",
-        "address": "Alessandra and Thiago's Home - 855 Robert Ferrie Drive, Kitchener"
+        "address": "855 Robert Ferrie Drive, Kitchener"
       },
       "cambridge": {
         "name": "Cambridge Life Group (Morada 70)",
@@ -150,7 +150,7 @@
       "waterloo": {
         "name": "Waterloo Life Group (Sinai)",
         "leaders": "Lucas and Flavia",
-        "address": "Karin and Marcelo's Home - 437 Woodrow Drive, Waterloo"
+        "address": "437 Woodrow Drive, Waterloo"
       },
       "youth": {
         "name": "Youth Life Group (Next Generation)",

@@ -138,9 +138,9 @@
         "address": "56-105 Pinnacle Drive, Kitchener"
       },
       "kitchener": {
-        "name": "Célula de Kitchener (Doon South)",
+        "name": "Célula de Kitchener (Escolhidos)",
         "leaders": "Eduardo e Nathalia",
-        "address": "Casa da Alessandra e Thiago - 855 Robert Ferrie Drive, Kitchener"
+        "address": "855 Robert Ferrie Drive, Kitchener"
       },
       "cambridge": {
         "name": "Célula de Cambridge (Morada 70)",
@@ -150,7 +150,7 @@
       "waterloo": {
         "name": "Célula de Waterloo (Sinai)",
         "leaders": "Lucas e Flavia",
-        "address": "Casa da Karin e Marcelo - 437 Woodrow Drive, Waterloo"
+        "address": "437 Woodrow Drive, Waterloo"
       },
       "youth": {
         "name": "Célula dos Adolescentes (Next Generation)",

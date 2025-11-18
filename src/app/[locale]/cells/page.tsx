@@ -33,7 +33,7 @@ export default function CellsPage({ params: { locale } }: PageProps) {
   const lifeGroups: LifeGroup[] = [
     {
       id: 'roots',
-      image: 'https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/lifegroups/roots.png',
+      image: 'https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/lifegroups/celula%20roots.jpeg',
       altText: 'Kitchener Roots Life Group'
     },
     {

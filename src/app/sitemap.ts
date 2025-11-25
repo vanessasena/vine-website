@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://vinechurchcambridge.com' // Update with your actual domain
+  const baseUrl = 'https://vinechurch.ca' // Update with your actual domain
 
   return [
     {

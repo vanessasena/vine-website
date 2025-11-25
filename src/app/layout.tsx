@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'pt_BR',
     alternateLocale: ['en_CA'],
-    url: 'https://vinechurchcambridge.com',
+    url: 'https://vinechurch.ca',
     siteName: 'Vine Church Cambridge',
     title: 'Vine Church Cambridge - Igreja Videira',
     description: 'Igreja Videira Cambridge - Uma Igreja de Vencedores. Cultos aos domingos 10AM. Células, Vine Kids, Comunidade Cristã em Cambridge, Ontario.',
@@ -78,7 +78,7 @@ export const metadata: Metadata = {
     ],
     shortcut: "/favicon.ico",
   },
-  metadataBase: new URL('https://vinechurchcambridge.com'), // Update with your actual domain
+  metadataBase: new URL('https://vinechurch.ca'), // Update with your actual domain
 };
 
 export default function RootLayout({
@@ -92,7 +92,7 @@ export default function RootLayout({
     "name": "Vine Church Cambridge",
     "alternateName": "Igreja Videira Cambridge",
     "description": "Igreja Videira Cambridge - Uma Igreja de Vencedores. Comunidade cristã brasileira em Cambridge, Ontario.",
-    "url": "https://vinechurchcambridge.com",
+    "url": "https://vinechurch.ca",
     "logo": "https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/logotipo-videira-small-1.png",
     "image": "https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/logotipo-videira-small-1.png",
     "address": {
@@ -123,7 +123,7 @@ export default function RootLayout({
       "@type": "ReserveAction",
       "target": {
         "@type": "EntryPoint",
-        "urlTemplate": "https://vinechurchcambridge.com/contact"
+        "urlTemplate": "https://vinechurch.ca/contact"
       }
     },
     "event": {

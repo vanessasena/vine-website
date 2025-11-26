@@ -124,5 +124,53 @@ export default function sitemap(): MetadataRoute.Sitemap {
         },
       },
     },
+    {
+      url: `${baseUrl}/pt/sermons`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+      alternates: {
+        languages: {
+          en: `${baseUrl}/en/sermons`,
+          pt: `${baseUrl}/pt/sermons`,
+        },
+      },
+    },
+    {
+      url: `${baseUrl}/en/sermons`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+      alternates: {
+        languages: {
+          en: `${baseUrl}/en/sermons`,
+          pt: `${baseUrl}/pt/sermons`,
+        },
+      },
+    },
+    {
+      url: `${baseUrl}/pt/cells`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+      alternates: {
+        languages: {
+          en: `${baseUrl}/en/cells`,
+          pt: `${baseUrl}/pt/cells`,
+        },
+      },
+    },
+    {
+      url: `${baseUrl}/en/cells`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+      alternates: {
+        languages: {
+          en: `${baseUrl}/en/cells`,
+          pt: `${baseUrl}/pt/cells`,
+        },
+      },
+    },
   ]
 }

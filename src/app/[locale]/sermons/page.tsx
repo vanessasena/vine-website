@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import Navigation from '@/components/Navigation';
 import Image from 'next/image';
 import Footer from '@/components/Footer';
+import AddressChangeAlert from '@/components/AddressChangeAlert';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -135,6 +136,7 @@ export default async function SermonsPage({ params: { locale } }: PageProps) {
               <p className="text-secondary-200">
                 {locale === 'pt' ? 'Domingo às 10:00' : 'Sunday at 10:00 AM'}
               </p>
+              <AddressChangeAlert className="mt-4 bg-white bg-opacity-20 border-white" />
             </div>
           </div>
         </div>

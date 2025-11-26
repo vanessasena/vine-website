@@ -186,5 +186,9 @@
     "copyright": "© 2025 Vine Church KWC. Todos os direitos reservados.",
     "quickLinks": "Links Rápidos",
     "followUs": "Siga-nos"
+  },
+  "addressChange": {
+    "title": "Atenção:",
+    "message": "Em breve estaremos mudando nosso endereço para Kitchener."
   }
 }

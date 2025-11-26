@@ -1,6 +1,7 @@
 import { useTranslations } from 'next-intl';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
+import AddressChangeAlert from '@/components/AddressChangeAlert';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -138,6 +139,11 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
               </div> */}
 
             </div>
+          </div>
+
+          {/* Location Notice */}
+          <div className="mt-12">
+            <AddressChangeAlert />
           </div>
 
           {/* Additional Info */}

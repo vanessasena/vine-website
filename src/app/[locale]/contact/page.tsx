@@ -3,6 +3,7 @@ import Navigation from '@/components/Navigation';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
 import GoogleMapEmbed from '@/components/GoogleMapEmbed';
+import AddressChangeAlert from '@/components/AddressChangeAlert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faMapMarkerAlt,
@@ -57,7 +58,7 @@ export default function ContactPage({ params: { locale } }: PageProps) {
                   <div className="text-3xl text-primary-600">
                     <FontAwesomeIcon icon={faMapMarkerAlt} />
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <h3 className="text-xl font-bold text-primary-700 mb-2">
                       {t('address')}
                     </h3>
@@ -67,6 +68,7 @@ export default function ContactPage({ params: { locale } }: PageProps) {
                     <p className="text-sm text-gray-600 mt-2">
                       Cambridge, Ontario, Canada
                     </p>
+                    <AddressChangeAlert className="mt-4" />
                   </div>
                 </div>
               </div>
@@ -194,6 +196,7 @@ export default function ContactPage({ params: { locale } }: PageProps) {
                   <p className="text-sm text-gray-500 mb-4">
                     55 Dickson Street, 8 Petty Pl, Cambridge, ON N1R 7A5
                   </p>
+                  <AddressChangeAlert className="mb-4" />
                   <Link
                     href="https://maps.app.goo.gl/ZQ9P9QdjNfw31eCc7"
                     target="_blank"

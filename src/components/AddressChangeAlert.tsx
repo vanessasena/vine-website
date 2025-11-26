@@ -17,7 +17,7 @@ export default function AddressChangeAlert({ className = '' }: AddressChangeAler
         <div className="flex-shrink-0">
           <FontAwesomeIcon
             icon={faInfoCircle}
-            className="h-5 w-5 text-blue-500"
+            className="h-5 w-5 text-yellow-500"
           />
         </div>
         <div className="ml-3">

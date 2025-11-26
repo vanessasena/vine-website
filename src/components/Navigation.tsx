@@ -43,7 +43,7 @@ export default function Navigation({ locale }: NavigationProps) {
           <div className="flex items-center">
             <Link href={`/${locale}`} className="flex items-center space-x-3">
               <Image
-                src="https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/Vine-CHURCH-logo-transparent.png"
+                src="https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/Vine-CHURCH-logo-transparent-2.png"
                 alt="Vine Church KWC Logo"
                 width={120}
                 height={40}

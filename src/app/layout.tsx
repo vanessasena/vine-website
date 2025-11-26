@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     description: 'Igreja Videira KWC - Uma Igreja de Vencedores. Cultos aos domingos 10AM. Células, Vine Kids, Comunidade Cristã na região de Waterloo, Ontario.',
     images: [
       {
-        url: 'https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/Vine-CHURCH-logo-transparent.png',
+        url: 'https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/Vine-CHURCH-logo-transparent-2.png',
         width: 1200,
         height: 630,
         alt: 'Vine Church KWC Logo',
@@ -74,7 +74,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Vine Church KWC - Igreja Videira',
     description: 'Igreja Videira KWC - Uma Igreja de Vencedores. Cultos aos domingos 10AM.',
-    images: ['https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/Vine-CHURCH-logo-transparent.png'],
+    images: ['https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/Vine-CHURCH-logo-transparent-2.png'],
   },
   verification: {
     google: 'your-google-site-verification-code', // Replace with actual code when you get it
@@ -103,8 +103,8 @@ export default function RootLayout({
     "alternateName": "Igreja Videira KWC",
     "description": "Igreja Videira KWC - Uma Igreja de Vencedores. Comunidade cristã brasileira na região de Waterloo, Ontario.",
     "url": "https://vinechurch.ca",
-    "logo": "https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/Vine-CHURCH-logo-transparent.png",
-    "image": "https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/Vine-CHURCH-logo-transparent.png",
+    "logo": "https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/Vine-CHURCH-logo-transparent-2.png",
+    "image": "https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/Vine-CHURCH-logo-transparent-2.png",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "55 Dickson Street, 8 Petty Pl",

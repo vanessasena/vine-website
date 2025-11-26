@@ -77,7 +77,7 @@ export const metadata: Metadata = {
     images: ['https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/Vine-CHURCH-logo-transparent-2.png'],
   },
   verification: {
-    google: 'your-google-site-verification-code', // Replace with actual code when you get it
+    google: 'AI-edjltYyq3qb7qKFg0j0YqFFpqkokHXbgrVgpHoHg', // Replace with actual code when you get it
   },
   category: 'religion',
   classification: 'Church, Religious Organization, Community',

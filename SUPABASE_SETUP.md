@@ -1,6 +1,6 @@
 # Supabase Database Setup for Sermons
 
-This document explains how to set up the Supabase database for managing sermons on the Vine Church Cambridge website.
+This document explains how to set up the Supabase database for managing sermons on the Vine Church KWC website.
 
 ## Overview
 

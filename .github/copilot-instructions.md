@@ -1,6 +1,6 @@
 <!-- Use this file to provide workspace-specific custom instructions to Copilot. For more details, visit https://code.visualstudio.com/docs/copilot/copilot-customization#_use-a-githubcopilotinstructionsmd-file -->
 
-# Vine Church Cambridge Website
+# Vine Church KWC Website
 
 This is a bilingual (Portuguese/English) church website built with Next.js for Vine Church in Cambridge, Ontario.
 

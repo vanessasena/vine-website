@@ -1,4 +1,4 @@
-# Vine Church Cambridge Website
+# Vine Church KWC Website
 
 A modern, bilingual church website built with Next.js for Vine Church in Cambridge, Ontario, Canada.
 
@@ -8,7 +8,7 @@ A modern, bilingual church website built with Next.js for Vine Church in Cambrid
 - **Modern Design**: Based on reference sites from Videira Philadelphia and Seattle
 - **Responsive Layout**: Mobile-first design that works on all devices
 - **Internationalization**: Using next-intl for seamless language switching
-- **Church Information**: Complete information about Vine Church Cambridge
+- **Church Information**: Complete information about Vine Church KWC
 
 ## Tech Stack
 
@@ -93,8 +93,8 @@ This project is ready to be deployed to Vercel:
 
 ## Contributing
 
-This website represents Vine Church Cambridge, part of the international Vine Church network that originated in Brazil.
+This website represents Vine Church KWC, part of the international Vine Church network that originated in Brazil.
 
 ## License
 
-© 2025 Vine Church Cambridge. All rights reserved.
+© 2025 Vine Church KWC. All rights reserved.

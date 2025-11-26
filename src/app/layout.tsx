@@ -7,15 +7,23 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: {
-    default: "Vine Church Cambridge - Igreja Videira",
-    template: "%s | Vine Church Cambridge"
+    default: "Vine Church KWC - Igreja Videira",
+    template: "%s | Vine Church KWC"
   },
-  description: "Igreja Videira Cambridge - Uma Igreja de Vencedores. Cultos aos domingos 10AM. Células, Vine Kids, Comunidade Cristã em Cambridge, Ontario, Canadá.",
+  description: "Igreja Videira KWC - Uma Igreja de Vencedores. Cultos aos domingos 10AM. Células, Vine Kids, Comunidade Cristã na região de Waterloo, Ontario, Canadá.",
   keywords: [
     "Igreja Cambridge",
+    "Igreja Kitchener",
+    "Igreja Waterloo",
     "Church Cambridge Ontario",
+    "Church Kitchener Ontario",
+    "Church Waterloo Ontario",
     "Igreja Brasileira Cambridge",
+    "Igreja Brasileira Kitchener",
+    "Igreja Brasileira Waterloo",
     "Brazilian Church Cambridge",
+    "Brazilian Church Kitchener",
+    "Brazilian Church Waterloo",
     "Vine Church",
     "Igreja Videira",
     "Comunidade Cristã",
@@ -24,14 +32,16 @@ export const metadata: Metadata = {
     "Life Groups",
     "Vine Kids",
     "Cambridge ON",
+    "Kitchener ON",
+    "Waterloo ON",
     "Dickson Street",
     "Pastor Boris Carvalho",
     "Igreja de Vencedores",
     "Church of Overcomers"
   ],
-  authors: [{ name: "Vine Church Cambridge" }],
-  creator: "Vine Church Cambridge",
-  publisher: "Vine Church Cambridge",
+  authors: [{ name: "Vine Church KWC" }],
+  creator: "Vine Church KWC",
+  publisher: "Vine Church KWC",
   robots: {
     index: true,
     follow: true,
@@ -48,23 +58,23 @@ export const metadata: Metadata = {
     locale: 'pt_BR',
     alternateLocale: ['en_CA'],
     url: 'https://vinechurch.ca',
-    siteName: 'Vine Church Cambridge',
-    title: 'Vine Church Cambridge - Igreja Videira',
-    description: 'Igreja Videira Cambridge - Uma Igreja de Vencedores. Cultos aos domingos 10AM. Células, Vine Kids, Comunidade Cristã em Cambridge, Ontario.',
+    siteName: 'Vine Church KWC',
+    title: 'Vine Church KWC - Igreja Videira',
+    description: 'Igreja Videira KWC - Uma Igreja de Vencedores. Cultos aos domingos 10AM. Células, Vine Kids, Comunidade Cristã na região de Waterloo, Ontario.',
     images: [
       {
-        url: 'https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/logotipo-videira-small-1.png',
+        url: 'https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/Vine-CHURCH-logo-transparent.png',
         width: 1200,
         height: 630,
-        alt: 'Vine Church Cambridge Logo',
+        alt: 'Vine Church KWC Logo',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Vine Church Cambridge - Igreja Videira',
-    description: 'Igreja Videira Cambridge - Uma Igreja de Vencedores. Cultos aos domingos 10AM.',
-    images: ['https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/logotipo-videira-small-1.png'],
+    title: 'Vine Church KWC - Igreja Videira',
+    description: 'Igreja Videira KWC - Uma Igreja de Vencedores. Cultos aos domingos 10AM.',
+    images: ['https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/Vine-CHURCH-logo-transparent.png'],
   },
   verification: {
     google: 'your-google-site-verification-code', // Replace with actual code when you get it
@@ -78,7 +88,7 @@ export const metadata: Metadata = {
     ],
     shortcut: "/favicon.ico",
   },
-  metadataBase: new URL('https://vinechurch.ca'), // Update with your actual domain
+  metadataBase: new URL('https://vinechurch.ca'),
 };
 
 export default function RootLayout({
@@ -89,12 +99,12 @@ export default function RootLayout({
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Church",
-    "name": "Vine Church Cambridge",
-    "alternateName": "Igreja Videira Cambridge",
-    "description": "Igreja Videira Cambridge - Uma Igreja de Vencedores. Comunidade cristã brasileira em Cambridge, Ontario.",
+    "name": "Vine Church KWC",
+    "alternateName": "Igreja Videira KWC",
+    "description": "Igreja Videira KWC - Uma Igreja de Vencedores. Comunidade cristã brasileira na região de Waterloo, Ontario.",
     "url": "https://vinechurch.ca",
-    "logo": "https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/logotipo-videira-small-1.png",
-    "image": "https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/logotipo-videira-small-1.png",
+    "logo": "https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/Vine-CHURCH-logo-transparent.png",
+    "image": "https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/Vine-CHURCH-logo-transparent.png",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "55 Dickson Street, 8 Petty Pl",
@@ -139,7 +149,7 @@ export default function RootLayout({
       },
       "location": {
         "@type": "Place",
-        "name": "Vine Church Cambridge",
+        "name": "Vine Church KWC",
         "address": {
           "@type": "PostalAddress",
           "streetAddress": "55 Dickson Street, 8 Petty Pl",

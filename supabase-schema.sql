@@ -204,9 +204,5 @@ John 3:16
 **Conclusion:**
 Today we can only partake of the Lord''s Supper because one day Someone was obedient to such an extent that He pleased the Father''s heart.
 
-
----
-
-*Message preached at Vine Church Cambridge on November 2, 2025*',
-    '1 Samuel 15:22'
+'
 ) ON CONFLICT (id) DO NOTHING;

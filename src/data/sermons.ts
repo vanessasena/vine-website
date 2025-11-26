@@ -159,7 +159,7 @@ Today we can only partake of the Lord’s Supper because one day Someone was obe
 
 ---
 
-*Message preached at Vine Church Cambridge on November 2, 2025*`
+*Message preached at Vine Church KWC on November 2, 2025*`
     }
   },
 

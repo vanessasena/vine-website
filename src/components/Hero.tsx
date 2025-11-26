@@ -25,7 +25,7 @@ export default function Hero() {
           <h2 className="text-2xl md:text-3xl mb-8 text-white text-opacity-90">
             {t('subtitle')}
           </h2>
-          <p className="text-lg md:text-xl mb-8 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-l mb-8 max-w-3xl mx-auto leading-relaxed">
             {t('description')}
           </p>
 

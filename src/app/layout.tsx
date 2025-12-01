@@ -161,7 +161,7 @@ export default function RootLayout({
       }
     },
     "sameAs": [
-      "https://www.instagram.com/vine_cambridge/"
+      "https://www.instagram.com/vinechurch_kwc/"
     ]
   };
 

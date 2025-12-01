@@ -136,30 +136,58 @@ export default function RootLayout({
         "urlTemplate": "https://vinechurch.ca/contact"
       }
     },
-    "event": {
-      "@type": "Event",
-      "name": "Sunday Service",
-      "description": "Weekly worship service",
-      "startTime": "10:00",
-      "endTime": "12:00",
-      "eventSchedule": {
-        "@type": "Schedule",
-        "scheduleTimezone": "America/Toronto",
-        "byDay": "Sunday"
-      },
-      "location": {
-        "@type": "Place",
-        "name": "Vine Church KWC",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "55 Dickson Street, 8 Petty Pl",
-          "addressLocality": "Cambridge",
-          "addressRegion": "ON",
-          "postalCode": "N1R 7A5",
-          "addressCountry": "CA"
+    "event": [
+      {
+        "@type": "Event",
+        "name": "Sunday Worship Service",
+        "description": "Weekly worship service at Vine Church KWC. Join us for worship, prayer, and biblical teaching in Portuguese and English.",
+        "startDate": "2025-12-07T10:00:00-05:00",
+        "endDate": "2025-12-07T12:00:00-05:00",
+        "eventStatus": "https://schema.org/EventScheduled",
+        "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+        "image": [
+          "https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/Vine-CHURCH-logo-transparent-2.png",
+          "https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/vine-blue.jpg"
+        ],
+        "location": {
+          "@type": "Place",
+          "name": "Vine Church KWC",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "55 Dickson Street, 8 Petty Pl",
+            "addressLocality": "Cambridge",
+            "addressRegion": "ON",
+            "postalCode": "N1R 7A5",
+            "addressCountry": "CA"
+          }
+        },
+        "performer": {
+          "@type": "PerformingGroup",
+          "name": "Vine Church KWC Worship Team"
+        },
+        "organizer": {
+          "@type": "Organization",
+          "name": "Vine Church KWC",
+          "url": "https://vinechurch.ca"
+        },
+        "offers": {
+          "@type": "Offer",
+          "url": "https://vinechurch.ca/pt/schedule",
+          "price": "0",
+          "priceCurrency": "CAD",
+          "availability": "https://schema.org/InStock",
+          "validFrom": "2025-01-01"
+        },
+        "eventSchedule": {
+          "@type": "Schedule",
+          "scheduleTimezone": "America/Toronto",
+          "byDay": "Sunday",
+          "repeatFrequency": "P1W",
+          "startTime": "10:00",
+          "endTime": "12:00"
         }
       }
-    },
+    ],
     "sameAs": [
       "https://www.instagram.com/vinechurch_kwc/"
     ]

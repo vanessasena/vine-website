@@ -3,8 +3,9 @@ import { createClient } from '@supabase/supabase-js';
 import { sermons as staticSermons, type Sermon } from '@/data/sermons';
 import type { Database } from '@/lib/database.types';
 
-// Create client inline for proper type inference
-function getSupabaseClient() {
+// Create client inline to ensure proper type inference after null check
+// This avoids TypeScript issues with imported nullable clients
+function createSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   
@@ -50,7 +51,7 @@ function getSortedStaticSermons(): Sermon[] {
 
 // GET - Fetch all sermons
 export async function GET() {
-  const supabase = getSupabaseClient();
+  const supabase = createSupabaseClient();
   
   // If supabase client is not available, use static data
   if (!supabase) {
@@ -81,7 +82,7 @@ export async function GET() {
 
 // POST - Create a new sermon
 export async function POST(request: NextRequest) {
-  const supabase = getSupabaseClient();
+  const supabase = createSupabaseClient();
   
   if (!supabase) {
     return NextResponse.json(

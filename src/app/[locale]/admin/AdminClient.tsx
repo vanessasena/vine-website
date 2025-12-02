@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -62,6 +62,18 @@ const emptyFormData: SermonFormData = {
   scripture: '',
 };
 
+// Helper function to escape HTML entities to prevent XSS
+function escapeHtml(text: string): string {
+  const htmlEntities: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  };
+  return text.replace(/[&<>"']/g, (char) => htmlEntities[char] || char);
+}
+
 // Simple component to render markdown-like content for preview
 function MarkdownPreview({ content }: { content: string }) {
   const formatContent = (text: string) => {
@@ -106,8 +118,9 @@ function MarkdownPreview({ content }: { content: string }) {
           return <hr key={index} className="my-6 border-gray-300" />;
         }
 
-        // Regular paragraphs
-        const processedLine = line
+        // Regular paragraphs - escape HTML first, then apply markdown formatting
+        const escapedLine = escapeHtml(line);
+        const processedLine = escapedLine
           .replace(/\*\*\*(.*?)\*\*\*/g, '<strong class="font-bold italic">$1</strong>')
           .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-primary-700">$1</strong>')
           .replace(/\*(.*?)\*/g, '<em class="italic text-gray-600">$1</em>');
@@ -143,24 +156,7 @@ export default function AdminClient({ locale }: { locale: string }) {
   // Delete confirmation
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
-  // Fetch sermons on component mount
-  useEffect(() => {
-    fetchSermons();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Clear messages after 3 seconds
-  useEffect(() => {
-    if (successMessage || error) {
-      const timer = setTimeout(() => {
-        setSuccessMessage(null);
-        setError(null);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [successMessage, error]);
-
-  const fetchSermons = async () => {
+  const fetchSermons = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch('/api/sermons');
@@ -173,7 +169,23 @@ export default function AdminClient({ locale }: { locale: string }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [t]);
+
+  // Fetch sermons on component mount
+  useEffect(() => {
+    fetchSermons();
+  }, [fetchSermons]);
+
+  // Clear messages after 3 seconds
+  useEffect(() => {
+    if (successMessage || error) {
+      const timer = setTimeout(() => {
+        setSuccessMessage(null);
+        setError(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage, error]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;

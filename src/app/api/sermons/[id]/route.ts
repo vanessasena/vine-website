@@ -5,8 +5,9 @@ import type { Database } from '@/lib/database.types';
 
 type SermonUpdate = Database['public']['Tables']['sermons']['Update'];
 
-// Create client inline for proper type inference
-function getSupabaseClient() {
+// Create client inline to ensure proper type inference after null check
+// This avoids TypeScript issues with imported nullable clients
+function createSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   
@@ -48,7 +49,7 @@ interface RouteParams {
 // GET - Fetch a single sermon by ID
 export async function GET(request: NextRequest, { params }: RouteParams) {
   const { id } = params;
-  const supabase = getSupabaseClient();
+  const supabase = createSupabaseClient();
 
   // If supabase client is not available, use static data
   if (!supabase) {
@@ -85,7 +86,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 // PUT - Update a sermon
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   const { id } = params;
-  const supabase = getSupabaseClient();
+  const supabase = createSupabaseClient();
 
   if (!supabase) {
     return NextResponse.json(
@@ -135,7 +136,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 // DELETE - Delete a sermon
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   const { id } = params;
-  const supabase = getSupabaseClient();
+  const supabase = createSupabaseClient();
 
   if (!supabase) {
     return NextResponse.json(

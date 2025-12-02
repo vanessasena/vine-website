@@ -190,5 +190,47 @@
   "addressChange": {
     "title": "Atenção:",
     "message": "Em breve estaremos mudando nosso endereço para Kitchener."
+  },
+  "admin": {
+    "title": "Admin",
+    "subtitle": "Gerenciamento de Mensagens",
+    "description": "Adicione, edite e exclua mensagens nesta página.",
+    "addSermon": "Adicionar Mensagem",
+    "editSermon": "Editar Mensagem",
+    "deleteSermon": "Excluir Mensagem",
+    "confirmDelete": "Tem certeza que deseja excluir esta mensagem?",
+    "cancel": "Cancelar",
+    "save": "Salvar",
+    "saving": "Salvando...",
+    "preview": "Visualizar",
+    "edit": "Editar",
+    "form": {
+      "id": "ID (slug da URL)",
+      "idHelp": "Use apenas letras minúsculas, números e hífens (ex: titulo-da-mensagem-2025-01-01)",
+      "titlePt": "Título (Português)",
+      "titleEn": "Título (Inglês)",
+      "preacher": "Pregador",
+      "date": "Data",
+      "scripture": "Referência Bíblica",
+      "scriptureHelp": "Opcional. Exemplo: João 3:16",
+      "excerptPt": "Resumo (Português)",
+      "excerptEn": "Resumo (Inglês)",
+      "contentPt": "Conteúdo (Português)",
+      "contentEn": "Conteúdo (Inglês)",
+      "contentHelp": "Use formatação Markdown: # para títulos, ** para negrito, * para itálico, > para citações"
+    },
+    "messages": {
+      "created": "Mensagem criada com sucesso!",
+      "updated": "Mensagem atualizada com sucesso!",
+      "deleted": "Mensagem excluída com sucesso!",
+      "error": "Ocorreu um erro. Por favor, tente novamente.",
+      "loadError": "Falha ao carregar mensagens.",
+      "dbNotConfigured": "Banco de dados não configurado. Exibindo apenas dados estáticos."
+    },
+    "noSermons": "Nenhuma mensagem encontrada.",
+    "source": "Fonte dos dados",
+    "database": "Banco de dados",
+    "static": "Arquivos estáticos",
+    "backToSite": "Voltar ao Site"
   }
 }

@@ -190,5 +190,47 @@
   "addressChange": {
     "title": "Notice:",
     "message": "We will soon be moving to a new address in Kitchener."
+  },
+  "admin": {
+    "title": "Admin",
+    "subtitle": "Sermon Management",
+    "description": "Add, edit, and delete sermons from this page.",
+    "addSermon": "Add Sermon",
+    "editSermon": "Edit Sermon",
+    "deleteSermon": "Delete Sermon",
+    "confirmDelete": "Are you sure you want to delete this sermon?",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving...",
+    "preview": "Preview",
+    "edit": "Edit",
+    "form": {
+      "id": "ID (URL slug)",
+      "idHelp": "Use lowercase letters, numbers, and hyphens only (e.g., sermon-title-2025-01-01)",
+      "titlePt": "Title (Portuguese)",
+      "titleEn": "Title (English)",
+      "preacher": "Preacher",
+      "date": "Date",
+      "scripture": "Scripture Reference",
+      "scriptureHelp": "Optional. Example: John 3:16",
+      "excerptPt": "Summary (Portuguese)",
+      "excerptEn": "Summary (English)",
+      "contentPt": "Content (Portuguese)",
+      "contentEn": "Content (English)",
+      "contentHelp": "Use Markdown formatting: # for headings, ** for bold, * for italic, > for quotes"
+    },
+    "messages": {
+      "created": "Sermon created successfully!",
+      "updated": "Sermon updated successfully!",
+      "deleted": "Sermon deleted successfully!",
+      "error": "An error occurred. Please try again.",
+      "loadError": "Failed to load sermons.",
+      "dbNotConfigured": "Database not configured. Showing static data only."
+    },
+    "noSermons": "No sermons found.",
+    "source": "Data source",
+    "database": "Database",
+    "static": "Static files",
+    "backToSite": "Back to Site"
   }
 }

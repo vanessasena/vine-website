@@ -8,12 +8,29 @@ import type { Database } from '@/lib/database.types';
 function createSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  
+
   if (!supabaseUrl || !supabaseAnonKey) {
     return null;
   }
-  
+
   return createClient<Database>(supabaseUrl, supabaseAnonKey);
+}
+
+// Create admin client with service role key (bypasses RLS)
+function createSupabaseAdminClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !supabaseServiceRoleKey) {
+    return null;
+  }
+
+  return createClient<Database>(supabaseUrl, supabaseServiceRoleKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
+    }
+  });
 }
 
 // Transform database sermon to app sermon format
@@ -52,7 +69,7 @@ function getSortedStaticSermons(): Sermon[] {
 // GET - Fetch all sermons
 export async function GET() {
   const supabase = createSupabaseClient();
-  
+
   // If supabase client is not available, use static data
   if (!supabase) {
     return NextResponse.json({ sermons: getSortedStaticSermons(), source: 'static' });
@@ -82,8 +99,9 @@ export async function GET() {
 
 // POST - Create a new sermon
 export async function POST(request: NextRequest) {
-  const supabase = createSupabaseClient();
-  
+  // Use admin client for write operations to bypass RLS
+  const supabase = createSupabaseAdminClient();
+
   if (!supabase) {
     return NextResponse.json(
       { error: 'Database not configured. Cannot create sermons.' },
@@ -93,7 +111,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    
+
     // Validate required fields
     const requiredFields = ['id', 'title_pt', 'title_en', 'preacher', 'date', 'excerpt_pt', 'excerpt_en', 'content_pt', 'content_en'];
     for (const field of requiredFields) {

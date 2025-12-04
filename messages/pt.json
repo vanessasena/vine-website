@@ -219,7 +219,7 @@
       "excerptEn": "Resumo (Inglês)",
       "contentPt": "Conteúdo (Português)",
       "contentEn": "Conteúdo (Inglês)",
-      "contentHelp": "Use formatação Markdown: # para títulos, ** para negrito, * para itálico, > para citações"
+      "contentHelp": "Use formatação Markdown: # para títulos, ## para subtítulos, ** para negrito, * para itálico, > para citações"
     },
     "messages": {
       "created": "Mensagem criada com sucesso!",

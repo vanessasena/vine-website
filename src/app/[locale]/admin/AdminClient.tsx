@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -14,8 +15,10 @@ import {
   faTimes,
   faSpinner,
   faDatabase,
-  faFile
+  faFile,
+  faSignOutAlt
 } from '@fortawesome/free-solid-svg-icons';
+import { getSession, signOut } from '@/lib/auth';
 
 interface Sermon {
   id: string;
@@ -136,25 +139,47 @@ function MarkdownPreview({ content }: { content: string }) {
 
 export default function AdminClient({ locale }: { locale: string }) {
   const t = useTranslations('admin');
-  
+  const router = useRouter();
+
+  const [authenticated, setAuthenticated] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const [sermons, setSermons] = useState<Sermon[]>([]);
   const [loading, setLoading] = useState(true);
   const [dataSource, setDataSource] = useState<'database' | 'static'>('static');
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  
+
   // Form state
   const [showForm, setShowForm] = useState(false);
   const [editingSermon, setEditingSermon] = useState<Sermon | null>(null);
   const [formData, setFormData] = useState<SermonFormData>(emptyFormData);
   const [saving, setSaving] = useState(false);
-  
+
   // Preview state
   const [showPreview, setShowPreview] = useState(false);
   const [previewLanguage, setPreviewLanguage] = useState<'pt' | 'en'>('pt');
-  
+
   // Delete confirmation
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+
+  // Check authentication on mount
+  useEffect(() => {
+    async function checkAuthentication() {
+      const session = await getSession();
+      if (!session) {
+        router.push(`/${locale}/login`);
+      } else {
+        setAuthenticated(true);
+        setCheckingAuth(false);
+      }
+    }
+    checkAuthentication();
+  }, [locale, router]);
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push(`/${locale}/login`);
+  };
 
   const fetchSermons = useCallback(async () => {
     setLoading(true);
@@ -230,8 +255,8 @@ export default function AdminClient({ locale }: { locale: string }) {
     setError(null);
 
     try {
-      const url = editingSermon 
-        ? `/api/sermons/${editingSermon.id}` 
+      const url = editingSermon
+        ? `/api/sermons/${editingSermon.id}`
         : '/api/sermons';
       const method = editingSermon ? 'PUT' : 'POST';
 
@@ -285,6 +310,23 @@ export default function AdminClient({ locale }: { locale: string }) {
     });
   };
 
+  // Show loading state while checking authentication
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <FontAwesomeIcon icon={faSpinner} className="animate-spin h-12 w-12 text-primary-600 mb-4" />
+          <p className="text-gray-600">{t('checkingAuth')}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render the admin panel if not authenticated
+  if (!authenticated) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -295,13 +337,22 @@ export default function AdminClient({ locale }: { locale: string }) {
               <h1 className="text-3xl font-bold">{t('title')}</h1>
               <p className="mt-2 text-white text-opacity-90">{t('subtitle')}</p>
             </div>
-            <Link
-              href={`/${locale}`}
-              className="inline-flex items-center bg-white bg-opacity-20 hover:bg-opacity-30 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
-            >
-              <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
-              {t('backToSite')}
-            </Link>
+            <div className="flex gap-3">
+              <button
+                onClick={handleSignOut}
+                className="inline-flex items-center bg-white bg-opacity-20 hover:bg-opacity-30 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+              >
+                <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
+                {t('signOut')}
+              </button>
+              <Link
+                href={`/${locale}`}
+                className="inline-flex items-center bg-white bg-opacity-20 hover:bg-opacity-30 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+              >
+                <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
+                {t('backToSite')}
+              </Link>
+            </div>
           </div>
         </div>
       </header>
@@ -323,16 +374,16 @@ export default function AdminClient({ locale }: { locale: string }) {
         {/* Data Source Indicator */}
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center text-sm text-gray-600">
-            <FontAwesomeIcon 
-              icon={dataSource === 'database' ? faDatabase : faFile} 
-              className={`mr-2 ${dataSource === 'database' ? 'text-green-600' : 'text-yellow-600'}`} 
+            <FontAwesomeIcon
+              icon={dataSource === 'database' ? faDatabase : faFile}
+              className={`mr-2 ${dataSource === 'database' ? 'text-green-600' : 'text-yellow-600'}`}
             />
             <span>{t('source')}: </span>
             <span className="font-medium ml-1">
               {dataSource === 'database' ? t('database') : t('static')}
             </span>
           </div>
-          
+
           {!showForm && (
             <button
               onClick={handleAddNew}
@@ -379,8 +430,8 @@ export default function AdminClient({ locale }: { locale: string }) {
                     type="button"
                     onClick={() => setPreviewLanguage('pt')}
                     className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                      previewLanguage === 'pt' 
-                        ? 'bg-primary-600 text-white' 
+                      previewLanguage === 'pt'
+                        ? 'bg-primary-600 text-white'
                         : 'bg-white text-gray-700 hover:bg-gray-100'
                     }`}
                   >
@@ -390,15 +441,15 @@ export default function AdminClient({ locale }: { locale: string }) {
                     type="button"
                     onClick={() => setPreviewLanguage('en')}
                     className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                      previewLanguage === 'en' 
-                        ? 'bg-primary-600 text-white' 
+                      previewLanguage === 'en'
+                        ? 'bg-primary-600 text-white'
                         : 'bg-white text-gray-700 hover:bg-gray-100'
                     }`}
                   >
                     English
                   </button>
                 </div>
-                
+
                 <div className="bg-white rounded-lg p-6 shadow-sm">
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">
                     {previewLanguage === 'pt' ? formData.title_pt : formData.title_en}
@@ -411,8 +462,8 @@ export default function AdminClient({ locale }: { locale: string }) {
                     {formData.date && <span>{formatDate(formData.date)}</span>}
                   </div>
                   <div className="border-t pt-4">
-                    <MarkdownPreview 
-                      content={previewLanguage === 'pt' ? formData.content_pt : formData.content_en} 
+                    <MarkdownPreview
+                      content={previewLanguage === 'pt' ? formData.content_pt : formData.content_en}
                     />
                   </div>
                 </div>

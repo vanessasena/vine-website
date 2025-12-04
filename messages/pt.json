@@ -204,6 +204,8 @@
     "saving": "Salvando...",
     "preview": "Visualizar",
     "edit": "Editar",
+    "signOut": "Sair",
+    "checkingAuth": "Verificando autenticação...",
     "form": {
       "id": "ID (slug da URL)",
       "idHelp": "Use apenas letras minúsculas, números e hífens (ex: titulo-da-mensagem-2025-01-01)",
@@ -232,5 +234,18 @@
     "database": "Banco de dados",
     "static": "Arquivos estáticos",
     "backToSite": "Voltar ao Site"
+  },
+  "auth": {
+    "title": "Login Administrativo",
+    "subtitle": "Entre para gerenciar mensagens",
+    "email": "E-mail",
+    "emailPlaceholder": "admin@exemplo.com",
+    "password": "Senha",
+    "passwordPlaceholder": "Digite sua senha",
+    "signIn": "Entrar",
+    "signingIn": "Entrando...",
+    "invalidCredentials": "E-mail ou senha inválidos",
+    "loginError": "Ocorreu um erro durante o login. Por favor, tente novamente.",
+    "databaseError": "Banco de dados não configurado. Entre em contato com o administrador."
   }
 }

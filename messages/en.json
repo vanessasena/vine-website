@@ -204,6 +204,8 @@
     "saving": "Saving...",
     "preview": "Preview",
     "edit": "Edit",
+    "signOut": "Sign Out",
+    "checkingAuth": "Checking authentication...",
     "form": {
       "id": "ID (URL slug)",
       "idHelp": "Use lowercase letters, numbers, and hyphens only (e.g., sermon-title-2025-01-01)",
@@ -232,5 +234,18 @@
     "database": "Database",
     "static": "Static files",
     "backToSite": "Back to Site"
+  },
+  "auth": {
+    "title": "Admin Login",
+    "subtitle": "Sign in to manage sermons",
+    "email": "Email",
+    "emailPlaceholder": "admin@example.com",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "signIn": "Sign In",
+    "signingIn": "Signing in...",
+    "invalidCredentials": "Invalid email or password",
+    "loginError": "An error occurred during login. Please try again.",
+    "databaseError": "Database not configured. Please contact administrator."
   }
 }

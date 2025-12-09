@@ -14,10 +14,25 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { getSortedSermons, formatDate } from '@/lib/sermons';
 import type { Sermon } from '@/data/sermons';
+import type { Metadata } from 'next';
 
 interface PageProps {
   params: {
     locale: string;
+  };
+}
+
+export async function generateMetadata({ params: { locale } }: PageProps): Promise<Metadata> {
+  const baseUrl = 'https://vinechurch.ca';
+  return {
+    alternates: {
+      canonical: `${baseUrl}/${locale}/sermons`,
+      languages: {
+        'pt': `${baseUrl}/pt/sermons`,
+        'en': `${baseUrl}/en/sermons`,
+        'x-default': `${baseUrl}/pt/sermons`,
+      },
+    },
   };
 }
 

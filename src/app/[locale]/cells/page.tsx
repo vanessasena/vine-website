@@ -14,10 +14,25 @@ import {
   faBook,
   faExternalLinkAlt
 } from '@fortawesome/free-solid-svg-icons';
+import type { Metadata } from 'next';
 
 interface PageProps {
   params: {
     locale: string;
+  };
+}
+
+export async function generateMetadata({ params: { locale } }: PageProps): Promise<Metadata> {
+  const baseUrl = 'https://vinechurch.ca';
+  return {
+    alternates: {
+      canonical: `${baseUrl}/${locale}/cells`,
+      languages: {
+        'pt': `${baseUrl}/pt/cells`,
+        'en': `${baseUrl}/en/cells`,
+        'x-default': `${baseUrl}/pt/cells`,
+      },
+    },
   };
 }
 

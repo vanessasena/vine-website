@@ -15,10 +15,25 @@ import {
   faPhone,
   faHandshake
 } from '@fortawesome/free-solid-svg-icons';
+import type { Metadata } from 'next';
 
 interface PageProps {
   params: {
     locale: string;
+  };
+}
+
+export async function generateMetadata({ params: { locale } }: PageProps): Promise<Metadata> {
+  const baseUrl = 'https://vinechurch.ca';
+  return {
+    alternates: {
+      canonical: `${baseUrl}/${locale}/schedule`,
+      languages: {
+        'pt': `${baseUrl}/pt/schedule`,
+        'en': `${baseUrl}/en/schedule`,
+        'x-default': `${baseUrl}/pt/schedule`,
+      },
+    },
   };
 }
 

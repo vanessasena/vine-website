@@ -20,10 +20,25 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import '@/lib/fontawesome';
 import AddressChangeAlert from '@/components/AddressChangeAlert';
+import type { Metadata } from 'next';
 
 interface PageProps {
   params: {
     locale: string;
+  };
+}
+
+export async function generateMetadata({ params: { locale } }: PageProps): Promise<Metadata> {
+  const baseUrl = 'https://vinechurch.ca';
+  return {
+    alternates: {
+      canonical: `${baseUrl}/${locale}`,
+      languages: {
+        'pt': `${baseUrl}/pt`,
+        'en': `${baseUrl}/en`,
+        'x-default': `${baseUrl}/pt`,
+      },
+    },
   };
 }
 

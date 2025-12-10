@@ -359,6 +359,30 @@ export default function AdminClient({ locale }: { locale: string }) {
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Quick Links Section */}
+        <div className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Link
+            href={`/${locale}/admin/vine-kids-gallery`}
+            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200 border-l-4 border-accent-600"
+          >
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              {locale === 'pt' ? 'Galeria Vine Kids' : 'Vine Kids Gallery'}
+            </h3>
+            <p className="text-gray-600 text-sm">
+              {locale === 'pt' ? 'Gerenciar imagens da galeria Vine Kids' : 'Manage Vine Kids gallery images'}
+            </p>
+          </Link>
+
+          <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-primary-600">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              {locale === 'pt' ? 'Gerenciar Palavras' : 'Manage Sermons'}
+            </h3>
+            <p className="text-gray-600 text-sm">
+              {locale === 'pt' ? 'Adicionar, editar ou remover palavras' : 'Add, edit, or remove sermons'}
+            </p>
+          </div>
+        </div>
+
         {/* Messages */}
         {error && (
           <div className="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">

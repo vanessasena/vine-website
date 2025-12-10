@@ -206,3 +206,71 @@ Today we can only partake of the Lord''s Supper because one day Someone was obed
 
 '
 ) ON CONFLICT (id) DO NOTHING;
+
+-- =====================================================
+-- Vine Kids Gallery Table
+-- =====================================================
+
+-- Create vine_kids_gallery table for storing image gallery
+CREATE TABLE IF NOT EXISTS public.vine_kids_gallery (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    image_url TEXT NOT NULL,
+    alt_text_pt TEXT NOT NULL,
+    alt_text_en TEXT NOT NULL,
+    orientation TEXT NOT NULL CHECK (orientation IN ('portrait', 'landscape')),
+    display_order INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+-- Create index on display_order for sorting
+CREATE INDEX IF NOT EXISTS idx_vine_kids_gallery_order ON public.vine_kids_gallery(display_order ASC);
+
+-- Enable Row Level Security (RLS)
+ALTER TABLE public.vine_kids_gallery ENABLE ROW LEVEL SECURITY;
+
+-- Create policy to allow public read access
+CREATE POLICY "Allow public read access on vine kids gallery" ON public.vine_kids_gallery
+    FOR SELECT
+    USING (true);
+
+-- Create policy to allow authenticated users to insert/update/delete
+CREATE POLICY "Allow authenticated users to insert vine kids images" ON public.vine_kids_gallery
+    FOR INSERT
+    TO authenticated
+    WITH CHECK (true);
+
+CREATE POLICY "Allow authenticated users to update vine kids images" ON public.vine_kids_gallery
+    FOR UPDATE
+    TO authenticated
+    USING (true)
+    WITH CHECK (true);
+
+CREATE POLICY "Allow authenticated users to delete vine kids images" ON public.vine_kids_gallery
+    FOR DELETE
+    TO authenticated
+    USING (true);
+
+-- Create trigger to call the function on update
+CREATE TRIGGER set_vine_kids_gallery_updated_at
+    BEFORE UPDATE ON public.vine_kids_gallery
+    FOR EACH ROW
+    EXECUTE FUNCTION public.handle_updated_at();
+
+-- Allow authenticated users to upload to website bucket
+CREATE POLICY "Authenticated users can upload to website bucket"
+ON storage.objects FOR INSERT
+TO authenticated
+WITH CHECK (bucket_id = 'website');
+
+-- Allow authenticated users to delete from website bucket
+CREATE POLICY "Authenticated users can delete from website bucket"
+ON storage.objects FOR DELETE
+TO authenticated
+USING (bucket_id = 'website');
+
+-- Optional: Allow public read access (if bucket is already public, this might exist)
+CREATE POLICY "Public read access to website bucket"
+ON storage.objects FOR SELECT
+TO public
+USING (bucket_id = 'website');

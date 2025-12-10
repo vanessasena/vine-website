@@ -55,6 +55,39 @@ export interface Database {
         }
         Relationships: []
       }
+      vine_kids_gallery: {
+        Row: {
+          id: string
+          image_url: string
+          alt_text_pt: string
+          alt_text_en: string
+          orientation: 'portrait' | 'landscape'
+          display_order: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          image_url: string
+          alt_text_pt: string
+          alt_text_en: string
+          orientation: 'portrait' | 'landscape'
+          display_order?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          image_url?: string
+          alt_text_pt?: string
+          alt_text_en?: string
+          orientation?: 'portrait' | 'landscape'
+          display_order?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: Record<string, never>
     Functions: Record<string, never>

@@ -1,39 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { createSupabaseServerClient, createSupabaseAdminClient } from '@/lib/supabase';
 import { sermons as staticSermons, type Sermon } from '@/data/sermons';
 import type { Database } from '@/lib/database.types';
 
 type SermonUpdate = Database['public']['Tables']['sermons']['Update'];
-
-// Create client inline to ensure proper type inference after null check
-// This avoids TypeScript issues with imported nullable clients
-function createSupabaseClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  if (!supabaseUrl || !supabaseAnonKey) {
-    return null;
-  }
-
-  return createClient<Database>(supabaseUrl, supabaseAnonKey);
-}
-
-// Create admin client with service role key (bypasses RLS)
-function createSupabaseAdminClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!supabaseUrl || !supabaseServiceRoleKey) {
-    return null;
-  }
-
-  return createClient<Database>(supabaseUrl, supabaseServiceRoleKey, {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false
-    }
-  });
-}
 
 // Transform database sermon to app sermon format
 function transformDbSermon(dbSermon: any): Sermon {
@@ -66,7 +36,7 @@ interface RouteParams {
 // GET - Fetch a single sermon by ID
 export async function GET(request: NextRequest, { params }: RouteParams) {
   const { id } = params;
-  const supabase = createSupabaseClient();
+  const supabase = createSupabaseServerClient();
 
   // If supabase client is not available, use static data
   if (!supabase) {

@@ -62,7 +62,7 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
           {/* Weekly Schedule */}
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
 
             {/* Tuesday */}
             <div className="bg-white rounded-lg shadow-lg p-8 text-center">
@@ -80,6 +80,22 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
               </p>
             </div>
 
+            {/* Thursday */}
+            <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+              <div className="text-4xl mb-4 text-primary-600">
+                <FontAwesomeIcon icon={faBook} />
+              </div>
+              <h3 className="text-2xl font-bold text-primary-700 mb-4">
+                {t('thursday')}
+              </h3>
+              <div className="text-3xl font-bold text-secondary-600 mb-2">
+                {t('thursdayTime')}
+              </div>
+              <p className="text-lg text-gray-700 font-semibold">
+                {t('thursdayEvent')}
+              </p>
+            </div>
+
             {/* Friday */}
             <div className="bg-white rounded-lg shadow-lg p-8 text-center">
               <div className="text-4xl mb-4 text-primary-600">
@@ -93,6 +109,22 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
               </div>
               <p className="text-lg text-gray-700 font-semibold">
                 {t('fridayEvent')}
+              </p>
+            </div>
+
+            {/* Saturday */}
+            <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+              <div className="text-4xl mb-4 text-primary-600">
+                <FontAwesomeIcon icon={faHandshake} />
+              </div>
+              <h3 className="text-2xl font-bold text-primary-700 mb-4">
+                {t('saturday')}
+              </h3>
+              <div className="text-3xl font-bold text-secondary-600 mb-2">
+                {t('saturdayTime')}
+              </div>
+              <p className="text-lg text-gray-700 font-semibold">
+                {t('saturdayEvent')}
               </p>
             </div>
 

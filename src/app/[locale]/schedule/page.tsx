@@ -13,7 +13,9 @@ import {
   faMapMarkerAlt,
   faMap,
   faPhone,
-  faHandshake
+  faHandshake,
+  faMusic,
+  faGuitar
 } from '@fortawesome/free-solid-svg-icons';
 import type { Metadata } from 'next';
 
@@ -112,7 +114,23 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
               </p>
             </div>
 
-            {/* Saturday */}
+            {/* Saturday - Music Classes */}
+            <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+              <div className="text-4xl mb-4 text-primary-600">
+                <FontAwesomeIcon icon={faMusic} />
+              </div>
+              <h3 className="text-2xl font-bold text-primary-700 mb-4">
+                {t('saturday')}
+              </h3>
+              <div className="text-3xl font-bold text-secondary-600 mb-2">
+                {t('saturdayMusicTime')}
+              </div>
+              <p className="text-lg text-gray-700 font-semibold">
+                {t('saturdayMusicEvent')}
+              </p>
+            </div>
+
+            {/* Saturday - Jiu-Jitsu */}
             <div className="bg-white rounded-lg shadow-lg p-8 text-center">
               <div className="text-4xl mb-4 text-primary-600">
                 <FontAwesomeIcon icon={faHandshake} />
@@ -125,6 +143,25 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
               </div>
               <p className="text-lg text-gray-700 font-semibold">
                 {t('saturdayEvent')}
+              </p>
+            </div>
+
+            {/* Saturday - Teens Service */}
+            <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+              <div className="text-4xl mb-4 text-primary-600">
+                <FontAwesomeIcon icon={faUsers} />
+              </div>
+              <h3 className="text-2xl font-bold text-primary-700 mb-4">
+                {t('saturday')}
+              </h3>
+              <div className="text-3xl font-bold text-secondary-600 mb-2">
+                {t('saturdayTeensTime')}
+              </div>
+              <p className="text-lg text-gray-700 font-semibold">
+                {t('saturdayTeensEvent')}
+              </p>
+              <p className="text-sm text-gray-500 mt-2">
+                ({t('saturdayTeensFrequency')})
               </p>
             </div>
 

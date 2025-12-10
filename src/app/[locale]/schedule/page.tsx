@@ -83,7 +83,7 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
             </div>
 
             {/* Thursday */}
-            <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+            {/* <div className="bg-white rounded-lg shadow-lg p-8 text-center">
               <div className="text-4xl mb-4 text-primary-600">
                 <FontAwesomeIcon icon={faBook} />
               </div>
@@ -96,7 +96,7 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
               <p className="text-lg text-gray-700 font-semibold">
                 {t('thursdayEvent')}
               </p>
-            </div>
+            </div> */}
 
             {/* Friday */}
             <div className="bg-white rounded-lg shadow-lg p-8 text-center">
@@ -115,7 +115,7 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
             </div>
 
             {/* Saturday - Music Classes */}
-            <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+            {/* <div className="bg-white rounded-lg shadow-lg p-8 text-center">
               <div className="text-4xl mb-4 text-primary-600">
                 <FontAwesomeIcon icon={faMusic} />
               </div>
@@ -128,10 +128,10 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
               <p className="text-lg text-gray-700 font-semibold">
                 {t('saturdayMusicEvent')}
               </p>
-            </div>
+            </div> */}
 
             {/* Saturday - Jiu-Jitsu */}
-            <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+            {/* <div className="bg-white rounded-lg shadow-lg p-8 text-center">
               <div className="text-4xl mb-4 text-primary-600">
                 <FontAwesomeIcon icon={faHandshake} />
               </div>
@@ -144,10 +144,10 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
               <p className="text-lg text-gray-700 font-semibold">
                 {t('saturdayEvent')}
               </p>
-            </div>
+            </div> */}
 
             {/* Saturday - Teens Service */}
-            <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+            {/* <div className="bg-white rounded-lg shadow-lg p-8 text-center">
               <div className="text-4xl mb-4 text-primary-600">
                 <FontAwesomeIcon icon={faUsers} />
               </div>
@@ -163,7 +163,7 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
               <p className="text-sm text-gray-500 mt-2">
                 ({t('saturdayTeensFrequency')})
               </p>
-            </div>
+            </div> */}
 
             {/* Sunday */}
             <div className="bg-white rounded-lg shadow-lg p-8 text-center">

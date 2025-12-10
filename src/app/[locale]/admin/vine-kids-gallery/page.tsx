@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { getSupabaseClient } from '@/lib/supabase';
 import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faUpload, faSpinner, faArrowLeft, faImage } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faUpload, faSpinner, faArrowLeft, faImage, faEdit, faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 interface GalleryImage {
   id: string;
@@ -34,6 +34,18 @@ export default function VineKidsGalleryAdmin() {
   const [displayOrder, setDisplayOrder] = useState(0);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  // Edit state
+  const [editingImage, setEditingImage] = useState<string | null>(null);
+  const [editFormData, setEditFormData] = useState<{
+    alt_text_pt: string;
+    alt_text_en: string;
+    display_order: number;
+  }>({
+    alt_text_pt: '',
+    alt_text_en: '',
+    display_order: 0,
+  });
 
   useEffect(() => {
     const init = async () => {
@@ -224,6 +236,52 @@ export default function VineKidsGalleryAdmin() {
       await fetchImages();
     } catch (err) {
       setError('Failed to delete image: ' + (err instanceof Error ? err.message : 'Unknown error'));
+      console.error(err);
+    }
+  };
+
+  const handleEdit = (image: GalleryImage) => {
+    setEditingImage(image.id);
+    setEditFormData({
+      alt_text_pt: image.alt_text_pt,
+      alt_text_en: image.alt_text_en,
+      display_order: image.display_order,
+    });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingImage(null);
+    setEditFormData({
+      alt_text_pt: '',
+      alt_text_en: '',
+      display_order: 0,
+    });
+  };
+
+  const handleSaveEdit = async (id: string) => {
+    try {
+      const supabase = getSupabaseClient();
+      if (!supabase) throw new Error('Supabase not available');
+
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error('Not authenticated');
+
+      const response = await fetch(`/api/vine-kids-gallery/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify(editFormData),
+      });
+
+      if (!response.ok) throw new Error('Failed to update image');
+
+      setSuccess('Image updated successfully!');
+      setEditingImage(null);
+      await fetchImages();
+    } catch (err) {
+      setError('Failed to update image: ' + (err instanceof Error ? err.message : 'Unknown error'));
       console.error(err);
     }
   };
@@ -419,25 +477,92 @@ export default function VineKidsGalleryAdmin() {
                     />
                   </div>
                   <div className="p-4">
-                    <p className="text-sm text-gray-600 mb-1">
-                      <strong>PT:</strong> {image.alt_text_pt}
-                    </p>
-                    <p className="text-sm text-gray-600 mb-2">
-                      <strong>EN:</strong> {image.alt_text_en}
-                    </p>
-                    <div className="flex justify-between items-center text-xs text-gray-500 mb-3">
-                      <span className="bg-gray-100 px-2 py-1 rounded">
-                        {image.orientation}
-                      </span>
-                      <span>Order: {image.display_order}</span>
-                    </div>
-                    <button
-                      onClick={() => handleDelete(image.id)}
-                      className="w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 flex items-center justify-center gap-2"
-                    >
-                      <FontAwesomeIcon icon={faTrash} />
-                      Delete
-                    </button>
+                    {editingImage === image.id ? (
+                      // Edit mode
+                      <div className="space-y-3">
+                        <div>
+                          <label className="block text-xs font-medium text-gray-700 mb-1">
+                            Alt Text (PT)
+                          </label>
+                          <input
+                            type="text"
+                            value={editFormData.alt_text_pt}
+                            onChange={(e) => setEditFormData({ ...editFormData, alt_text_pt: e.target.value })}
+                            className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-primary-500 focus:border-primary-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-700 mb-1">
+                            Alt Text (EN)
+                          </label>
+                          <input
+                            type="text"
+                            value={editFormData.alt_text_en}
+                            onChange={(e) => setEditFormData({ ...editFormData, alt_text_en: e.target.value })}
+                            className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-primary-500 focus:border-primary-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-700 mb-1">
+                            Display Order
+                          </label>
+                          <input
+                            type="number"
+                            value={editFormData.display_order}
+                            onChange={(e) => setEditFormData({ ...editFormData, display_order: parseInt(e.target.value) || 0 })}
+                            className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-primary-500 focus:border-primary-500"
+                          />
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleSaveEdit(image.id)}
+                            className="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 flex items-center justify-center gap-2 text-sm"
+                          >
+                            <FontAwesomeIcon icon={faSave} />
+                            Save
+                          </button>
+                          <button
+                            onClick={handleCancelEdit}
+                            className="flex-1 bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 flex items-center justify-center gap-2 text-sm"
+                          >
+                            <FontAwesomeIcon icon={faTimes} />
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      // View mode
+                      <>
+                        <p className="text-sm text-gray-600 mb-1">
+                          <strong>PT:</strong> {image.alt_text_pt}
+                        </p>
+                        <p className="text-sm text-gray-600 mb-2">
+                          <strong>EN:</strong> {image.alt_text_en}
+                        </p>
+                        <div className="flex justify-between items-center text-xs text-gray-500 mb-3">
+                          <span className="bg-gray-100 px-2 py-1 rounded">
+                            {image.orientation}
+                          </span>
+                          <span>Order: {image.display_order}</span>
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleEdit(image)}
+                            className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 flex items-center justify-center gap-2 text-sm"
+                          >
+                            <FontAwesomeIcon icon={faEdit} />
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(image.id)}
+                            className="flex-1 bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 flex items-center justify-center gap-2 text-sm"
+                          >
+                            <FontAwesomeIcon icon={faTrash} />
+                            Delete
+                          </button>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
               ))}

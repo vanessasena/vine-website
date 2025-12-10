@@ -174,3 +174,11 @@ export async function PATCH(
     );
   }
 }
+
+// PUT - Update display order or other fields (alias for PATCH)
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  return PATCH(request, { params });
+}

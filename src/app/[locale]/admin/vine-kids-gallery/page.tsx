@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { getSupabaseClient } from '@/lib/supabase';
 import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -19,6 +19,8 @@ interface GalleryImage {
 
 export default function VineKidsGalleryAdmin() {
   const router = useRouter();
+  const pathname = usePathname();
+  const locale = pathname.split('/')[1] || 'pt'; // Extract locale from pathname
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -240,7 +242,7 @@ export default function VineKidsGalleryAdmin() {
         {/* Header */}
         <div className="mb-8">
           <button
-            onClick={() => router.push('/admin')}
+            onClick={() => router.push(`/${locale}/admin`)}
             className="mb-4 text-primary-600 hover:text-primary-700 flex items-center gap-2"
           >
             <FontAwesomeIcon icon={faArrowLeft} />

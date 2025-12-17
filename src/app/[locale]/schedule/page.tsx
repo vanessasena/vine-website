@@ -222,6 +222,44 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
                 </div>
               </div> */}
 
+              {/* First Fruits Service */}
+              <div className="bg-gradient-to-br from-green-100 to-green-200 rounded-lg shadow-lg p-8 text-center">
+                <div className="text-4xl mb-4 text-green-600">
+                  <FontAwesomeIcon icon={faChurch} />
+                </div>
+                <h3 className="text-2xl font-bold text-primary-700 mb-4">
+                  {t('firstFruits')}
+                </h3>
+                <div className="text-xl font-bold text-green-700 mb-2">
+                  {t('firstFruitsDate')}
+                </div>
+                <div className="text-lg text-gray-700 mb-2">
+                  {t('firstFruitsTime')}
+                </div>
+                <p className="text-sm text-gray-600 italic">
+                  {t('firstFruitsDesc')}
+                </p>
+              </div>
+
+              {/* Grand Opening */}
+              <div className="bg-gradient-to-br from-accent-100 to-accent-200 rounded-lg shadow-lg p-8 text-center">
+                <div className="text-4xl mb-4 text-accent-600">
+                  <FontAwesomeIcon icon={faChurch} />
+                </div>
+                <h3 className="text-2xl font-bold text-primary-700 mb-4">
+                  {t('grandOpening')}
+                </h3>
+                <div className="text-xl font-bold text-accent-700 mb-2">
+                  {t('grandOpeningDate')}
+                </div>
+                <div className="text-lg text-gray-700 mb-2">
+                  {t('grandOpeningTime')}
+                </div>
+                <p className="text-sm text-gray-600 italic">
+                  {t('grandOpeningDesc')}
+                </p>
+              </div>
+
             </div>
           </div>
 

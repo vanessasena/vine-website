@@ -11,11 +11,41 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { getSermonById, formatDate } from '@/lib/sermons';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 
 interface PageProps {
   params: {
     locale: string;
     id: string;
+  };
+}
+
+// Generate metadata with canonical URL
+export async function generateMetadata({ params: { locale, id } }: PageProps): Promise<Metadata> {
+  const sermon = await getSermonById(id);
+
+  if (!sermon) {
+    return {};
+  }
+
+  const baseUrl = 'https://vinechurch.ca';
+  const canonicalUrl = `${baseUrl}/${locale}/sermons/${id}`;
+  const title = sermon.title[locale as 'pt' | 'en'];
+  const description = sermon.content[locale as 'pt' | 'en']?.slice(0, 160) || title;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      type: 'article',
+      publishedTime: sermon.date,
+    },
   };
 }
 

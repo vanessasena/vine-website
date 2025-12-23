@@ -360,7 +360,7 @@ export default function AdminClient({ locale }: { locale: string }) {
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Quick Links Section */}
-        <div className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
           <Link
             href={`/${locale}/admin/vine-kids-gallery`}
             className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200 border-l-4 border-accent-600"
@@ -370,6 +370,18 @@ export default function AdminClient({ locale }: { locale: string }) {
             </h3>
             <p className="text-gray-600 text-sm">
               {locale === 'pt' ? 'Gerenciar imagens da galeria Vine Kids' : 'Manage Vine Kids gallery images'}
+            </p>
+          </Link>
+
+          <Link
+            href={`/${locale}/admin/volunteers`}
+            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200 border-l-4 border-secondary-600"
+          >
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              {locale === 'pt' ? 'Gerenciar Voluntários' : 'Manage Volunteers'}
+            </h3>
+            <p className="text-gray-600 text-sm">
+              {locale === 'pt' ? 'Visualizar cadastros de voluntários' : 'View volunteer registrations'}
             </p>
           </Link>
 

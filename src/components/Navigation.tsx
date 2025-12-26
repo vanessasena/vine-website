@@ -1,12 +1,12 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
-import { usePathname } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faTimes, faSignOutAlt, faUser, faUserShield } from '@fortawesome/free-solid-svg-icons';
 
 interface NavigationProps {
   locale: string;
@@ -15,7 +15,67 @@ interface NavigationProps {
 export default function Navigation({ locale }: NavigationProps) {
   const t = useTranslations('navigation');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userRole, setUserRole] = useState<'member' | 'admin' | null>(null);
   const pathname = usePathname();
+  const router = useRouter();
+
+  // Check authentication status
+  useEffect(() => {
+    async function checkAuth() {
+      try {
+        const { createClient } = await import('@supabase/supabase-js');
+        const supabase = createClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+        );
+
+        const { data: { session } } = await supabase.auth.getSession();
+
+        if (session) {
+          setIsAuthenticated(true);
+
+          // Get user role
+          const { data: userData } = await supabase
+            .from('users')
+            .select('role')
+            .eq('id', session.user.id)
+            .single();
+
+          if (userData) {
+            setUserRole(userData.role);
+          }
+        } else {
+          setIsAuthenticated(false);
+          setUserRole(null);
+        }
+      } catch (error) {
+        console.error('Error checking auth:', error);
+        setIsAuthenticated(false);
+        setUserRole(null);
+      }
+    }
+
+    checkAuth();
+  }, [pathname]);
+
+  const handleLogout = async () => {
+    try {
+      const { createClient } = await import('@supabase/supabase-js');
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+      );
+
+      await supabase.auth.signOut();
+      setIsAuthenticated(false);
+      setUserRole(null);
+      router.push(`/${locale}`);
+      router.refresh();
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
 
   // Function to check if a link is active
   const isActive = (path: string): boolean => {
@@ -76,6 +136,36 @@ export default function Navigation({ locale }: NavigationProps) {
               {t('contact')}
             </Link>
 
+            {/* User Menu */}
+            {isAuthenticated ? (
+              <>
+                {userRole === 'admin' && (
+                  <Link href={`/${locale}/admin`} className={getLinkClasses(`/${locale}/admin`)}>
+                    <FontAwesomeIcon icon={faUserShield} className="mr-1" />
+                    Admin
+                  </Link>
+                )}
+                {userRole === 'member' && (
+                  <Link href={`/${locale}/member`} className={getLinkClasses(`/${locale}/member`)}>
+                    <FontAwesomeIcon icon={faUser} className="mr-1" />
+                    {locale === 'pt' ? 'Membro' : 'Member'}
+                  </Link>
+                )}
+                <button
+                  onClick={handleLogout}
+                  className="px-3 py-2 rounded-md text-gray-700 hover:text-primary-600 hover:bg-primary-50 transition-colors duration-200"
+                >
+                  <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" />
+                  {locale === 'pt' ? 'Sair' : 'Logout'}
+                </button>
+              </>
+            ) : (
+              <Link href={`/${locale}/login`} className={getLinkClasses(`/${locale}/login`)}>
+                <FontAwesomeIcon icon={faUser} className="mr-1" />
+                Login
+              </Link>
+            )}
+
             {/* Language Switcher */}
             <div className="flex space-x-2">
               <Link
@@ -132,6 +222,37 @@ export default function Navigation({ locale }: NavigationProps) {
               <Link href={`/${locale}/contact`} className={getLinkClasses(`/${locale}/contact`, true)}>
                 {t('contact')}
               </Link>
+
+              {/* User Menu Mobile */}
+              {isAuthenticated ? (
+                <>
+                  {userRole === 'admin' && (
+                    <Link href={`/${locale}/admin`} className={getLinkClasses(`/${locale}/admin`, true)}>
+                      <FontAwesomeIcon icon={faUserShield} className="mr-2" />
+                      Admin
+                    </Link>
+                  )}
+                  {userRole === 'member' && (
+                    <Link href={`/${locale}/member`} className={getLinkClasses(`/${locale}/member`, true)}>
+                      <FontAwesomeIcon icon={faUser} className="mr-2" />
+                      {locale === 'pt' ? 'Membro' : 'Member'}
+                    </Link>
+                  )}
+                  <button
+                    onClick={handleLogout}
+                    className="py-2 px-3 rounded-md text-left text-gray-700 hover:text-primary-600 hover:bg-primary-50 transition-colors duration-200 w-full"
+                  >
+                    <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
+                    {locale === 'pt' ? 'Sair' : 'Logout'}
+                  </button>
+                </>
+              ) : (
+                <Link href={`/${locale}/login`} className={getLinkClasses(`/${locale}/login`, true)}>
+                  <FontAwesomeIcon icon={faUser} className="mr-2" />
+                  Login
+                </Link>
+              )}
+
               <div className="flex space-x-2 pt-2">
                 <Link
                   href={`/pt`}

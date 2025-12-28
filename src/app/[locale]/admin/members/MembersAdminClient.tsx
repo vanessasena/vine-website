@@ -3,10 +3,10 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { VOLUNTEER_AREA_OPTIONS } from '@/lib/constants';
 import {
   faUsers,
   faFilter,
-  faUser,
   faEnvelope,
   faPhone,
   faBirthdayCake,
@@ -34,22 +34,6 @@ interface MemberProfile {
 }
 
 const ITEMS_PER_PAGE = 10;
-
-const VOLUNTEER_AREA_OPTIONS = [
-  'louvor',
-  'tecnologia',
-  'recepcao',
-  'kids',
-  'teens',
-  'celulas',
-  'intercedao',
-  'midia',
-  'limpeza',
-  'cozinha',
-  'eventos',
-  'transporte',
-  'outros',
-];
 
 interface MembersAdminClientProps {
   locale: string;
@@ -240,14 +224,16 @@ export default function MembersAdminClient({ locale }: MembersAdminClientProps) 
                 </div>
 
                 <div className="flex items-center gap-4 mb-4">
+                    {member.is_baptized && (
                   <span className={`flex items-center ${member.is_baptized ? 'text-green-600' : 'text-gray-400'}`}>
                     <FontAwesomeIcon icon={faCheckCircle} className="mr-1" />
                     {locale === 'pt' ? 'Batizado' : 'Baptized'}
-                  </span>
+                  </span>)}
+                        {member.pays_tithe && (
                   <span className={`flex items-center ${member.pays_tithe ? 'text-green-600' : 'text-gray-400'}`}>
                     <FontAwesomeIcon icon={faChurch} className="mr-1" />
                     {locale === 'pt' ? 'Dizimista' : 'Tither'}
-                  </span>
+                  </span>)}
                 </div>
 
                 {member.volunteer_areas.length > 0 && (

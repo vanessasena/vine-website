@@ -157,3 +157,20 @@ COMMENT ON TABLE public.member_profiles IS 'Stores detailed member profile infor
 COMMENT ON COLUMN public.member_profiles.volunteer_areas IS 'Array of volunteer area keys (e.g., louvor, tecnologia, recepcao, etc.)';
 COMMENT ON COLUMN public.member_profiles.life_group IS 'Name or identifier of the life group (célula) the member belongs to';
 COMMENT ON COLUMN public.member_profiles.pays_tithe IS 'Indicates if member pays dízimo (tithe)';
+
+
+-- Add volunteer_outros_details column to member_profiles table
+-- Run this script in your Supabase SQL Editor to add the new field
+
+ALTER TABLE public.member_profiles
+ADD COLUMN IF NOT EXISTS volunteer_outros_details TEXT;
+
+-- Add comment to describe the column
+COMMENT ON COLUMN public.member_profiles.volunteer_outros_details IS 'Details about how the member can help when "outros" (other) volunteer area is selected';
+
+-- Verify the column was added
+SELECT column_name, data_type, is_nullable
+FROM information_schema.columns
+WHERE table_schema = 'public'
+AND table_name = 'member_profiles'
+AND column_name = 'volunteer_outros_details';

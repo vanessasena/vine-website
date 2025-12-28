@@ -82,6 +82,7 @@ export async function POST(request: NextRequest) {
       is_baptized,
       pays_tithe,
       volunteer_areas,
+      volunteer_outros_details,
       life_group
     } = body;
 
@@ -119,6 +120,7 @@ export async function POST(request: NextRequest) {
         is_baptized: is_baptized || false,
         pays_tithe: pays_tithe || false,
         volunteer_areas: volunteer_areas || [],
+        volunteer_outros_details: volunteer_outros_details || null,
         life_group: life_group || null
       })
       .select()
@@ -163,6 +165,7 @@ export async function PUT(request: NextRequest) {
       is_baptized,
       pays_tithe,
       volunteer_areas,
+      volunteer_outros_details,
       life_group
     } = body;
 
@@ -185,6 +188,7 @@ export async function PUT(request: NextRequest) {
         is_baptized: is_baptized || false,
         pays_tithe: pays_tithe || false,
         volunteer_areas: volunteer_areas || [],
+        volunteer_outros_details: volunteer_outros_details || null,
         life_group: life_group || null
       })
       .eq('user_id', user.id)

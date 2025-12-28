@@ -16,7 +16,8 @@ import {
   faSpinner,
   faDatabase,
   faFile,
-  faSignOutAlt
+  faSignOutAlt,
+  faUser
 } from '@fortawesome/free-solid-svg-icons';
 import { getSession, signOut } from '@/lib/auth';
 
@@ -348,6 +349,13 @@ export default function AdminClient({ locale }: { locale: string }) {
               <p className="mt-2 text-white text-opacity-90">{t('subtitle')}</p>
             </div>
             <div className="flex gap-3">
+              <Link
+                href={`/${locale}/member`}
+                className="inline-flex items-center bg-white bg-opacity-20 hover:bg-opacity-30 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+              >
+                <FontAwesomeIcon icon={faUser} className="mr-2" />
+                {locale === 'pt' ? 'Meu Perfil' : 'My Profile'}
+              </Link>
               <button
                 onClick={handleSignOut}
                 className="inline-flex items-center bg-white bg-opacity-20 hover:bg-opacity-30 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"

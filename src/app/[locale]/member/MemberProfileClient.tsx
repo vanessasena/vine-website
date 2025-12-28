@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -16,7 +17,9 @@ import {
   faEdit,
   faSave,
   faTimes,
+  faArrowLeft,
 } from '@fortawesome/free-solid-svg-icons';
+import { VOLUNTEER_AREA_OPTIONS } from '@/lib/constants';
 
 interface MemberProfile {
   id: string;
@@ -28,6 +31,7 @@ interface MemberProfile {
   is_baptized: boolean;
   pays_tithe: boolean;
   volunteer_areas: string[];
+  volunteer_outros_details: string | null;
   life_group: string | null;
   created_at: string;
   updated_at: string;
@@ -37,24 +41,9 @@ interface MemberProfileClientProps {
   locale: string;
 }
 
-const VOLUNTEER_AREA_OPTIONS = [
-  'louvor',
-  'tecnologia',
-  'recepcao',
-  'kids',
-  'teens',
-  'celulas',
-  'intercedao',
-  'midia',
-  'limpeza',
-  'cozinha',
-  'eventos',
-  'transporte',
-  'outros',
-];
-
 export default function MemberProfileClient({ locale }: MemberProfileClientProps) {
   const t = useTranslations('member');
+  const tCells = useTranslations('cells');
   const router = useRouter();
   const [profile, setProfile] = useState<MemberProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -62,6 +51,9 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [phoneError, setPhoneError] = useState<string | null>(null);
+  const [dateError, setDateError] = useState(false);
+  const [userRole, setUserRole] = useState<'member' | 'admin' | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -70,6 +62,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
     is_baptized: false,
     pays_tithe: false,
     volunteer_areas: [] as string[],
+    volunteer_outros_details: '',
     life_group: '',
   });
 
@@ -105,11 +98,8 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
       // Handle response - even errors should be parsed as JSON
       const result = await response.json();
 
-      // If user has admin role, redirect to admin area
-      if (result.role === 'admin') {
-        router.push(`/${locale}/admin`);
-        return;
-      }
+      // Store user role
+      setUserRole(result.role || 'member');
 
       if (result.data) {
         setProfile(result.data);
@@ -121,6 +111,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
           is_baptized: result.data.is_baptized,
           pays_tithe: result.data.pays_tithe,
           volunteer_areas: result.data.volunteer_areas || [],
+          volunteer_outros_details: result.data.volunteer_outros_details || '',
           life_group: result.data.life_group || '',
         });
       } else {
@@ -134,6 +125,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
           is_baptized: false,
           pays_tithe: false,
           volunteer_areas: [],
+          volunteer_outros_details: '',
           life_group: '',
         });
       }
@@ -157,14 +149,112 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
     }
   }, [currentUserId]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const formatPhoneInput = (value: string): string => {
+    // Remove all characters except digits, spaces, hyphens, parentheses, and plus
+    let cleaned = value.replace(/[^\d\s\-()+ ]/g, '');
+
+    // Remove multiple consecutive spaces
+    cleaned = cleaned.replace(/\s+/g, ' ');
+
+    // Remove invalid parentheses patterns (empty parentheses, mismatched, etc.)
+    // Only allow ( before digits and ) after digits
+    cleaned = cleaned.replace(/\(\s*\)/g, ''); // Remove empty parentheses
+    cleaned = cleaned.replace(/\){2,}/g, ')'); // Remove multiple closing parentheses
+    cleaned = cleaned.replace(/\({2,}/g, '('); // Remove multiple opening parentheses
+
+    // Ensure plus sign is only at the beginning
+    if (cleaned.includes('+')) {
+      cleaned = '+' + cleaned.replace(/\+/g, '');
+    }
+
+    return cleaned;
+  };
+
+  const validatePhone = (phone: string): boolean => {
+    // Remove all non-digit characters for validation
+    const digitsOnly = phone.replace(/\D/g, '');
+
+    // Must have exactly 10 or 11 digits
+    if (digitsOnly.length !== 10 && digitsOnly.length !== 11) {
+      return false;
+    }
+
+    // Check for valid format patterns
+    // Patterns: (519) 123-4567, 519-123-4567, 5191234567, +1-519-123-4567, +1 519 123 4567, etc.
+    const validPatterns = [
+      /^\d{10}$/, // 5191234567
+      /^\d{11}$/, // 15191234567
+      /^\d{3}[-\s]\d{3}[-\s]\d{4}$/, // 519-123-4567 or 519 123 4567
+      /^\(\d{3}\)\s?\d{3}[-\s]?\d{4}$/, // (519) 123-4567 or (519)123-4567
+      /^\+1[-\s]?\d{3}[-\s]?\d{3}[-\s]?\d{4}$/, // +1-519-123-4567
+      /^\+1[-\s]?\(\d{3}\)\s?\d{3}[-\s]?\d{4}$/, // +1-(519) 123-4567
+    ];
+
+    return validPatterns.some(pattern => pattern.test(phone.trim()));
+  };
+
+  const validateDateOfBirth = (dateString: string): boolean => {
+    if (!dateString || dateString.trim() === '') {
+      return true; // Allow empty dates
+    }
+
+    const selectedDate = new Date(dateString);
+    const today = new Date();
+
+    // Check if date is valid
+    if (isNaN(selectedDate.getTime())) {
+      return false;
+    }
+
+    // Date cannot be in the future
+    if (selectedDate > today) {
+      return false;
+    }
+
+    // Calculate age
+    const age = today.getFullYear() - selectedDate.getFullYear();
+    const monthDiff = today.getMonth() - selectedDate.getMonth();
+    const dayDiff = today.getDate() - selectedDate.getDate();
+    const actualAge = monthDiff < 0 || (monthDiff === 0 && dayDiff < 0) ? age - 1 : age;
+
+    // Age must be between 0 and 120 years
+    if (actualAge < 0 || actualAge > 120) {
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
 
     if (type === 'checkbox') {
       const checked = (e.target as HTMLInputElement).checked;
       setFormData(prev => ({ ...prev, [name]: checked }));
     } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
+      let processedValue = value;
+
+      // For phone input, format and validate
+      if (name === 'phone') {
+        processedValue = formatPhoneInput(value);
+
+        if (processedValue && !validatePhone(processedValue)) {
+          setPhoneError(t('phoneError'));
+        } else {
+          setPhoneError(null);
+        }
+      }
+
+      // Validate date of birth on change
+      if (name === 'date_of_birth') {
+        if (value && !validateDateOfBirth(value)) {
+          setDateError(true);
+        } else {
+          setDateError(false);
+        }
+      }
+
+      setFormData(prev => ({ ...prev, [name]: processedValue }));
     }
   };
 
@@ -179,8 +269,24 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
 
   const handleSave = async () => {
     try {
+      // Validate phone before saving
+      if (!validatePhone(formData.phone)) {
+        setPhoneError(t('phoneError'));
+        setError(t('fixErrors'));
+        return;
+      }
+
+      // Validate date of birth before saving
+      if (!validateDateOfBirth(formData.date_of_birth)) {
+        setDateError(true);
+        setError(t('fixErrors'));
+        return;
+      }
+
       setIsSaving(true);
       setError(null);
+      setPhoneError(null);
+      setDateError(false);
 
       const { createClient } = await import('@supabase/supabase-js');
       const supabase = createClient(
@@ -230,6 +336,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
         is_baptized: profile.is_baptized,
         pays_tithe: profile.pays_tithe,
         volunteer_areas: profile.volunteer_areas || [],
+        volunteer_outros_details: profile.volunteer_outros_details || '',
         life_group: profile.life_group || '',
       });
       setIsEditing(false);
@@ -251,6 +358,19 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
   return (
     <div className="py-16 bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        {/* Admin Navigation */}
+        {userRole === 'admin' && (
+          <div className="mb-6">
+            <Link
+              href={`/${locale}/admin`}
+              className="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium"
+            >
+              <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
+              {locale === 'pt' ? 'Voltar para Administração' : 'Back to Admin'}
+            </Link>
+          </div>
+        )}
 
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
@@ -328,8 +448,14 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                   required
                   value={formData.phone}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  placeholder={t('phonePlaceholder')}
+                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 ${
+                    phoneError ? 'border-red-500' : 'border-gray-300'
+                  }`}
                 />
+                {phoneError && (
+                  <p className="mt-1 text-sm text-red-600">{phoneError}</p>
+                )}
               </div>
 
               {/* Date of Birth */}
@@ -344,8 +470,17 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                   name="date_of_birth"
                   value={formData.date_of_birth}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 ${
+                    dateError ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  max={new Date().toISOString().split('T')[0]}
                 />
+                {dateError && (
+                  <p className="mt-1 text-sm text-red-600">{t('dateOfBirthError')}</p>
+                )}
+                {!dateError && formData.date_of_birth && (
+                  <p className="mt-1 text-xs text-gray-500">{t('dateOfBirthHint')}</p>
+                )}
               </div>
 
               {/* Baptized */}
@@ -386,15 +521,23 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                   <FontAwesomeIcon icon={faUsers} className="mr-2 text-primary-600" />
                   {t('lifeGroup')}
                 </label>
-                <input
-                  type="text"
+                <select
                   id="life_group"
                   name="life_group"
                   value={formData.life_group}
                   onChange={handleInputChange}
-                  placeholder={t('lifeGroupPlaceholder')}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                />
+                >
+                  <option value="">{t('lifeGroupPlaceholder')}</option>
+                  {['roots', 'kitchener', 'cambridge', 'waterloo', 'youth'].map((groupKey) => {
+                    const groupName = tCells(`groups.${groupKey}.name`);
+                    return (
+                      <option key={groupKey} value={groupName}>
+                        {groupName}
+                      </option>
+                    );
+                  })}
+                </select>
               </div>
 
               {/* Volunteer Areas */}
@@ -419,6 +562,24 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                     </div>
                   ))}
                 </div>
+
+                {/* Show text field when "outros" is selected */}
+                {formData.volunteer_areas.includes('outros') && (
+                  <div className="mt-4">
+                    <label htmlFor="outros_details" className="block text-sm font-medium text-gray-700 mb-2">
+                      {t('outrosDetailsLabel')}
+                    </label>
+                    <textarea
+                      id="outros_details"
+                      name="volunteer_outros_details"
+                      value={formData.volunteer_outros_details}
+                      onChange={handleInputChange}
+                      rows={3}
+                      placeholder={t('outrosDetailsPlaceholder')}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    />
+                  </div>
+                )}
               </div>
 
               {/* Action Buttons */}
@@ -534,6 +695,14 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                         </span>
                       ))}
                     </div>
+                    {profile.volunteer_areas.includes('outros') && profile.volunteer_outros_details && (
+                      <div className="mt-3 p-3 bg-gray-50 rounded-lg">
+                        <div className="text-sm font-medium text-gray-700 mb-1">
+                          {t('outrosDetailsLabel')}:
+                        </div>
+                        <div className="text-sm text-gray-600">{profile.volunteer_outros_details}</div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

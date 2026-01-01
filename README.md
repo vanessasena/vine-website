@@ -1,6 +1,6 @@
 # Vine Church KWC Website
 
-A modern, bilingual church website built with Next.js for Vine Church in Cambridge, Ontario, Canada.
+A modern, bilingual church website built with Next.js for Vine Church in Kitchener, Ontario, Canada.
 
 ## Features
 
@@ -78,8 +78,8 @@ The website includes:
 
 ## Church Information
 
-- **Location**: Cambridge, Ontario, Canada
-- **Address**: 55 Dickson Street, 8 Petty Pl, Cambridge, ON N1R 7A5
+- **Location**: Kitchener, Ontario, Canada
+- **Address**: 417 King St W, Kitchener, ON N2G 1C2
 - **Service Time**: Sunday at 10 AM
 - **Pastor**: Pr Boris Carvalho
 

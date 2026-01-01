@@ -15,7 +15,7 @@
     "subtitle": "A Church of Overcomers in the Waterloo Region",
     "description": "Building a church of overcomers, where every member is a priest and every home an extension of the church, conquering our generation for Christ through multiplying cells.",
     "cta": "Learn More",
-    "address": "55 Dickson Street, 8 Petty Pl, Cambridge",
+    "address": "417 King St W, Kitchener",
     "serviceTime": "Service every Sunday at 10 AM"
   },
   "about": {
@@ -62,7 +62,7 @@
     "subtitle": "Get in touch with us",
     "moreInfo": "More Information",
     "address": "Address",
-    "addressText": "55 Dickson Street, 8 Petty Pl, Cambridge, ON N1R 7A5",
+    "addressText": "417 King St W, Kitchener, ON N2G 1C2",
     "service": "Service",
     "serviceText": "Sunday at 10 AM",
     "pastor": "Pastor",
@@ -107,16 +107,12 @@
     "baptismDate": "November 16, 2025",
     "baptismTime": "During service",
     "specialEvents": "Special Events",
-    "firstFruits": "First Fruits Service",
-    "firstFruitsDate": "December 31, 2025",
-    "firstFruitsTime": "9:00 PM",
-    "firstFruitsDesc": "First service at new address (soft opening)",
     "grandOpening": "Grand Opening",
     "grandOpeningDate": "January 31, 2026",
     "grandOpeningTime": "7:00 PM",
     "grandOpeningDesc": "Special service with guests from Toronto and USA",
     "location": "Location",
-    "allEventsLocation": "55 Dickson Street, 8 Petty Pl, Cambridge, ON N1R 7A5"
+    "allEventsLocation": "417 King St W, Kitchener, ON N2G 1C2"
   },
   "vineKids": {
     "title": "Vine Kids",
@@ -206,10 +202,6 @@
     "copyright": "© 2025 Vine Church KWC. All rights reserved.",
     "quickLinks": "Quick Links",
     "followUs": "Follow Us"
-  },
-  "addressChange": {
-    "title": "Notice:",
-    "message": "After December 31, our church address will change to 417 King St W, Kitchener, ON N2G 1C2."
   },
   "admin": {
     "title": "Admin",

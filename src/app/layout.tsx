@@ -107,16 +107,16 @@ export default function RootLayout({
     "image": "https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/logo_vine.png",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "55 Dickson Street, 8 Petty Pl",
-      "addressLocality": "Cambridge",
+      "streetAddress": "417 King St W",
+      "addressLocality": "Kitchener",
       "addressRegion": "ON",
-      "postalCode": "N1R 7A5",
+      "postalCode": "N2G 1C2",
       "addressCountry": "CA"
     },
     "geo": {
       "@type": "GeoCoordinates",
-      "latitude": "43.3616",
-      "longitude": "-80.3144"
+      "latitude": "43.4516",
+      "longitude": "-80.4925"
     },
     "telephone": "+1-365-228-2980",
     "email": "videiracanada@gmail.com",
@@ -126,7 +126,7 @@ export default function RootLayout({
     },
     "serviceArea": {
       "@type": "Place",
-      "name": "Cambridge, Ontario, Canada"
+      "name": "Kitchener, Ontario, Canada"
     },
     "areaServed": ["Cambridge", "Kitchener", "Waterloo", "Guelph"],
     "potentialAction": {
@@ -154,10 +154,10 @@ export default function RootLayout({
           "name": "Vine Church KWC",
           "address": {
             "@type": "PostalAddress",
-            "streetAddress": "55 Dickson Street, 8 Petty Pl",
-            "addressLocality": "Cambridge",
+            "streetAddress": "417 King St W",
+            "addressLocality": "Kitchener",
             "addressRegion": "ON",
-            "postalCode": "N1R 7A5",
+            "postalCode": "N2G 1C2",
             "addressCountry": "CA"
           }
         },

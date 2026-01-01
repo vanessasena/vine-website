@@ -15,7 +15,7 @@
     "subtitle": "Uma Igreja de Vencedores na Região de Waterloo",
     "description": "Nosso encargo é edificar uma igreja de vencedores, onde cada membro é um sacerdote e cada casa uma extensão da igreja, conquistando nossa geração para Cristo através das células que se multiplicam.",
     "cta": "Conheça Mais",
-    "address": "55 Dickson Street, 8 Petty Pl, Cambridge",
+    "address": "417 King St W, Kitchener",
     "serviceTime": "Culto todo domingo às 10 AM"
   },
   "about": {
@@ -30,7 +30,7 @@
     "cellChurch": "Igreja em Células",
     "cellChurchText": "Nos reunimos não apenas no prédio da igreja, mas também nas casas onde partimos o pão juntos e compartilhamos na vida uns dos outros, seguindo o modelo de Atos 2:42-44.",
     "history": "História",
-    "historyText": "A Igreja Videira teve seu início em 1997 na cidade de Goiânia, Goiás, Brasil. Nos últimos anos, Deus tem nos abençoado de uma maneira extraordinária e hoje somos mais de 1300 igrejas e cerca de 300 mil membros espalhados por todo o mundo. No Canadá estamos presentes em Toronto e Cambridge para a glória do Senhor Jesus.",
+    "historyText": "A Igreja Videira teve seu início em 1997 na cidade de Goiânia, Goiás, Brasil. Nos últimos anos, Deus tem nos abençoado de uma maneira extraordinária e hoje somos mais de 1300 igrejas e cerca de 300 mil membros espalhados por todo o mundo. No Canadá estamos presentes em Toronto e Kitchener para a glória do Senhor Jesus.",
     "pastor": "Pr Boris Carvalho",
     "pastorTitle": "Pastor Titular",
     "pastorDescription": "Pastor Boris Carvalho lidera a Vine Church KWC com paixão pelo Reino de Deus e pelo crescimento espiritual de cada membro da igreja."
@@ -62,7 +62,7 @@
     "subtitle": "Entre em contato conosco",
     "moreInfo": "Mais Informações",
     "address": "Endereço",
-    "addressText": "55 Dickson Street, 8 Petty Pl, Cambridge, ON N1R 7A5",
+    "addressText": "417 King St W, Kitchener, ON N2G 1C2",
     "service": "Culto",
     "serviceText": "Domingo às 10 AM",
     "pastor": "Pastor",
@@ -107,16 +107,12 @@
     "baptismDate": "16 de Novembro, 2025",
     "baptismTime": "Durante o culto",
     "specialEvents": "Eventos Especiais",
-    "firstFruits": "Culto das Premícias",
-    "firstFruitsDate": "31 de Dezembro, 2025",
-    "firstFruitsTime": "21:00",
-    "firstFruitsDesc": "Primeiro culto no novo endereço (soft opening)",
     "grandOpening": "Culto da Inauguração Oficial",
     "grandOpeningDate": "31 de Janeiro, 2026",
     "grandOpeningTime": "19:00",
     "grandOpeningDesc": "Culto especial com convidados de Toronto e EUA",
     "location": "Localização",
-    "allEventsLocation": "55 Dickson Street, 8 Petty Pl, Cambridge, ON N1R 7A5"
+    "allEventsLocation": "417 King St W, Kitchener, ON N2G 1C2"
   },
   "vineKids": {
     "title": "Vine Kids",
@@ -207,10 +203,7 @@
     "quickLinks": "Links Rápidos",
     "followUs": "Siga-nos"
   },
-  "addressChange": {
-    "title": "Atenção:",
-    "message": "A partir de 31 de dezembro os cultos acontecerão em nosso novo endereço: 417 King St W, Kitchener, ON N2G 1C2."
-  },
+
   "admin": {
     "title": "Admin",
     "subtitle": "Gerenciamento de Mensagens",

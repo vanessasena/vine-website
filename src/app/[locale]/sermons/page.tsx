@@ -2,7 +2,6 @@ import { getTranslations } from 'next-intl/server';
 import Navigation from '@/components/Navigation';
 import Image from 'next/image';
 import Footer from '@/components/Footer';
-import AddressChangeAlert from '@/components/AddressChangeAlert';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -147,11 +146,10 @@ export default async function SermonsPage({ params: { locale } }: PageProps) {
               <p className="font-semibold text-lg">
                 {locale === 'pt' ? 'Culto de Domingo' : 'Sunday Service'}
               </p>
-              <p>55 Dickson Street, 8 Petty Pl, Cambridge, ON N1R 7A5</p>
+              <p>417 King St W, Kitchener, ON N2G 1C2</p>
               <p className="text-secondary-200">
                 {locale === 'pt' ? 'Domingo às 10:00' : 'Sunday at 10:00 AM'}
               </p>
-              <AddressChangeAlert className="mt-4 bg-white bg-opacity-20 border-white" />
             </div>
           </div>
         </div>

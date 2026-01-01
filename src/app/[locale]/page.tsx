@@ -19,7 +19,6 @@ import {
   faHandsHelping
 } from '@fortawesome/free-solid-svg-icons';
 import '@/lib/fontawesome';
-import AddressChangeAlert from '@/components/AddressChangeAlert';
 import type { Metadata } from 'next';
 
 interface PageProps {
@@ -214,7 +213,6 @@ export default function HomePage({ params: { locale } }: PageProps) {
               </div>
               <h3 className="text-lg font-semibold mb-1">{c('address')}</h3>
               <p className="text-secondary-100 text-sm">{c('addressText')}</p>
-              <AddressChangeAlert className="mt-4 bg-white bg-opacity-20 border-white" />
             </div>
 
             {/* Service Time */}

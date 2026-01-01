@@ -7,6 +7,7 @@ export const VOLUNTEER_AREA_OPTIONS = [
   'tecnologia',
   'recepcao',
   'kids',
+  'store',
   'teens',
   'midia',
   'limpeza',

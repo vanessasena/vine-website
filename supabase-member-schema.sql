@@ -25,19 +25,41 @@ CREATE TABLE IF NOT EXISTS public.member_profiles (
   is_baptized BOOLEAN DEFAULT false,
   pays_tithe BOOLEAN DEFAULT false,
   volunteer_areas TEXT[] DEFAULT '{}',
+  volunteer_outros_details TEXT,
   life_group TEXT,
+  is_married BOOLEAN DEFAULT false,
+  spouse_name TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create children table
+CREATE TABLE IF NOT EXISTS public.children (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  date_of_birth DATE NOT NULL,
+  parent1_id UUID REFERENCES public.member_profiles(id) ON DELETE CASCADE,
+  parent2_id UUID REFERENCES public.member_profiles(id) ON DELETE CASCADE,
+  allergies TEXT,
+  medical_notes TEXT,
+  special_needs TEXT,
+  photo_permission BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  CONSTRAINT at_least_one_parent CHECK (parent1_id IS NOT NULL OR parent2_id IS NOT NULL)
 );
 
 -- Create indexes for better query performance
 CREATE INDEX IF NOT EXISTS idx_users_email ON public.users(email);
 CREATE INDEX IF NOT EXISTS idx_users_role ON public.users(role);
 CREATE INDEX IF NOT EXISTS idx_member_profiles_user_id ON public.member_profiles(user_id);
+CREATE INDEX IF NOT EXISTS idx_children_parent1_id ON public.children(parent1_id);
+CREATE INDEX IF NOT EXISTS idx_children_parent2_id ON public.children(parent2_id);
 
 -- Enable Row Level Security
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.member_profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.children ENABLE ROW LEVEL SECURITY;
 
 -- Helper function to check if user is admin (bypasses RLS)
 CREATE OR REPLACE FUNCTION public.is_admin(user_id UUID)
@@ -102,6 +124,73 @@ CREATE POLICY "Admins can update any profile"
   FOR UPDATE
   USING (public.is_admin(auth.uid()));
 
+-- RLS Policies for children table
+-- Parents can read their own children
+CREATE POLICY "Parents can read own children"
+  ON public.children
+  FOR SELECT
+  USING (
+    parent1_id IN (SELECT id FROM public.member_profiles WHERE user_id = auth.uid())
+    OR parent2_id IN (SELECT id FROM public.member_profiles WHERE user_id = auth.uid())
+  );
+
+-- Admins can read all children
+CREATE POLICY "Admins can read all children"
+  ON public.children
+  FOR SELECT
+  USING (public.is_admin(auth.uid()));
+
+-- Parents can insert children for themselves
+CREATE POLICY "Parents can create children"
+  ON public.children
+  FOR INSERT
+  WITH CHECK (
+    parent1_id IN (SELECT id FROM public.member_profiles WHERE user_id = auth.uid())
+    OR parent2_id IN (SELECT id FROM public.member_profiles WHERE user_id = auth.uid())
+  );
+
+-- Trigger for children table
+CREATE TRIGGER update_children_updated_at
+  BEFORE UPDATE ON public.children
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
+-- Parents can update their own children
+CREATE POLICY "Parents can update own children"
+  ON public.children
+  FOR UPDATE
+  USING (
+    parent1_id IN (SELECT id FROM public.member_profiles WHERE user_id = auth.uid())
+    OR parent2_id IN (SELECT id FROM public.member_profiles WHERE user_id = auth.uid())
+  )
+  WITH CHECK (
+    parent1_id IN (SELECT id FROM public.member_profiles WHERE user_id = auth.uid())
+    OR parent2_id IN (SELECT id FROM public.member_profiles WHERE user_id = auth.uid())
+  );
+
+-- Parents can delete their own children
+CREATE POLICY "Parents can delete own children"
+  ON public.children
+  FOR DELETE
+  USING (
+    parent1_id IN (SELECT id FROM public.member_profiles WHERE user_id = auth.uid())
+    OR parent2_id IN (SELECT id FROM public.member_profiles WHERE user_id = auth.uid())
+  );
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.children TO authenticated;
+
+-- Admins can manage all children
+CREATE POLICY "Admins can update any child"
+  ON public.children
+  FOR UPDATE
+  USING (public.is_admin(auth.uid()));
+
+CREATE POLICY "Admins can delete any child"
+  ON public.children
+  FOR DELETE
+  USING (public.is_admin(auth.uid()));
+
+
 -- Function to automatically update updated_at timestamp
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
@@ -150,27 +239,82 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 GRANT USAGE ON SCHEMA public TO anon, authenticated;
 GRANT SELECT, INSERT, UPDATE ON public.users TO authenticated;
 GRANT SELECT, INSERT, UPDATE ON public.member_profiles TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.children TO authenticated;
 
--- Comments for documentation
-COMMENT ON TABLE public.users IS 'Stores user role information extending Supabase auth.users';
-COMMENT ON TABLE public.member_profiles IS 'Stores detailed member profile information';
+-- Add helpful comments to document the schema
+COMMENT ON TABLE public.children IS 'Stores children information with support for two parents for check-in system';
 COMMENT ON COLUMN public.member_profiles.volunteer_areas IS 'Array of volunteer area keys (e.g., louvor, tecnologia, recepcao, etc.)';
+COMMENT ON COLUMN public.member_profiles.volunteer_outros_details IS 'Details about how the member can help when "outros" (other) volunteer area is selected';
 COMMENT ON COLUMN public.member_profiles.life_group IS 'Name or identifier of the life group (célula) the member belongs to';
 COMMENT ON COLUMN public.member_profiles.pays_tithe IS 'Indicates if member pays dízimo (tithe)';
+COMMENT ON COLUMN public.member_profiles.is_married IS 'Indicates if member is married';
+COMMENT ON COLUMN public.member_profiles.spouse_name IS 'Full name of member spouse if married';
+COMMENT ON COLUMN public.children.parent1_id IS 'Primary parent member profile ID';
+COMMENT ON COLUMN public.children.parent2_id IS 'Secondary parent member profile ID (optional)';
+COMMENT ON COLUMN public.children.allergies IS 'Known allergies for emergency situations';
+COMMENT ON COLUMN public.children.medical_notes IS 'Important medical information';
+COMMENT ON COLUMN public.children.special_needs IS 'Special needs or accommodations required';
+COMMENT ON COLUMN public.children.photo_permission IS 'Permission to take and use photos of the child';
 
 
--- Add volunteer_outros_details column to member_profiles table
--- Run this script in your Supabase SQL Editor to add the new field
+-- Migration script to add new children table and update member_profiles
+-- Run this script in your Supabase SQL Editor
 
+-- Create children table if it doesn't exist
+CREATE TABLE IF NOT EXISTS public.children (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  date_of_birth DATE NOT NULL,
+  parent1_id UUID REFERENCES public.member_profiles(id) ON DELETE CASCADE,
+  parent2_id UUID REFERENCES public.member_profiles(id) ON DELETE CASCADE,
+  allergies TEXT,
+  medical_notes TEXT,
+  special_needs TEXT,
+  photo_permission BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  CONSTRAINT at_least_one_parent CHECK (parent1_id IS NOT NULL OR parent2_id IS NOT NULL)
+);
+
+-- Add indexes for children table
+CREATE INDEX IF NOT EXISTS idx_children_parent1_id ON public.children(parent1_id);
+CREATE INDEX IF NOT EXISTS idx_children_parent2_id ON public.children(parent2_id);
+
+-- Enable RLS for children table
+ALTER TABLE public.children ENABLE ROW LEVEL SECURITY;
+
+-- Add RLS policies for children (see main schema for details)
+
+-- Add volunteer_outros_details column if it doesn't exist
 ALTER TABLE public.member_profiles
 ADD COLUMN IF NOT EXISTS volunteer_outros_details TEXT;
 
--- Add comment to describe the column
-COMMENT ON COLUMN public.member_profiles.volunteer_outros_details IS 'Details about how the member can help when "outros" (other) volunteer area is selected';
+-- Add family information columns if they don't exist
+ALTER TABLE public.member_profiles
+ADD COLUMN IF NOT EXISTS is_married BOOLEAN DEFAULT false;
 
--- Verify the column was added
-SELECT column_name, data_type, is_nullable
+ALTER TABLE public.member_profiles
+ADD COLUMN IF NOT EXISTS spouse_name TEXT;
+
+-- Remove children JSONB column if it exists (migrate data first if needed)
+-- ALTER TABLE public.member_profiles DROP COLUMN IF EXISTS children;
+
+-- Trigger for children table
+CREATE TRIGGER update_children_updated_at
+  BEFORE UPDATE ON public.children
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
+-- Verify the tables
+SELECT table_name, column_name, data_type
+FROM information_schema.columns
+WHERE table_schema = 'public'
+AND table_name IN ('member_profiles', 'children')
+ORDER BY table_name,
+-- Verify the columns were added
+SELECT column_name, data_type, is_nullable, column_default
 FROM information_schema.columns
 WHERE table_schema = 'public'
 AND table_name = 'member_profiles'
-AND column_name = 'volunteer_outros_details';
+AND column_name IN ('volunteer_outros_details', 'is_married', 'spouse_name', 'children')
+ORDER BY ordinal_position;

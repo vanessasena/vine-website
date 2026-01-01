@@ -83,7 +83,10 @@ export async function POST(request: NextRequest) {
       pays_tithe,
       volunteer_areas,
       volunteer_outros_details,
-      life_group
+      life_group,
+      is_married,
+      spouse_name,
+      children
     } = body;
 
     // Validate required fields
@@ -121,7 +124,9 @@ export async function POST(request: NextRequest) {
         pays_tithe: pays_tithe || false,
         volunteer_areas: volunteer_areas || [],
         volunteer_outros_details: volunteer_outros_details || null,
-        life_group: life_group || null
+        life_group: life_group || null,
+        is_married: is_married || false,
+        spouse_name: spouse_name || null
       })
       .select()
       .single();
@@ -166,7 +171,10 @@ export async function PUT(request: NextRequest) {
       pays_tithe,
       volunteer_areas,
       volunteer_outros_details,
-      life_group
+      life_group,
+      is_married,
+      spouse_name,
+      children
     } = body;
 
     // Validate required fields
@@ -189,7 +197,9 @@ export async function PUT(request: NextRequest) {
         pays_tithe: pays_tithe || false,
         volunteer_areas: volunteer_areas || [],
         volunteer_outros_details: volunteer_outros_details || null,
-        life_group: life_group || null
+        life_group: life_group || null,
+        is_married: is_married || false,
+        spouse_name: spouse_name || null
       })
       .eq('user_id', user.id)
       .select()

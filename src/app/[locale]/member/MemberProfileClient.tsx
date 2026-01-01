@@ -21,6 +21,18 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { VOLUNTEER_AREA_OPTIONS } from '@/lib/constants';
 
+interface Child {
+  id: string;
+  name: string;
+  date_of_birth: string;
+  parent1_id: string;
+  parent2_id: string | null;
+  allergies: string | null;
+  medical_notes: string | null;
+  special_needs: string | null;
+  photo_permission: boolean;
+}
+
 interface MemberProfile {
   id: string;
   user_id: string;
@@ -33,6 +45,8 @@ interface MemberProfile {
   volunteer_areas: string[];
   volunteer_outros_details: string | null;
   life_group: string | null;
+  is_married: boolean;
+  spouse_name: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -54,6 +68,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
   const [phoneError, setPhoneError] = useState<string | null>(null);
   const [dateError, setDateError] = useState(false);
   const [userRole, setUserRole] = useState<'member' | 'admin' | null>(null);
+  const [children, setChildren] = useState<Child[]>([]);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -64,6 +79,8 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
     volunteer_areas: [] as string[],
     volunteer_outros_details: '',
     life_group: '',
+    is_married: false,
+    spouse_name: '',
   });
 
   const checkAuthAndLoadProfile = useCallback(async () => {
@@ -113,7 +130,20 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
           volunteer_areas: result.data.volunteer_areas || [],
           volunteer_outros_details: result.data.volunteer_outros_details || '',
           life_group: result.data.life_group || '',
+          is_married: result.data.is_married || false,
+          spouse_name: result.data.spouse_name || '',
         });
+
+        // Fetch children separately
+        const childrenResponse = await fetch(`/api/children?parent_id=${result.data.id}`, {
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+          },
+        });
+        if (childrenResponse.ok) {
+          const childrenData = await childrenResponse.json();
+          setChildren(childrenData.data || []);
+        }
       } else {
         // No profile yet, set editing mode
         setIsEditing(true);
@@ -127,6 +157,8 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
           volunteer_areas: [],
           volunteer_outros_details: '',
           life_group: '',
+          is_married: false,
+          spouse_name: ''
         });
       }
     } catch (err) {
@@ -267,6 +299,127 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
     }));
   };
 
+  const handleAddChild = async () => {
+    if (!profile?.id) return;
+
+    try {
+      const { createClient } = await import('@supabase/supabase-js');
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+      );
+
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      // Add a placeholder child with today's date
+      const today = new Date().toISOString().split('T')[0];
+      const placeholderName = locale === 'pt' ? 'Nova Criança' : 'New Child';
+      const response = await fetch('/api/children', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: placeholderName,
+          date_of_birth: today,
+          parent1_id: profile.id,
+          photo_permission: true
+        }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setChildren(prev => [...prev, result.data]);
+      }
+    } catch (error) {
+      console.error('Error adding child:', error);
+    }
+  };
+
+  const handleRemoveChild = async (childId: string) => {
+    try {
+      const { createClient } = await import('@supabase/supabase-js');
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+      );
+
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      const response = await fetch(`/api/children?id=${childId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (response.ok) {
+        setChildren(prev => prev.filter(c => c.id !== childId));
+      }
+    } catch (error) {
+      console.error('Error removing child:', error);
+    }
+  };
+
+  const handleUpdateChild = async (childId: string, field: keyof Child, value: any) => {
+    try {
+      const { createClient } = await import('@supabase/supabase-js');
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+      );
+
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      // Update local state optimistically
+      setChildren(prev => prev.map(child =>
+        child.id === childId ? { ...child, [field]: value } : child
+      ));
+
+      // Update in database
+      const child = children.find(c => c.id === childId);
+      if (!child) return;
+
+      const response = await fetch('/api/children', {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...child,
+          [field]: value
+        }),
+      });
+
+      if (!response.ok) {
+        // Revert on error
+        checkAuthAndLoadProfile();
+      }
+    } catch (error) {
+      console.error('Error updating child:', error);
+      // Revert on error
+      checkAuthAndLoadProfile();
+    }
+  };
+
+  const calculateAge = (dateOfBirth: string): number => {
+    const today = new Date();
+    const birthDate = new Date(dateOfBirth);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+
+    return age;
+  };
+
   const handleSave = async () => {
     try {
       // Validate phone before saving
@@ -338,6 +491,8 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
         volunteer_areas: profile.volunteer_areas || [],
         volunteer_outros_details: profile.volunteer_outros_details || '',
         life_group: profile.life_group || '',
+        is_married: profile.is_married || false,
+        spouse_name: profile.spouse_name || '',
       });
       setIsEditing(false);
     }
@@ -540,6 +695,106 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                 </select>
               </div>
 
+              {/* Marital Status */}
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="is_married"
+                  name="is_married"
+                  checked={formData.is_married}
+                  onChange={handleInputChange}
+                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                />
+                <label htmlFor="is_married" className="ml-3 text-sm font-medium text-gray-700">
+                  <FontAwesomeIcon icon={faUser} className="mr-2 text-primary-600" />
+                  {t('married')}
+                </label>
+              </div>
+
+              {/* Spouse Name */}
+              {formData.is_married && (
+                <div>
+                  <label htmlFor="spouse_name" className="block text-sm font-medium text-gray-700 mb-2">
+                    <FontAwesomeIcon icon={faUser} className="mr-2 text-primary-600" />
+                    {t('spouseName')}
+                  </label>
+                  <input
+                    type="text"
+                    id="spouse_name"
+                    name="spouse_name"
+                    value={formData.spouse_name}
+                    onChange={handleInputChange}
+                    placeholder={t('spouseNamePlaceholder')}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  />
+                </div>
+              )}
+
+              {/* Children */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  <FontAwesomeIcon icon={faUsers} className="mr-2 text-primary-600" />
+                  {t('children')}
+                </label>
+                {children.length === 0 ? (
+                  <p className="text-gray-500 text-sm mb-3">{t('noChildren')}</p>
+                ) : (
+                  <div className="space-y-3 mb-3">
+                    {children.map((child) => (
+                      <div key={child.id} className="flex gap-3 items-start bg-gray-50 p-3 rounded-lg">
+                        <div className="flex-1 space-y-2">
+                          <input
+                            type="text"
+                            value={child.name}
+                            onChange={(e) => handleUpdateChild(child.id, 'name', e.target.value)}
+                            placeholder={t('childName')}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                          />
+                          <div className="flex gap-2">
+                            <input
+                              type="date"
+                              value={child.date_of_birth}
+                              onChange={(e) => {
+                                // Update local state immediately
+                                setChildren(prev => prev.map(c =>
+                                  c.id === child.id ? { ...c, date_of_birth: e.target.value } : c
+                                ));
+                              }}
+                              onBlur={(e) => {
+                                // Only save to database when user finishes editing
+                                if (e.target.value) {
+                                  handleUpdateChild(child.id, 'date_of_birth', e.target.value);
+                                }
+                              }}
+                              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                            />
+                            <div className="flex items-center px-3 py-2 bg-gray-100 rounded-lg text-sm text-gray-700">
+                              {calculateAge(child.date_of_birth)} {locale === 'pt' ? (calculateAge(child.date_of_birth) === 1 ? 'ano' : 'anos') : (calculateAge(child.date_of_birth) === 1 ? 'year' : 'years')}
+                            </div>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveChild(child.id)}
+                          className="text-red-600 hover:text-red-700 px-3 py-2"
+                        >
+                          <FontAwesomeIcon icon={faTimes} /> {t('removeChild')}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <button
+                  type="button"
+                  onClick={handleAddChild}
+                  disabled={!profile?.id}
+                  className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <FontAwesomeIcon icon={faUser} className="mr-2" />
+                  {t('addChild')}
+                </button>
+              </div>
+
               {/* Volunteer Areas */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-3">
@@ -563,23 +818,21 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                   ))}
                 </div>
 
-                {/* Show text field when "outros" is selected */}
-                {formData.volunteer_areas.includes('outros') && (
-                  <div className="mt-4">
-                    <label htmlFor="outros_details" className="block text-sm font-medium text-gray-700 mb-2">
-                      {t('outrosDetailsLabel')}
-                    </label>
-                    <textarea
-                      id="outros_details"
-                      name="volunteer_outros_details"
-                      value={formData.volunteer_outros_details}
-                      onChange={handleInputChange}
-                      rows={3}
-                      placeholder={t('outrosDetailsPlaceholder')}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                    />
-                  </div>
-                )}
+                {/* Volunteer additional details field */}
+                <div className="mt-4">
+                  <label htmlFor="outros_details" className="block text-sm font-medium text-gray-700 mb-2">
+                    {t('outrosDetailsLabel')}
+                  </label>
+                  <textarea
+                    id="outros_details"
+                    name="volunteer_outros_details"
+                    value={formData.volunteer_outros_details}
+                    onChange={handleInputChange}
+                    rows={3}
+                    placeholder={t('outrosDetailsPlaceholder')}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  />
+                </div>
               </div>
 
               {/* Action Buttons */}
@@ -676,6 +929,52 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                       {t('lifeGroup')}
                     </div>
                     <div className="text-lg text-gray-900">{profile.life_group}</div>
+                  </div>
+                )}
+
+                {/* Family Information */}
+                {(profile?.is_married || children.length > 0) && (
+                  <div className="mb-4 border-t pt-4">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                      {locale === 'pt' ? 'Informações Familiares' : 'Family Information'}
+                    </h3>
+
+                    {profile?.is_married && (
+                      <div className="mb-3">
+                        <div className="text-sm font-medium text-gray-500 mb-1">
+                          <FontAwesomeIcon icon={faUser} className="mr-2 text-primary-600" />
+                          {t('isMarried')}
+                        </div>
+                        <div className="text-lg text-gray-900">{t('married')}</div>
+                        {profile.spouse_name && (
+                          <div className="mt-2">
+                            <div className="text-sm font-medium text-gray-500 mb-1">
+                              {t('spouseName')}:
+                            </div>
+                            <div className="text-lg text-gray-900">{profile.spouse_name}</div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {children && children.length > 0 && (
+                      <div>
+                        <div className="text-sm font-medium text-gray-500 mb-2">
+                          <FontAwesomeIcon icon={faUsers} className="mr-2 text-primary-600" />
+                          {t('children')}
+                        </div>
+                        <div className="space-y-2">
+                          {children.map((child) => (
+                            <div key={child.id} className="bg-gray-50 p-3 rounded-lg">
+                              <span className="font-medium text-gray-900">{child.name}</span>
+                              <span className="text-gray-600 ml-2">
+                                ({calculateAge(child.date_of_birth)} {locale === 'pt' ? (calculateAge(child.date_of_birth) === 1 ? 'ano' : 'anos') : (calculateAge(child.date_of_birth) === 1 ? 'year' : 'years')})
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
 

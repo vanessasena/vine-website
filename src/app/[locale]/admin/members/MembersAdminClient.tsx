@@ -18,6 +18,14 @@ import {
   faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
 
+interface Child {
+  id: string;
+  name: string;
+  date_of_birth: string;
+  parent1_id: string;
+  parent2_id: string | null;
+}
+
 interface MemberProfile {
   id: string;
   user_id: string;
@@ -28,7 +36,10 @@ interface MemberProfile {
   is_baptized: boolean;
   pays_tithe: boolean;
   volunteer_areas: string[];
+  volunteer_outros_details: string | null;
   life_group: string | null;
+  is_married: boolean;
+  spouse_name: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -42,6 +53,7 @@ interface MembersAdminClientProps {
 export default function MembersAdminClient({ locale }: MembersAdminClientProps) {
   const t = useTranslations('member');
   const [members, setMembers] = useState<MemberProfile[]>([]);
+  const [memberChildren, setMemberChildren] = useState<{ [memberId: string]: Child[] }>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedMember, setSelectedMember] = useState<MemberProfile | null>(null);
@@ -93,12 +105,44 @@ export default function MembersAdminClient({ locale }: MembersAdminClientProps) 
       }
 
       setMembers(profiles || []);
+
+      // Fetch children for all members
+      if (profiles && profiles.length > 0) {
+        const childrenByMember: { [memberId: string]: Child[] } = {};
+
+        for (const profile of profiles) {
+          const { data: children } = await supabase
+            .from('children')
+            .select('*')
+            .or(`parent1_id.eq.${profile.id},parent2_id.eq.${profile.id}`)
+            .order('date_of_birth', { ascending: true });
+
+          if (children && children.length > 0) {
+            childrenByMember[profile.id] = children;
+          }
+        }
+
+        setMemberChildren(childrenByMember);
+      }
     } catch (err) {
       console.error('Error fetching members:', err);
       setError('Failed to load member profiles');
     } finally {
       setLoading(false);
     }
+  };
+
+  const calculateAge = (dateOfBirth: string): number => {
+    const today = new Date();
+    const birthDate = new Date(dateOfBirth);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+
+    return age;
   };
 
   const formatDate = (dateString: string) => {
@@ -423,6 +467,60 @@ export default function MembersAdminClient({ locale }: MembersAdminClientProps) 
                           </span>
                         ))}
                       </div>
+                    </div>
+                  )}
+
+                  {selectedMember.volunteer_outros_details && (
+                    <div className="mt-4">
+                      <div className="text-sm font-medium text-gray-500 mb-1">
+                        {locale === 'pt' ? 'Detalhes Adicionais de Voluntariado' : 'Additional Volunteer Details'}
+                      </div>
+                      <div className="text-gray-900 bg-gray-50 p-3 rounded-lg">
+                        {selectedMember.volunteer_outros_details}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Family Information */}
+                  {(selectedMember.is_married || memberChildren[selectedMember.id]?.length > 0) && (
+                    <div className="mt-4 border-t pt-4">
+                      <div className="text-sm font-medium text-gray-500 mb-3">
+                        {locale === 'pt' ? 'Informações Familiares' : 'Family Information'}
+                      </div>
+
+                      {selectedMember.is_married && (
+                        <div className="mb-3">
+                          <div className="flex items-center text-gray-900 mb-1">
+                            <FontAwesomeIcon icon={faCheckCircle} className="mr-2 text-green-600" />
+                            <span className="font-medium">{t('married')}</span>
+                          </div>
+                          {selectedMember.spouse_name && (
+                            <div className="ml-6 text-gray-700">
+                              <span className="text-sm text-gray-500">{t('spouseName')}: </span>
+                              {selectedMember.spouse_name}
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {memberChildren[selectedMember.id] && memberChildren[selectedMember.id].length > 0 && (
+                        <div>
+                          <div className="text-sm font-medium text-gray-500 mb-2">
+                            <FontAwesomeIcon icon={faUsers} className="mr-2 text-primary-600" />
+                            {t('children')}
+                          </div>
+                          <div className="space-y-2">
+                            {memberChildren[selectedMember.id].map((child) => (
+                              <div key={child.id} className="bg-gray-50 p-2 rounded-lg ml-6">
+                                <span className="font-medium text-gray-900">{child.name}</span>
+                                <span className="text-gray-600 ml-2">
+                                  ({calculateAge(child.date_of_birth)} {locale === 'pt' ? (calculateAge(child.date_of_birth) === 1 ? 'ano' : 'anos') : (calculateAge(child.date_of_birth) === 1 ? 'year' : 'years')})
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

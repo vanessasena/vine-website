@@ -97,4 +97,4 @@ This website represents Vine Church KWC, part of the international Vine Church n
 
 ## License
 
-© 2025 Vine Church KWC. All rights reserved.
+© 2026 Vine Church KWC. All rights reserved.

@@ -274,3 +274,36 @@ CREATE POLICY "Public read access to website bucket"
 ON storage.objects FOR SELECT
 TO public
 USING (bucket_id = 'website');
+
+-- ============================================
+-- VISITORS TABLE
+-- ============================================
+
+-- Create visitors table
+CREATE TABLE IF NOT EXISTS public.visitors (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    visit_date DATE NOT NULL,
+    name TEXT NOT NULL,
+    phone TEXT NOT NULL,
+    how_found TEXT NOT NULL,
+    how_found_details TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+-- Create index on visit_date for faster sorting
+CREATE INDEX IF NOT EXISTS idx_visitors_visit_date ON public.visitors(visit_date DESC);
+
+-- Enable Row Level Security (RLS)
+ALTER TABLE public.visitors ENABLE ROW LEVEL SECURITY;
+
+-- Create policy to allow anyone to insert (public registration)
+CREATE POLICY "Allow public insert" ON public.visitors
+    FOR INSERT
+    TO public
+    WITH CHECK (true);
+
+-- Create policy to allow authenticated users to read all visitors
+CREATE POLICY "Allow authenticated users to read" ON public.visitors
+    FOR SELECT
+    TO authenticated
+    USING (true);

@@ -308,5 +308,31 @@
     "commitmentText": "Buscamos voluntários comprometidos que desejam fazer parte da família Vine Church e contribuir regularmente com seu tempo e talentos.",
     "training": "Treinamento",
     "trainingText": "Oferecemos treinamento e suporte para todas as áreas de ministério, garantindo que você se sinta preparado e confiante para servir."
+  },
+  "visitorRegistration": {
+    "title": "Registro de Visitantes",
+    "subtitle": "Bem-vindo à Vine Church KWC!",
+    "description": "Ficamos felizes com sua visita! Por favor, preencha o formulário abaixo para que possamos conhecê-lo melhor.",
+    "visitDate": "Data da Visita",
+    "name": "Nome Completo",
+    "phone": "Telefone",
+    "howFound": "Como nos conheceu?",
+    "howFoundOptions": {
+      "friend": "Amigo ou Familiar",
+      "google": "Pesquisa no Google",
+      "social": "Redes Sociais",
+      "passing": "Passando pelo Local",
+      "other": "Outro"
+    },
+    "otherDetails": "Por favor, especifique",
+    "otherDetailsPlaceholder": "Conte-nos como nos conheceu",
+    "otherDetailsRequired": "Por favor, especifique como nos conheceu",
+    "submit": "Enviar Registro",
+    "submitting": "Enviando...",
+    "successTitle": "Registro Enviado!",
+    "successMessage": "Obrigado por se registrar! Estamos felizes em tê-lo como parte da nossa comunidade.",
+    "errorTitle": "Erro ao Enviar",
+    "errorMessage": "Ocorreu um erro ao enviar seu registro. Por favor, tente novamente.",
+    "requiredField": "Este campo é obrigatório"
   }
 }

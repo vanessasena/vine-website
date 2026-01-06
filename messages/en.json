@@ -307,5 +307,31 @@
     "commitmentText": "We seek committed volunteers who want to be part of the Vine Church family and regularly contribute their time and talents.",
     "training": "Training",
     "trainingText": "We offer training and support for all ministry areas, ensuring you feel prepared and confident to serve."
+  },
+  "visitorRegistration": {
+    "title": "Visitor Registration",
+    "subtitle": "Welcome to Vine Church KWC!",
+    "description": "We're glad you visited us! Please fill out the form below so we can get to know you better.",
+    "visitDate": "Date of Visit",
+    "name": "Full Name",
+    "phone": "Phone Number",
+    "howFound": "How did you find us?",
+    "howFoundOptions": {
+      "friend": "Friend or Family",
+      "google": "Google Search",
+      "social": "Social Media",
+      "passing": "Passing By",
+      "other": "Other"
+    },
+    "otherDetails": "Please specify",
+    "otherDetailsPlaceholder": "Tell us how you found us",
+    "otherDetailsRequired": "Please specify how you found us",
+    "submit": "Submit Registration",
+    "submitting": "Submitting...",
+    "successTitle": "Registration Submitted!",
+    "successMessage": "Thank you for registering! We're excited to have you as part of our community.",
+    "errorTitle": "Error Submitting",
+    "errorMessage": "An error occurred while submitting your registration. Please try again.",
+    "requiredField": "This field is required"
   }
 }

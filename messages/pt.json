@@ -312,7 +312,7 @@
   "visitorRegistration": {
     "title": "Registro de Visitantes",
     "subtitle": "Bem-vindo à Vine Church KWC!",
-    "description": "Ficamos felizes com sua visita! Por favor, preencha o formulário abaixo para que possamos conhecê-lo melhor.",
+    "description": "É uma honra tê-lo conosco! Por favor, preencha o formulário abaixo para que possamos conhecê-lo melhor.",
     "visitDate": "Data da Visita",
     "name": "Nome Completo",
     "phone": "Telefone",
@@ -327,6 +327,9 @@
     "otherDetails": "Por favor, especifique",
     "otherDetailsPlaceholder": "Conte-nos como nos conheceu",
     "otherDetailsRequired": "Por favor, especifique como nos conheceu",
+    "friendDetails": "Nome do amigo ou familiar",
+    "friendDetailsPlaceholder": "Quem te convidou ou recomendou?",
+    "friendDetailsRequired": "Por favor, nos diga quem te convidou",
     "submit": "Enviar Registro",
     "submitting": "Enviando...",
     "successTitle": "Registro Enviado!",

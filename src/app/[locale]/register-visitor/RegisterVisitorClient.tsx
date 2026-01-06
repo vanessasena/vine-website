@@ -64,9 +64,10 @@ export default function RegisterVisitorClient() {
       return;
     }
 
-    // Validate that if "other" is selected, details are provided
-    if (formData.how_found === 'other' && !formData.how_found_details.trim()) {
-      setError(t('otherDetailsRequired'));
+    // Validate that if "friend" or "other" is selected, details are provided
+    if ((formData.how_found === 'friend' || formData.how_found === 'other') && !formData.how_found_details.trim()) {
+      const errorKey = formData.how_found === 'friend' ? 'friendDetailsRequired' : 'otherDetailsRequired';
+      setError(t(errorKey));
       setIsSubmitting(false);
       return;
     }
@@ -212,11 +213,11 @@ export default function RegisterVisitorClient() {
             </select>
           </div>
 
-          {/* Other Details - Only show if "other" is selected */}
-          {formData.how_found === 'other' && (
+          {/* Friend/Other Details - Show if "friend" or "other" is selected */}
+          {(formData.how_found === 'friend' || formData.how_found === 'other') && (
             <div>
               <label htmlFor="how_found_details" className="block text-sm font-medium text-gray-700 mb-2">
-                {t('otherDetails')}
+                {formData.how_found === 'friend' ? t('friendDetails') : t('otherDetails')}
               </label>
               <input
                 type="text"
@@ -226,7 +227,7 @@ export default function RegisterVisitorClient() {
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                placeholder={t('otherDetailsPlaceholder')}
+                placeholder={formData.how_found === 'friend' ? t('friendDetailsPlaceholder') : t('otherDetailsPlaceholder')}
               />
             </div>
           )}

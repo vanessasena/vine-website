@@ -18,19 +18,15 @@ interface Volunteer {
 const ITEMS_PER_PAGE = 10;
 
 const AREA_OPTIONS = [
-  'louvor',
-  'tecnologia',
-  'recepcao',
+  'worship',
+  'vine_web',
   'kids',
-  'teens',
-  'celulas',
-  'intercedao',
-  'midia',
-  'limpeza',
+  'store',
+  'vine_media',
+  'vine_clean',
   'cozinha',
-  'eventos',
-  'transporte',
-  'outros'
+  'vine_welcome',
+  'vine_care'
 ];
 
 export default function VolunteersAdminClient() {

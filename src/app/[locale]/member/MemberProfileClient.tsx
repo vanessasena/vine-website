@@ -801,30 +801,35 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                   <FontAwesomeIcon icon={faHandsHelping} className="mr-2 text-primary-600" />
                   {t('volunteerAreas')}
                 </label>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                <div className="space-y-3">
                   {VOLUNTEER_AREA_OPTIONS.map((area) => (
-                    <div key={area} className="flex items-center">
+                    <div key={area} className="flex items-start">
                       <input
                         type="checkbox"
                         id={`area-${area}`}
                         checked={formData.volunteer_areas.includes(area)}
                         onChange={() => handleVolunteerAreaChange(area)}
-                        className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                        className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded mt-1"
                       />
-                      <label htmlFor={`area-${area}`} className="ml-2 text-sm text-gray-700">
-                        {t(`volunteerOptions.${area}`)}
+                      <label htmlFor={`area-${area}`} className="ml-3 flex-1">
+                        <div className="text-sm font-medium text-gray-900">
+                          {t(`volunteerOptions.${area}`)}
+                        </div>
+                        <div className="text-xs text-gray-500 mt-0.5">
+                          {t(`volunteerDescriptions.${area}`)}
+                        </div>
                       </label>
                     </div>
                   ))}
                 </div>
 
-                {/* Volunteer additional details field */}
+                {/* Additional volunteer details */}
                 <div className="mt-4">
-                  <label htmlFor="outros_details" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="volunteer_outros_details" className="block text-sm font-medium text-gray-700 mb-2">
                     {t('outrosDetailsLabel')}
                   </label>
                   <textarea
-                    id="outros_details"
+                    id="volunteer_outros_details"
                     name="volunteer_outros_details"
                     value={formData.volunteer_outros_details}
                     onChange={handleInputChange}
@@ -994,12 +999,12 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                         </span>
                       ))}
                     </div>
-                    {profile.volunteer_areas.includes('outros') && profile.volunteer_outros_details && (
+                    {profile.volunteer_outros_details && (
                       <div className="mt-3 p-3 bg-gray-50 rounded-lg">
                         <div className="text-sm font-medium text-gray-700 mb-1">
                           {t('outrosDetailsLabel')}:
                         </div>
-                        <div className="text-sm text-gray-600">{profile.volunteer_outros_details}</div>
+                        <div className="text-sm text-gray-600 whitespace-pre-wrap">{profile.volunteer_outros_details}</div>
                       </div>
                     )}
                   </div>

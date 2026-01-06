@@ -471,13 +471,11 @@ export default function MembersAdminClient({ locale }: MembersAdminClientProps) 
                   )}
 
                   {selectedMember.volunteer_outros_details && (
-                    <div className="mt-4">
-                      <div className="text-sm font-medium text-gray-500 mb-1">
-                        {locale === 'pt' ? 'Detalhes Adicionais de Voluntariado' : 'Additional Volunteer Details'}
+                    <div className="mt-3 p-3 bg-gray-50 rounded-lg">
+                      <div className="text-sm font-medium text-gray-700 mb-1">
+                        {locale === 'pt' ? 'Detalhes Adicionais' : 'Additional Details'}:
                       </div>
-                      <div className="text-gray-900 bg-gray-50 p-3 rounded-lg">
-                        {selectedMember.volunteer_outros_details}
-                      </div>
+                      <div className="text-sm text-gray-600 whitespace-pre-wrap">{selectedMember.volunteer_outros_details}</div>
                     </div>
                   )}
 

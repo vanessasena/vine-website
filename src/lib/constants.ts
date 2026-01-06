@@ -3,21 +3,15 @@
  */
 
 export const VOLUNTEER_AREA_OPTIONS = [
-  'louvor',
-  'tecnologia',
-  'soundboard',
-  'recepcao',
+  'worship',
+  'vine_web',
   'kids',
   'store',
-  'teens',
-  'midia',
-  'limpeza',
+  'vine_media',
+  'vine_clean',
   'cozinha',
-  'eventos',
-  'security',
-  'photography',
-  'lighting',
-  'outros',
+  'vine_welcome',
+  'vine_care',
 ] as const;
 
 export type VolunteerArea = typeof VOLUNTEER_AREA_OPTIONS[number];

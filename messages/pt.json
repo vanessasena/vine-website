@@ -7,7 +7,6 @@
     "gallery": "Galeria",
     "words": "Palavras",
     "cells": "Células",
-    "volunteers": "Voluntários",
     "contact": "Contato"
   },
   "hero": {
@@ -338,7 +337,29 @@
     "commitment": "Compromisso",
     "commitmentText": "Buscamos voluntários comprometidos que desejam fazer parte da família Vine Church e contribuir regularmente com seu tempo e talentos.",
     "training": "Treinamento",
-    "trainingText": "Oferecemos treinamento e suporte para todas as áreas de ministério, garantindo que você se sinta preparado e confiante para servir."
+    "trainingText": "Oferecemos treinamento e suporte para todas as áreas de ministério, garantindo que você se sinta preparado e confiante para servir.",
+    "areaOptions": {
+      "worship": "Worship",
+      "vine_web": "Vine Web",
+      "kids": "Vine Kids",
+      "store": "Vine Store",
+      "vine_media": "Vine Media",
+      "vine_clean": "Vine Clean",
+      "cozinha": "Vine Cafe",
+      "vine_welcome": "Vine Welcome",
+      "vine_care": "Vine Care"
+    },
+    "areaDescriptions": {
+      "worship": "Ministério de louvor e adoração - vocais, instrumentos e apoio técnico",
+      "vine_web": "Desenvolvimento e manutenção do site da igreja",
+      "kids": "Ministério infantil - ensino, brincadeiras e cuidado com as crianças",
+      "store": "Atendimento e organização da loja da igreja",
+      "vine_media": "Criação de conteúdo para redes sociais e comunicação visual",
+      "vine_clean": "Limpeza e organização do espaço da igreja",
+      "cozinha": "Preparação de alimentos e café para eventos e cultos",
+      "vine_welcome": "Recepção e acolhimento de visitantes e membros",
+      "vine_care": "Ações sociais e apoio à comunidade"
+    }
   },
   "visitorRegistration": {
     "title": "Registro de Visitantes",
@@ -396,22 +417,26 @@
     "lifeGroupPlaceholder": "Selecione sua célula",
     "volunteerAreas": "Áreas de Voluntariado",
     "volunteerOptions": {
-      "louvor": "Louvor e Adoração",
-      "tecnologia": "Website",
-      "soundboard": "Mesa de Som",
-      "store": "Vine Store",
-      "recepcao": "Recepção e Acolhimento",
+      "worship": "Worship",
+      "vine_web": "Vine Web",
       "kids": "Vine Kids",
-      "teens": "Free Radicals",
-      "intercedao": "Intercessão",
-      "midia": "Mídias Sociais",
-      "limpeza": "Limpeza e Organização",
+      "store": "Vine Store",
+      "vine_media": "Vine Media",
+      "vine_clean": "Vine Clean",
       "cozinha": "Vine Cafe",
-      "eventos": "Organização de Eventos",
-      "security": "Segurança",
-      "photography": "Fotografia e Vídeo",
-      "lighting": "Equipe de Luz",
-      "outros": "Outros"
+      "vine_welcome": "Vine Welcome",
+      "vine_care": "Vine Care"
+    },
+    "volunteerDescriptions": {
+      "worship": "Ministério de louvor e adoração - vocais, instrumentos e apoio técnico",
+      "vine_web": "Desenvolvimento e manutenção do site da igreja",
+      "kids": "Ministério infantil - ensino, brincadeiras e cuidado com as crianças",
+      "store": "Atendimento e organização da loja da igreja",
+      "vine_media": "Criação de conteúdo para redes sociais e comunicação visual",
+      "vine_clean": "Limpeza e organização do espaço da igreja",
+      "cozinha": "Preparação de alimentos e café para eventos e cultos",
+      "vine_welcome": "Recepção e acolhimento de visitantes e membros",
+      "vine_care": "Ações sociais e apoio à comunidade"
     },
     "outrosDetailsLabel": "Como você pode ajudar?",
     "outrosDetailsPlaceholder": "Descreva como você gostaria de servir, suas experiencias e habilidades...",

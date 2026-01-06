@@ -119,7 +119,7 @@ export default function RootLayout({
       "longitude": "-80.4925"
     },
     "telephone": "+1-365-228-2980",
-    "email": "videiracanada@gmail.com",
+    "email": "prboris@vinechurch.ca",
     "founder": {
       "@type": "Person",
       "name": "Pastor Boris Carvalho"

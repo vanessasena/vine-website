@@ -85,6 +85,13 @@ CREATE POLICY "Admins can read all users"
   FOR SELECT
   USING (public.is_admin(auth.uid()));
 
+-- Allow system to insert new user records during signup
+-- This allows both direct user signup and the trigger function to create records
+CREATE POLICY "Allow user creation on signup"
+  ON public.users
+  FOR INSERT
+  WITH CHECK (true);
+
 -- Users can update their own record (but not change role)
 CREATE POLICY "Users can update own record"
   ON public.users

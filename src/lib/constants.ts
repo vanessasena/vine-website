@@ -5,6 +5,7 @@
 export const VOLUNTEER_AREA_OPTIONS = [
   'louvor',
   'tecnologia',
+  'soundboard',
   'recepcao',
   'kids',
   'store',
@@ -13,6 +14,9 @@ export const VOLUNTEER_AREA_OPTIONS = [
   'limpeza',
   'cozinha',
   'eventos',
+  'security',
+  'photography',
+  'lighting',
   'outros',
 ] as const;
 

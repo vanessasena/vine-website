@@ -68,30 +68,13 @@ export default function LoginClient({ locale }: LoginClientProps) {
         }
 
         if (data.user) {
-          // Manually create user record in public.users table as fallback
-          // (in case the trigger didn't fire)
-          try {
-            const { error: insertError } = await supabase
-              .from('users')
-              .insert({
-                id: data.user.id,
-                email: data.user.email || email,
-                role: 'member'
-              });
-
-            // Ignore conflict errors (user already exists)
-            if (insertError && !insertError.message.includes('duplicate') && !insertError.message.includes('unique')) {
-              console.error('Error creating user record:', insertError);
-            }
-          } catch (err) {
-            console.error('Error inserting user:', err);
-          }
-
-          setSuccessMessage(t('accountCreated'));
-          // Wait a moment then redirect to member area
-          setTimeout(() => {
-            router.push(`/${locale}/member`);
-          }, 2000);
+          // User record will be created automatically by the handle_new_user trigger
+          setSuccessMessage(t('checkEmailConfirmation'));
+          setIsSignUp(false);
+          // Clear form
+          setEmail('');
+          setPassword('');
+          setConfirmPassword('');
         }
       } else {
         // Sign in
@@ -107,36 +90,25 @@ export default function LoginClient({ locale }: LoginClientProps) {
         }
 
         if (data.session) {
-          // Ensure user record exists in public.users table
+          // Get user role
           let userData = null;
           try {
-            const { data: existingUser, error: userError } = await supabase
+            const { data: existingUser } = await supabase
               .from('users')
               .select('role')
               .eq('id', data.user.id)
               .single();
 
-            if (userError && userError.code === 'PGRST116') {
-              // User doesn't exist, create it
-              const { error: insertError } = await supabase
-                .from('users')
-                .insert({
-                  id: data.user.id,
-                  email: data.user.email || email,
-                  role: 'member'
-                });
-
-              if (insertError) {
-                console.error('Error creating user record:', insertError);
-              }
-
-              // Default to member role
-              userData = { role: 'member' };
-            } else if (existingUser) {
+            if (existingUser) {
               userData = existingUser;
+            } else {
+              // Default to member role if record doesn't exist yet
+              userData = { role: 'member' };
             }
           } catch (err) {
-            console.error('Error fetching/creating user role:', err);
+            console.error('Error fetching user role:', err);
+            // Default to member role on error
+            userData = { role: 'member' };
           }
 
           // Redirect based on role

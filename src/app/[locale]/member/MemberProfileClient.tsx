@@ -801,6 +801,9 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                   <FontAwesomeIcon icon={faHandsHelping} className="mr-2 text-primary-600" />
                   {t('volunteerAreas')}
                 </label>
+                <p className="text-sm text-gray-600 mb-4 bg-blue-50 p-3 rounded-lg border border-blue-200">
+                  {t('volunteerIntro')}
+                </p>
                 <div className="space-y-3">
                   {VOLUNTEER_AREA_OPTIONS.map((area) => (
                     <div key={area} className="flex items-start">

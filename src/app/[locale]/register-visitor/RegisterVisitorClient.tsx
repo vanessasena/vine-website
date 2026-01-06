@@ -109,6 +109,15 @@ export default function RegisterVisitorClient() {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md mx-auto">
         <div className="text-center mb-8">
+          {/* Logo */}
+          <div className="flex justify-center mb-6">
+            <img
+              src="https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/Vine-CHURCH-logo-transparent-2.png"
+              alt="Vine Church KWC Logo"
+              className="h-24 w-auto"
+            />
+          </div>
+
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
             {t('title')}
           </h1>

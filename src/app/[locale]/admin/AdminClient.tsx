@@ -403,16 +403,28 @@ export default function AdminClient({ locale }: { locale: string }) {
             </p>
           </Link>
 
-          <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-primary-600">
+          <Link
+            href={`/${locale}/admin/visitors`}
+            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200 border-l-4 border-purple-600"
+          >
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              {locale === 'pt' ? 'Gerenciar Palavras' : 'Manage Sermons'}
+              {locale === 'pt' ? 'Gerenciar Visitantes' : 'Manage Visitors'}
             </h3>
             <p className="text-gray-600 text-sm">
-              {locale === 'pt' ? 'Adicionar, editar ou remover palavras' : 'Add, edit, or remove sermons'}
+              {locale === 'pt' ? 'Visualizar registros de visitantes' : 'View visitor registrations'}
             </p>
-          </div>
+          </Link>
         </div>
 
+        {/* Sermons Management Section */}
+        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            {locale === 'pt' ? 'Gerenciar Palavras' : 'Manage Sermons'}
+          </h3>
+          <p className="text-gray-600 text-sm mb-6">
+            {locale === 'pt' ? 'Adicionar, editar ou remover palavras' : 'Add, edit, or remove sermons'}
+          </p>
+        </div>
         {/* Messages */}
         {error && (
           <div className="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">

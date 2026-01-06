@@ -235,7 +235,7 @@ export default function CellsPage({ params: { locale } }: PageProps) {
             </p>
             <div className="space-y-2">
               <p className="font-semibold">WhatsApp: +1 365 228 2980</p>
-              <p className="font-semibold">Email: videiracanada@gmail.com</p>
+              <p className="font-semibold">Email: prboris@vinechurch.ca</p>
             </div>
           </div>
         </div>

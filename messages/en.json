@@ -332,6 +332,7 @@
     "successMessage": "Thank you for registering! We're excited to have you as part of our community.",
     "errorTitle": "Error Submitting",
     "errorMessage": "An error occurred while submitting your registration. Please try again.",
-    "requiredField": "This field is required"
+    "requiredField": "This field is required",
+    "invalidPhone": "Invalid phone number. Please use a valid format like (519) 123-4567"
   }
 }

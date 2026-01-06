@@ -333,6 +333,7 @@
     "successMessage": "Obrigado por se registrar! Estamos felizes em tê-lo como parte da nossa comunidade.",
     "errorTitle": "Erro ao Enviar",
     "errorMessage": "Ocorreu um erro ao enviar seu registro. Por favor, tente novamente.",
-    "requiredField": "Este campo é obrigatório"
+    "requiredField": "Este campo é obrigatório",
+    "invalidPhone": "Número de telefone inválido. Use um formato válido como (519) 123-4567"
   }
 }

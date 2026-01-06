@@ -12,6 +12,16 @@ const getTodayDate = () => {
   return `${year}-${month}-${day}`;
 };
 
+// Helper function to validate phone number
+const isValidPhoneNumber = (phone: string): boolean => {
+  // Remove all non-digit characters
+  const digitsOnly = phone.replace(/\D/g, '');
+
+  // Accept 10 digits (local) or 11 digits (with country code 1)
+  // Examples: (519) 123-4567, 519-123-4567, +1 519 123 4567, etc.
+  return digitsOnly.length === 10 || (digitsOnly.length === 11 && digitsOnly.startsWith('1'));
+};
+
 export default function RegisterVisitorClient() {
   const t = useTranslations('visitorRegistration');
 
@@ -43,6 +53,13 @@ export default function RegisterVisitorClient() {
     // Validate required fields
     if (!formData.visit_date || !formData.name || !formData.phone || !formData.how_found) {
       setError(t('requiredField'));
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Validate phone number format
+    if (!isValidPhoneNumber(formData.phone)) {
+      setError(t('invalidPhone'));
       setIsSubmitting(false);
       return;
     }

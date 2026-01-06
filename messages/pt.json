@@ -428,13 +428,13 @@
       "vine_care": "Vine Care"
     },
     "volunteerDescriptions": {
-      "worship": "Ministério de louvor e adoração - vocais, instrumentos e apoio técnico",
+      "worship": "Ministério de louvor e adoração - vocais, instrumentos e apoio técnico. Inclui mesa de som e iluminação.",
       "vine_web": "Desenvolvimento e manutenção do site da igreja",
-      "kids": "Ministério infantil - ensino, brincadeiras e cuidado com as crianças",
+      "kids": "Ministério infantil - ensino, brincadeiras e cuidado com as crianças. Na igreja videira, somente mulheres podem servir no ministério infantil.",
       "store": "Atendimento e organização da loja da igreja",
       "vine_media": "Criação de conteúdo para redes sociais e comunicação visual",
       "vine_clean": "Limpeza e organização do espaço da igreja",
-      "cozinha": "Preparação de alimentos e café para eventos e cultos",
+      "cozinha": "Preparação de alimentos e café para eventos e cultos. Atendimento na Vine Cafe.",
       "vine_welcome": "Recepção e acolhimento de visitantes e membros",
       "vine_care": "Ações sociais e apoio à comunidade"
     },

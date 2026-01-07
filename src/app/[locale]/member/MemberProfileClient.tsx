@@ -1300,11 +1300,40 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                 {formData.is_married && (
                   <div className="space-y-3">
                     <div>
-                      <label htmlFor="spouse_id" className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
                         <FontAwesomeIcon icon={faUser} className="mr-2 text-primary-600" />
                         {t('spouseName')}
                       </label>
-                      <p className="text-xs text-gray-600 mb-2">{t('spouseSelectOptional')}</p>
+
+                      {/* Show current spouse if exists */}
+                      {formData.spouse_name && formData.spouse_id && (
+                        <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{t('currentSpouse')}</p>
+                              <p className="text-sm text-gray-700">{formData.spouse_name}</p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setFormData(prev => ({
+                                  ...prev,
+                                  spouse_id: '',
+                                  spouse_name: ''
+                                }));
+                              }}
+                              className="px-3 py-1 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg border border-red-200"
+                            >
+                              {t('removeSpouse')}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Show dropdown to select/change spouse */}
+                      <p className="text-xs text-gray-600 mb-2">
+                        {formData.spouse_id ? t('changeSpouse') : t('spouseSelectOptional')}
+                      </p>
                       {loadingSpouses ? (
                         <div className="text-sm text-gray-500">{t('loading')}</div>
                       ) : (
@@ -1323,7 +1352,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                               </option>
                             ))}
                           </select>
-                          {availableSpouses.length === 0 && (
+                          {availableSpouses.length === 0 && !formData.spouse_id && (
                             <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800 mt-2">
                               <p className="font-medium mb-1">{t('spouseNotFound')}</p>
                               <p>{t('spouseAccountMessage')}</p>

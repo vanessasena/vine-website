@@ -241,6 +241,9 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Profile not found' }, { status: 404 });
     }
 
+    // Store the old spouse_id before updating
+    const oldSpouseId = currentProfile.spouse_id;
+
     // If spouse_id is provided, validate it exists and doesn't have a different spouse
     if (spouse_id) {
       const { data: spouseProfile, error: spouseError } = await supabaseServiceRole
@@ -319,9 +322,9 @@ export async function PUT(request: NextRequest) {
         .eq('id', spouse_id);
     }
 
-    // If spouse was removed (spouse_id is null but was previously set), clear spouse's link too
-    if (!spouse_id && data.spouse_id) {
-      // Previous spouse_id was removed, so clear the previous spouse's link (use service role to bypass RLS)
+    // If spouse was removed or changed, clear the old spouse's link
+    if (oldSpouseId && oldSpouseId !== spouse_id) {
+      // Clear the old spouse's link (use service role to bypass RLS)
       await supabaseServiceRole
         .from('member_profiles')
         .update({
@@ -329,7 +332,7 @@ export async function PUT(request: NextRequest) {
           spouse_name: null,
           is_married: false
         })
-        .eq('id', data.spouse_id);
+        .eq('id', oldSpouseId);
     }
 
     return NextResponse.json({ data });

@@ -91,7 +91,6 @@ export async function POST(request: NextRequest) {
       life_group,
       is_married,
       spouse_id,
-      children
     } = body;
 
     let spouse_name = body.spouse_name; // Extract separately so it can be reassigned
@@ -216,7 +215,6 @@ export async function PUT(request: NextRequest) {
       life_group,
       is_married,
       spouse_id,
-      children
     } = body;
 
     let spouse_name = body.spouse_name; // Extract separately so it can be reassigned

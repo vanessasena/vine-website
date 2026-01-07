@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS public.member_profiles (
   volunteer_outros_details TEXT,
   life_group TEXT,
   is_married BOOLEAN DEFAULT false,
+  spouse_id UUID REFERENCES public.member_profiles(id) ON DELETE SET NULL,
   spouse_name TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()

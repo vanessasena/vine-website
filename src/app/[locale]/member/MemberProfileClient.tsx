@@ -49,6 +49,7 @@ interface MemberProfile {
   volunteer_outros_details: string | null;
   life_group: string | null;
   is_married: boolean;
+  spouse_id: string | null;
   spouse_name: string | null;
   created_at: string;
   updated_at: string;
@@ -71,6 +72,8 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
   const [userRole, setUserRole] = useState<'member' | 'admin' | null>(null);
   const [children, setChildren] = useState<Child[]>([]);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [availableSpouses, setAvailableSpouses] = useState<Array<{ id: string; name: string; phone: string }>>([]);
+  const [loadingSpouses, setLoadingSpouses] = useState(false);
 
   // Section states for collapsible UI
   const [expandedSections, setExpandedSections] = useState<{
@@ -124,6 +127,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
     volunteer_outros_details: '',
     life_group: '',
     is_married: false,
+    spouse_id: '',
     spouse_name: '',
   });
 
@@ -179,6 +183,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
           volunteer_outros_details: result.data.volunteer_outros_details || '',
           life_group: result.data.life_group || '',
           is_married: result.data.is_married === true,
+          spouse_id: result.data.spouse_id || '',
           spouse_name: result.data.spouse_name || '',
         });
 
@@ -210,6 +215,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
           volunteer_outros_details: '',
           life_group: '',
           is_married: false,
+          spouse_id: '',
           spouse_name: ''
         });
       }
@@ -489,6 +495,46 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
       ...prev,
       [section]: true
     }));
+
+    // Fetch available spouses when editing family section
+    if (section === 'family') {
+      fetchAvailableSpouses();
+    }
+  };
+
+  const fetchAvailableSpouses = async () => {
+    try {
+      setLoadingSpouses(true);
+
+      const { createClient } = await import('@supabase/supabase-js');
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+      );
+
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        console.error('No session found');
+        return;
+      }
+
+      const response = await fetch('/api/available-spouses', {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setAvailableSpouses(data.data || []);
+      } else {
+        console.error('Error fetching spouses:', response.statusText);
+      }
+    } catch (err) {
+      console.error('Error fetching available spouses:', err);
+    } finally {
+      setLoadingSpouses(false);
+    }
   };
 
   const handleCancelSection = (section: keyof typeof editingSections) => {
@@ -513,6 +559,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
         resetData.volunteer_outros_details = profile.volunteer_outros_details || '';
       } else if (section === 'family') {
         resetData.is_married = profile.is_married === true;
+        resetData.spouse_id = profile.spouse_id || '';
         resetData.spouse_name = profile.spouse_name || '';
       }
 
@@ -659,9 +706,10 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
   };
 
   const handleSaveFamily = async () => {
+    // Allow saving when married (spouse_id is optional, send empty string if not selected)
     await saveSectionData('family', {
       is_married: formData.is_married,
-      spouse_name: formData.spouse_name,
+      spouse_id: formData.spouse_id as string,
     });
   };
 
@@ -688,6 +736,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
         volunteer_outros_details: profile.volunteer_outros_details || '',
         life_group: profile.life_group || '',
         is_married: profile.is_married === true,
+        spouse_id: profile.spouse_id || '',
         spouse_name: profile.spouse_name || '',
       });
     }
@@ -1249,20 +1298,40 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                 </div>
 
                 {formData.is_married && (
-                  <div>
-                    <label htmlFor="spouse_name" className="block text-sm font-medium text-gray-700 mb-2">
-                      <FontAwesomeIcon icon={faUser} className="mr-2 text-primary-600" />
-                      {t('spouseName')}
-                    </label>
-                    <input
-                      type="text"
-                      id="spouse_name"
-                      name="spouse_name"
-                      value={formData.spouse_name}
-                      onChange={handleInputChange}
-                      placeholder={t('spouseNamePlaceholder')}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                    />
+                  <div className="space-y-3">
+                    <div>
+                      <label htmlFor="spouse_id" className="block text-sm font-medium text-gray-700 mb-2">
+                        <FontAwesomeIcon icon={faUser} className="mr-2 text-primary-600" />
+                        {t('spouseName')}
+                      </label>
+                      <p className="text-xs text-gray-600 mb-2">{t('spouseSelectOptional')}</p>
+                      {loadingSpouses ? (
+                        <div className="text-sm text-gray-500">{t('loading')}</div>
+                      ) : (
+                        <>
+                          <select
+                            id="spouse_id"
+                            name="spouse_id"
+                            value={formData.spouse_id}
+                            onChange={handleInputChange}
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                          >
+                            <option value="">{t('selectSpouse')}</option>
+                            {availableSpouses.map((spouse) => (
+                              <option key={spouse.id} value={spouse.id}>
+                                {spouse.name} ({spouse.phone})
+                              </option>
+                            ))}
+                          </select>
+                          {availableSpouses.length === 0 && (
+                            <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800 mt-2">
+                              <p className="font-medium mb-1">{t('spouseNotFound')}</p>
+                              <p>{t('spouseAccountMessage')}</p>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
                   </div>
                 )}
 

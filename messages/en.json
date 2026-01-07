@@ -482,6 +482,8 @@
     "children": "Children",
     "childName": "Child Name",
     "childAge": "Age",
+    "childAllergies": "Allergies",
+    "childAllergiesPlaceholder": "e.g., peanuts, dairy",
     "addChild": "Add Child",
     "removeChild": "Remove",
     "noChildren": "No children registered",

@@ -1403,6 +1403,21 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                                 {calculateAge(child.date_of_birth)} {locale === 'pt' ? (calculateAge(child.date_of_birth) === 1 ? 'ano' : 'anos') : (calculateAge(child.date_of_birth) === 1 ? 'year' : 'years')}
                               </div>
                             </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">{t('childAllergies')}</label>
+                              <input
+                                type="text"
+                                value={child.allergies || ''}
+                                onChange={(e) => {
+                                  setChildren(prev => prev.map(c =>
+                                    c.id === child.id ? { ...c, allergies: e.target.value } : c
+                                  ));
+                                }}
+                                onBlur={(e) => handleUpdateChild(child.id, 'allergies', e.target.value)}
+                                placeholder={t('childAllergiesPlaceholder')}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                              />
+                            </div>
                           </div>
                           <button
                             type="button"
@@ -1458,6 +1473,11 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                           <span className="text-gray-600 ml-2">
                             ({calculateAge(child.date_of_birth)} {locale === 'pt' ? (calculateAge(child.date_of_birth) === 1 ? 'ano' : 'anos') : (calculateAge(child.date_of_birth) === 1 ? 'year' : 'years')})
                           </span>
+                          {child.allergies && child.allergies.trim() !== '' && (
+                            <div className="text-sm text-gray-700 mt-1">
+                              <span className="font-medium">{t('childAllergies')}:</span> {child.allergies}
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>

@@ -481,6 +481,8 @@
     "children": "Filhos",
     "childName": "Nome do Filho(a)",
     "childAge": "Idade",
+    "childAllergies": "Alergias",
+    "childAllergiesPlaceholder": "ex.: amendoim, leite",
     "addChild": "Adicionar Filho(a)",
     "removeChild": "Remover",
     "noChildren": "Nenhum filho cadastrado",

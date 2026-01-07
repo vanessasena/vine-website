@@ -487,6 +487,21 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
   };
 
   const handleEditSection = (section: keyof typeof editingSections) => {
+
+      // Persist immediate changes in the Family section
+      const persistFamilyChange = async (nextData: { is_married?: boolean; spouse_id?: string; spouse_name?: string }) => {
+        setFormData(prev => ({ ...prev, ...nextData }));
+        const saved = await saveSectionData('family', {
+          is_married: (nextData.is_married ?? formData.is_married),
+          spouse_id: (nextData.spouse_id ?? formData.spouse_id) as string,
+        });
+        if (saved) {
+          // Refresh spouse options after change
+          fetchAvailableSpouses();
+          // Reload profile and children to reflect linkage updates
+          await checkAuthAndLoadProfile();
+        }
+      };
     setEditingSections(prev => ({
       ...prev,
       [section]: true
@@ -534,6 +549,19 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
       console.error('Error fetching available spouses:', err);
     } finally {
       setLoadingSpouses(false);
+    }
+  };
+
+  // Persist immediate changes in Family section (marital status/spouse)
+  const persistFamilyChange = async (nextData: { is_married?: boolean; spouse_id?: string; spouse_name?: string }) => {
+    setFormData(prev => ({ ...prev, ...nextData }));
+    const saved = await saveSectionData('family', {
+      is_married: (nextData.is_married ?? formData.is_married),
+      spouse_id: (nextData.spouse_id ?? formData.spouse_id) as string,
+    });
+    if (saved) {
+      await fetchAvailableSpouses();
+      await checkAuthAndLoadProfile();
     }
   };
 
@@ -1288,7 +1316,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                     id="is_married"
                     name="is_married"
                     checked={formData.is_married}
-                    onChange={handleInputChange}
+                    onChange={(e) => persistFamilyChange({ is_married: e.target.checked })}
                     className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                   />
                   <label htmlFor="is_married" className="ml-3 text-sm font-medium text-gray-700">
@@ -1315,13 +1343,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                             </div>
                             <button
                               type="button"
-                              onClick={() => {
-                                setFormData(prev => ({
-                                  ...prev,
-                                  spouse_id: '',
-                                  spouse_name: ''
-                                }));
-                              }}
+                              onClick={() => persistFamilyChange({ spouse_id: '', spouse_name: '' })}
                               className="px-3 py-1 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg border border-red-200"
                             >
                               {t('removeSpouse')}
@@ -1342,7 +1364,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                             id="spouse_id"
                             name="spouse_id"
                             value={formData.spouse_id}
-                            onChange={handleInputChange}
+                            onChange={(e) => persistFamilyChange({ spouse_id: e.target.value })}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                           >
                             <option value="">{t('selectSpouse')}</option>

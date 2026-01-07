@@ -318,6 +318,21 @@ export async function PUT(request: NextRequest) {
           is_married: true
         })
         .eq('id', spouse_id);
+
+      // Link children to both parents when spouse relationship is established
+      // 1) Current user's children missing second parent
+      await supabaseServiceRole
+        .from('children')
+        .update({ parent2_id: spouse_id })
+        .eq('parent1_id', currentUserId)
+        .is('parent2_id', null);
+
+      // 2) Spouse's children missing second parent
+      await supabaseServiceRole
+        .from('children')
+        .update({ parent2_id: currentUserId })
+        .eq('parent1_id', spouse_id)
+        .is('parent2_id', null);
     }
 
     // If spouse was removed or changed, clear the old spouse's link
@@ -331,6 +346,23 @@ export async function PUT(request: NextRequest) {
           is_married: false
         })
         .eq('id', oldSpouseId);
+
+      // Also clear children second-parent links referencing the old spouse
+      const currentUserId = data.id;
+
+      // 1) Children where current user is parent1 and old spouse was parent2
+      await supabaseServiceRole
+        .from('children')
+        .update({ parent2_id: null })
+        .eq('parent1_id', currentUserId)
+        .eq('parent2_id', oldSpouseId);
+
+      // 2) Children where old spouse is parent1 and current user was parent2
+      await supabaseServiceRole
+        .from('children')
+        .update({ parent2_id: null })
+        .eq('parent1_id', oldSpouseId)
+        .eq('parent2_id', currentUserId);
     }
 
     return NextResponse.json({ data });

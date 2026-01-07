@@ -421,6 +421,23 @@
     },
     "isBaptized": "Batizado(a) nas águas",
     "paysTithe": "Dizimista",
+    "spiritualCourses": "Cursos concluídos",
+    "spiritualCourseOptions": {
+      "maturidade_no_espirito": "Maturidade no Espírito",
+      "treinamento_de_lideres": "Treinamento de Líderes"
+    },
+    "encounterWithGod": "Participou do Encontro com Deus",
+    "churchRole": "Função na Igreja",
+    "churchRolePlaceholder": "Selecione sua função",
+    "churchRoleRequired": "Função na igreja é obrigatória",
+    "churchRoleOptions": {
+      "discipulador": "Discipulador",
+      "lider": "Líder",
+      "lider_em_treinamento": "Líder em treinamento",
+      "anfitriao": "Anfitrião",
+      "anjo_da_guarda": "Anjo da Guarda",
+      "membro": "Membro"
+    },
     "lifeGroup": "Célula",
     "lifeGroupPlaceholder": "Selecione sua célula",
     "volunteerAreas": "Áreas de Voluntariado",

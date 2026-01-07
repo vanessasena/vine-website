@@ -82,6 +82,9 @@ export async function POST(request: NextRequest) {
       gender,
       is_baptized,
       pays_tithe,
+      spiritual_courses,
+      encounter_with_god,
+      church_role,
       volunteer_areas,
       volunteer_outros_details,
       life_group,
@@ -91,9 +94,9 @@ export async function POST(request: NextRequest) {
     } = body;
 
     // Validate required fields
-    if (!name || !phone || !email || !date_of_birth || !gender) {
+    if (!name || !phone || !email || !date_of_birth || !gender || !church_role) {
       return NextResponse.json(
-        { error: 'Name, phone, email, date_of_birth, and gender are required' },
+        { error: 'Name, phone, email, date_of_birth, gender, and church_role are required' },
         { status: 400 }
       );
     }
@@ -124,6 +127,9 @@ export async function POST(request: NextRequest) {
         gender,
         is_baptized: is_baptized || false,
         pays_tithe: pays_tithe || false,
+        spiritual_courses: spiritual_courses || [],
+        encounter_with_god: encounter_with_god || false,
+        church_role,
         volunteer_areas: volunteer_areas || [],
         volunteer_outros_details: volunteer_outros_details || null,
         life_group: life_group || null,
@@ -172,6 +178,9 @@ export async function PUT(request: NextRequest) {
       gender,
       is_baptized,
       pays_tithe,
+      spiritual_courses,
+      encounter_with_god,
+      church_role,
       volunteer_areas,
       volunteer_outros_details,
       life_group,
@@ -181,9 +190,9 @@ export async function PUT(request: NextRequest) {
     } = body;
 
     // Validate required fields
-    if (!name || !phone || !email || !date_of_birth || !gender) {
+    if (!name || !phone || !email || !date_of_birth || !gender || !church_role) {
       return NextResponse.json(
-        { error: 'Name, phone, email, date_of_birth, and gender are required' },
+        { error: 'Name, phone, email, date_of_birth, gender, and church_role are required' },
         { status: 400 }
       );
     }
@@ -199,6 +208,9 @@ export async function PUT(request: NextRequest) {
         gender,
         is_baptized: is_baptized || false,
         pays_tithe: pays_tithe || false,
+        spiritual_courses: spiritual_courses || [],
+        encounter_with_god: encounter_with_god || false,
+        church_role,
         volunteer_areas: volunteer_areas || [],
         volunteer_outros_details: volunteer_outros_details || null,
         life_group: life_group || null,

@@ -422,6 +422,23 @@
     },
     "isBaptized": "Baptized in water",
     "paysTithe": "Tither?",
+    "spiritualCourses": "Completed Courses",
+    "spiritualCourseOptions": {
+      "maturidade_no_espirito": "Maturity in the Spirit",
+      "treinamento_de_lideres": "Leadership Training"
+    },
+    "encounterWithGod": "Attended Encounter with God",
+    "churchRole": "Church Role",
+    "churchRolePlaceholder": "Select your role",
+    "churchRoleRequired": "Church role is required",
+    "churchRoleOptions": {
+      "discipulador": "Discipler",
+      "lider": "Leader",
+      "lider_em_treinamento": "Leader in Training",
+      "anfitriao": "Host",
+      "anjo_da_guarda": "Guardian Angel",
+      "membro": "Member"
+    },
     "lifeGroup": "Life Group",
     "lifeGroupPlaceholder": "Select your life group",
     "volunteerAreas": "Volunteer Areas",

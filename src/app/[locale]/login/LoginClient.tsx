@@ -75,6 +75,7 @@ export default function LoginClient({ locale }: LoginClientProps) {
           setEmail('');
           setPassword('');
           setConfirmPassword('');
+          setLoading(false);
         }
       } else {
         // Sign in

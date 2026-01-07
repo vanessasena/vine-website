@@ -11,17 +11,13 @@ import {
   faPhone,
   faBirthdayCake,
   faChurch,
-  faHandsHelping,
   faUsers,
   faCheckCircle,
-  faEdit,
-  faSave,
   faTimes,
   faArrowLeft,
-  faChevronDown,
-  faChevronUp,
+  faCross,
 } from '@fortawesome/free-solid-svg-icons';
-import { VOLUNTEER_AREA_OPTIONS, GENDER_OPTIONS } from '@/lib/constants';
+import { VOLUNTEER_AREA_OPTIONS, GENDER_OPTIONS, SPIRITUAL_COURSE_OPTIONS, CHURCH_ROLE_OPTIONS } from '@/lib/constants';
 import ProfileSection from '@/components/ProfileSection';
 
 interface Child {
@@ -46,6 +42,9 @@ interface MemberProfile {
   email: string;
   is_baptized: boolean;
   pays_tithe: boolean;
+  spiritual_courses: string[];
+  encounter_with_god: boolean;
+  church_role: string | null;
   volunteer_areas: string[];
   volunteer_outros_details: string | null;
   life_group: string | null;
@@ -118,6 +117,9 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
     gender: '',
     is_baptized: false,
     pays_tithe: false,
+    spiritual_courses: [] as string[],
+    encounter_with_god: false,
+    church_role: '',
     volunteer_areas: [] as string[],
     volunteer_outros_details: '',
     life_group: '',
@@ -170,6 +172,9 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
           gender: result.data.gender || '',
           is_baptized: result.data.is_baptized === true,
           pays_tithe: result.data.pays_tithe === true,
+          spiritual_courses: Array.isArray(result.data.spiritual_courses) ? result.data.spiritual_courses : [],
+          encounter_with_god: result.data.encounter_with_god === true,
+          church_role: result.data.church_role || '',
           volunteer_areas: Array.isArray(result.data.volunteer_areas) ? result.data.volunteer_areas : [],
           volunteer_outros_details: result.data.volunteer_outros_details || '',
           life_group: result.data.life_group || '',
@@ -198,6 +203,9 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
           gender: '',
           is_baptized: false,
           pays_tithe: false,
+          spiritual_courses: [],
+          encounter_with_god: false,
+          church_role: 'membro',
           volunteer_areas: [],
           volunteer_outros_details: '',
           life_group: '',
@@ -496,6 +504,9 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
       } else if (section === 'spiritualLife') {
         resetData.is_baptized = profile.is_baptized === true;
         resetData.pays_tithe = profile.pays_tithe === true;
+        resetData.spiritual_courses = Array.isArray(profile.spiritual_courses) ? profile.spiritual_courses : [];
+        resetData.encounter_with_god = profile.encounter_with_god === true;
+        resetData.church_role = profile.church_role || '';
         resetData.life_group = profile.life_group || '';
       } else if (section === 'volunteer') {
         resetData.volunteer_areas = Array.isArray(profile.volunteer_areas) ? profile.volunteer_areas : [];
@@ -525,6 +536,9 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
         gender: formData.gender,
         is_baptized: formData.is_baptized,
         pays_tithe: formData.pays_tithe,
+        spiritual_courses: formData.spiritual_courses,
+        encounter_with_god: formData.encounter_with_god,
+        church_role: formData.church_role || 'membro',
         volunteer_areas: formData.volunteer_areas,
         volunteer_outros_details: formData.volunteer_outros_details,
         life_group: formData.life_group,
@@ -551,6 +565,13 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
         }
         if (!payload.gender) {
           setError(t('genderRequired'));
+          return false;
+        }
+      }
+
+      if (section === 'spiritualLife') {
+        if (!payload.church_role) {
+          setError(t('churchRoleRequired'));
           return false;
         }
       }
@@ -623,6 +644,9 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
     await saveSectionData('spiritualLife', {
       is_baptized: formData.is_baptized,
       pays_tithe: formData.pays_tithe,
+      spiritual_courses: formData.spiritual_courses,
+      encounter_with_god: formData.encounter_with_god,
+      church_role: formData.church_role,
       life_group: formData.life_group,
     });
   };
@@ -657,6 +681,9 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
         gender: profile.gender || '',
         is_baptized: profile.is_baptized === true,
         pays_tithe: profile.pays_tithe === true,
+        spiritual_courses: Array.isArray(profile.spiritual_courses) ? profile.spiritual_courses : [],
+        encounter_with_god: profile.encounter_with_god === true,
+        church_role: profile.church_role || '',
         volunteer_areas: Array.isArray(profile.volunteer_areas) ? profile.volunteer_areas : [],
         volunteer_outros_details: profile.volunteer_outros_details || '',
         life_group: profile.life_group || '',
@@ -939,6 +966,68 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                   </label>
                 </div>
 
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="encounter_with_god"
+                    name="encounter_with_god"
+                    checked={formData.encounter_with_god}
+                    onChange={handleInputChange}
+                    className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                  />
+                  <label htmlFor="encounter_with_god" className="ml-3 text-sm font-medium text-gray-700">
+                    <FontAwesomeIcon icon={faCross} className="mr-2 text-primary-600" />
+                    {t('encounterWithGod')}
+                  </label>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {t('spiritualCourses')}
+                  </label>
+                  <div className="space-y-2">
+                    {SPIRITUAL_COURSE_OPTIONS.map((course) => (
+                      <label key={course} className="flex items-start gap-3 text-sm text-gray-700">
+                        <input
+                          type="checkbox"
+                          checked={formData.spiritual_courses.includes(course)}
+                          onChange={() => {
+                            setFormData(prev => ({
+                              ...prev,
+                              spiritual_courses: prev.spiritual_courses.includes(course)
+                                ? prev.spiritual_courses.filter(c => c !== course)
+                                : [...prev.spiritual_courses, course]
+                            }));
+                          }}
+                          className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded mt-0.5"
+                        />
+                        <span>{t(`spiritualCourseOptions.${course}`)}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="church_role" className="block text-sm font-medium text-gray-700 mb-2">
+                    {t('churchRole')} *
+                  </label>
+                  <select
+                    id="church_role"
+                    name="church_role"
+                    required
+                    value={formData.church_role}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                  >
+                    <option value="">{t('churchRolePlaceholder')}</option>
+                    {CHURCH_ROLE_OPTIONS.map(role => (
+                      <option key={role} value={role}>
+                        {t(`churchRoleOptions.${role}`)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
                 <div>
                   <label htmlFor="life_group" className="block text-sm font-medium text-gray-700 mb-2">
                     <FontAwesomeIcon icon={faUsers} className="mr-2 text-primary-600" />
@@ -984,6 +1073,38 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                   <span className={profile.pays_tithe ? 'text-gray-900' : 'text-gray-500'}>
                     {t('paysTithe')}: {profile.pays_tithe ? t('yes') : t('no')}
                   </span>
+                </div>
+
+                <div className="flex items-center">
+                  <FontAwesomeIcon
+                    icon={faCross}
+                    className={`mr-2 ${profile.encounter_with_god ? 'text-green-600' : 'text-gray-400'}`}
+                  />
+                  <span className="text-sm font-medium text-gray-500 mr-2">{t('encounterWithGod')}:</span>
+                  <span className="text-gray-900">{profile.encounter_with_god ? t('yes') : t('no')}</span>
+                </div>
+
+                {profile.spiritual_courses && profile.spiritual_courses.length > 0 && (
+                  <div>
+                    <div className="text-sm font-medium text-gray-500 mb-1">
+                      {t('spiritualCourses')}
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {profile.spiritual_courses.map(course => (
+                        <span key={course} className="bg-primary-100 text-primary-700 px-3 py-1 rounded-full text-sm">
+                          {t(`spiritualCourseOptions.${course}`)}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div>
+                  <div className="text-sm font-medium text-gray-500 mb-1">
+                    {t('churchRole')}
+                  </div>
+                  <div className="text-lg text-gray-900">
+                    {profile.church_role ? t(`churchRoleOptions.${profile.church_role}`) : '-'}</div>
                 </div>
 
                 {profile.life_group && (

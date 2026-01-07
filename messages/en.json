@@ -410,8 +410,15 @@
     "phoneError": "Please enter a valid phone number with 10 digits",
     "fixErrors": "Please fix the errors before saving",
     "dateOfBirth": "Date of Birth",
+    "dateOfBirthRequired": "Date of birth is required",
     "dateOfBirthError": "Please enter a valid date of birth (age between 5 and 120 years)",
     "dateOfBirthHint": "Valid date",
+    "gender": "Gender",
+    "genderPlaceholder": "Select your gender (optional)",
+    "genderOptions": {
+      "female": "Female",
+      "male": "Male"
+    },
     "isBaptized": "Baptized in water",
     "paysTithe": "Tither?",
     "lifeGroup": "Life Group",
@@ -456,6 +463,32 @@
     "yes": "Yes",
     "no": "No",
     "infoTitle": "Keep your profile updated",
-    "infoText": "Your information helps us serve better and keep you informed about church activities. Please keep your data up to date."
+    "infoText": "Your information helps us serve you better and keep you informed about church activities. Please keep your data up to date.",
+    "sections": {
+      "personalInfo": {
+        "title": "Personal Information",
+        "description": "Your basic contact information",
+        "saved": "Personal information saved successfully!"
+      },
+      "spiritualLife": {
+        "title": "Spiritual Life",
+        "description": "Baptism, tithe, and life group",
+        "saved": "Spiritual information saved successfully!"
+      },
+      "volunteer": {
+        "title": "Volunteer",
+        "description": "Areas where you want to serve",
+        "saved": "Volunteer information saved successfully!"
+      },
+      "family": {
+        "title": "Family Information",
+        "description": "Marital status and children",
+        "saved": "Family information saved successfully!"
+      }
+    },
+    "saveSection": "Save Section",
+    "editSection": "Edit Section",
+    "expandSection": "Expand",
+    "collapseSection": "Collapse"
   }
 }

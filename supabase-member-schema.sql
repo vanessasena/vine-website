@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS public.member_profiles (
   user_id UUID UNIQUE NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   date_of_birth DATE,
+  gender TEXT,
   phone TEXT NOT NULL,
   email TEXT NOT NULL,
   is_baptized BOOLEAN DEFAULT false,

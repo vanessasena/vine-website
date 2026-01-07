@@ -409,8 +409,15 @@
     "phoneError": "Por favor, insira um número de telefone válido com 10 dígitos",
     "fixErrors": "Por favor, corrija os erros antes de salvar",
     "dateOfBirth": "Data de Nascimento",
+    "dateOfBirthRequired": "Data de nascimento é obrigatória",
     "dateOfBirthError": "Por favor, insira uma data de nascimento válida (idade entre 5 e 120 anos)",
     "dateOfBirthHint": "Data válida",
+    "gender": "Gênero",
+    "genderPlaceholder": "Selecione seu gênero (opcional)",
+    "genderOptions": {
+      "female": "Feminino",
+      "male": "Masculino"
+    },
     "isBaptized": "Batizado(a) nas águas",
     "paysTithe": "Dizimista",
     "lifeGroup": "Célula",
@@ -455,6 +462,32 @@
     "yes": "Sim",
     "no": "Não",
     "infoTitle": "Mantenha seu perfil atualizado",
-    "infoText": "Suas informações nos ajudam a servir melhor e a manter você informado sobre as atividades da igreja. Por favor, mantenha seus dados atualizados."
+    "infoText": "Suas informações nos ajudam a servir melhor e a manter você informado sobre as atividades da igreja. Por favor, mantenha seus dados atualizados.",
+    "sections": {
+      "personalInfo": {
+        "title": "Informações Pessoais",
+        "description": "Seus dados básicos de contato",
+        "saved": "Informações pessoais salvas com sucesso!"
+      },
+      "spiritualLife": {
+        "title": "Vida Espiritual",
+        "description": "Batismo, dízimo e célula",
+        "saved": "Informações espirituais salvas com sucesso!"
+      },
+      "volunteer": {
+        "title": "Voluntariado",
+        "description": "Áreas onde você deseja servir",
+        "saved": "Informações de voluntariado salvas com sucesso!"
+      },
+      "family": {
+        "title": "Informações Familiares",
+        "description": "Estado civil e filhos",
+        "saved": "Informações familiares salvas com sucesso!"
+      }
+    },
+    "saveSection": "Salvar Seção",
+    "editSection": "Editar Seção",
+    "expandSection": "Expandir",
+    "collapseSection": "Recolher"
   }
 }

@@ -18,8 +18,13 @@ import {
   faSave,
   faTimes,
   faArrowLeft,
+  faChevronDown,
+  faChevronUp,
 } from '@fortawesome/free-solid-svg-icons';
 import { VOLUNTEER_AREA_OPTIONS } from '@/lib/constants';
+import ProfileSection from '@/components/ProfileSection';
+
+const GENDER_OPTIONS = ['female', 'male'] as const;
 
 interface Child {
   id: string;
@@ -38,6 +43,7 @@ interface MemberProfile {
   user_id: string;
   name: string;
   date_of_birth: string | null;
+  gender: string | null;
   phone: string;
   email: string;
   is_baptized: boolean;
@@ -62,18 +68,56 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
   const [profile, setProfile] = useState<MemberProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [phoneError, setPhoneError] = useState<string | null>(null);
   const [dateError, setDateError] = useState(false);
   const [userRole, setUserRole] = useState<'member' | 'admin' | null>(null);
   const [children, setChildren] = useState<Child[]>([]);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  // Section states for collapsible UI
+  const [expandedSections, setExpandedSections] = useState<{
+    personalInfo: boolean;
+    spiritualLife: boolean;
+    volunteer: boolean;
+    family: boolean;
+  }>({
+    personalInfo: true,
+    spiritualLife: false,
+    volunteer: false,
+    family: false,
+  });
+
+  const [editingSections, setEditingSections] = useState<{
+    personalInfo: boolean;
+    spiritualLife: boolean;
+    volunteer: boolean;
+    family: boolean;
+  }>({
+    personalInfo: false,
+    spiritualLife: false,
+    volunteer: false,
+    family: false,
+  });
+
+  const [savingSections, setSavingSections] = useState<{
+    personalInfo: boolean;
+    spiritualLife: boolean;
+    volunteer: boolean;
+    family: boolean;
+  }>({
+    personalInfo: false,
+    spiritualLife: false,
+    volunteer: false,
+    family: false,
+  });
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     date_of_birth: '',
+    gender: '',
     is_baptized: false,
     pays_tithe: false,
     volunteer_areas: [] as string[],
@@ -121,16 +165,17 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
       if (result.data) {
         setProfile(result.data);
         setFormData({
-          name: result.data.name,
-          email: result.data.email,
-          phone: result.data.phone,
+          name: result.data.name || '',
+          email: result.data.email || '',
+          phone: result.data.phone || '',
           date_of_birth: result.data.date_of_birth || '',
-          is_baptized: result.data.is_baptized,
-          pays_tithe: result.data.pays_tithe,
-          volunteer_areas: result.data.volunteer_areas || [],
+          gender: result.data.gender || '',
+          is_baptized: result.data.is_baptized === true,
+          pays_tithe: result.data.pays_tithe === true,
+          volunteer_areas: Array.isArray(result.data.volunteer_areas) ? result.data.volunteer_areas : [],
           volunteer_outros_details: result.data.volunteer_outros_details || '',
           life_group: result.data.life_group || '',
-          is_married: result.data.is_married || false,
+          is_married: result.data.is_married === true,
           spouse_name: result.data.spouse_name || '',
         });
 
@@ -145,13 +190,14 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
           setChildren(childrenData.data || []);
         }
       } else {
-        // No profile yet, set editing mode
-        setIsEditing(true);
+        // No profile yet, expand personal info section for creation
+        setExpandedSections(prev => ({ ...prev, personalInfo: true }));
         setFormData({
           name: '',
           email: session.user.email || '',
           phone: '',
           date_of_birth: '',
+          gender: '',
           is_baptized: false,
           pays_tithe: false,
           volunteer_areas: [],
@@ -420,23 +466,100 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
     return age;
   };
 
-  const handleSave = async () => {
+  // Section management functions
+  const toggleSection = (section: keyof typeof expandedSections) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
+  const handleEditSection = (section: keyof typeof editingSections) => {
+    setEditingSections(prev => ({
+      ...prev,
+      [section]: true
+    }));
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: true
+    }));
+  };
+
+  const handleCancelSection = (section: keyof typeof editingSections) => {
+    if (profile) {
+      const resetData: Partial<typeof formData> = {};
+
+      if (section === 'personalInfo') {
+        resetData.name = profile.name || '';
+        resetData.email = profile.email || '';
+        resetData.phone = profile.phone || '';
+        resetData.date_of_birth = profile.date_of_birth || '';
+        resetData.gender = profile.gender || '';
+      } else if (section === 'spiritualLife') {
+        resetData.is_baptized = profile.is_baptized === true;
+        resetData.pays_tithe = profile.pays_tithe === true;
+        resetData.life_group = profile.life_group || '';
+      } else if (section === 'volunteer') {
+        resetData.volunteer_areas = Array.isArray(profile.volunteer_areas) ? profile.volunteer_areas : [];
+        resetData.volunteer_outros_details = profile.volunteer_outros_details || '';
+      } else if (section === 'family') {
+        resetData.is_married = profile.is_married === true;
+        resetData.spouse_name = profile.spouse_name || '';
+      }
+
+      setFormData(prev => ({ ...prev, ...resetData }));
+    }
+    setEditingSections(prev => ({
+      ...prev,
+      [section]: false
+    }));
+    setPhoneError(null);
+    setDateError(false);
+  };
+
+  const saveSectionData = async (section: keyof typeof savingSections, data: Partial<typeof formData>) => {
     try {
-      // Validate phone before saving
-      if (!validatePhone(formData.phone)) {
-        setPhoneError(t('phoneError'));
-        setError(t('fixErrors'));
-        return;
+      const payload = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        date_of_birth: formData.date_of_birth,
+        gender: formData.gender,
+        is_baptized: formData.is_baptized,
+        pays_tithe: formData.pays_tithe,
+        volunteer_areas: formData.volunteer_areas,
+        volunteer_outros_details: formData.volunteer_outros_details,
+        life_group: formData.life_group,
+        is_married: formData.is_married,
+        spouse_name: formData.spouse_name,
+        ...data,
+      };
+
+      if (section === 'personalInfo') {
+        if (!validatePhone(payload.phone || '')) {
+          setPhoneError(t('phoneError'));
+          setError(t('fixErrors'));
+          return false;
+        }
+        if (payload.date_of_birth && !validateDateOfBirth(payload.date_of_birth)) {
+          setDateError(true);
+          setError(t('fixErrors'));
+          return false;
+        }
+        if (!payload.date_of_birth) {
+          setDateError(true);
+          setError(t('dateOfBirthRequired'));
+          return false;
+        }
       }
 
-      // Validate date of birth before saving
-      if (!validateDateOfBirth(formData.date_of_birth)) {
-        setDateError(true);
+      // All API calls require these fields; prevent accidental nulling when saving other sections
+      if (!payload.name || !payload.phone || !payload.email) {
         setError(t('fixErrors'));
-        return;
+        return false;
       }
 
-      setIsSaving(true);
+      setSavingSections(prev => ({ ...prev, [section]: true }));
       setError(null);
       setPhoneError(null);
       setDateError(false);
@@ -451,7 +574,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
 
       if (!session) {
         router.push(`/${locale}/login?redirect=/${locale}/member`);
-        return;
+        return false;
       }
 
       const method = profile ? 'PUT' : 'POST';
@@ -461,41 +584,90 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
           'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to save profile');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to save');
       }
 
-      const result = await response.json();
-      setProfile(result.data);
-      setIsEditing(false);
+      await checkAuthAndLoadProfile();
+
+      setSuccessMessage(t(`sections.${section}.saved`));
+      setTimeout(() => setSuccessMessage(null), 3000);
+
+      setEditingSections(prev => ({ ...prev, [section]: false }));
+      return true;
     } catch (err) {
-      console.error('Error saving profile:', err);
-      setError('Failed to save profile');
+      setError(err instanceof Error ? err.message : 'An error occurred');
+      return false;
     } finally {
-      setIsSaving(false);
+      setSavingSections(prev => ({ ...prev, [section]: false }));
     }
+  };
+
+  const handleSavePersonalInfo = async () => {
+    await saveSectionData('personalInfo', {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      date_of_birth: formData.date_of_birth,
+      gender: formData.gender,
+    });
+  };
+
+  const handleSaveSpiritualLife = async () => {
+    await saveSectionData('spiritualLife', {
+      is_baptized: formData.is_baptized,
+      pays_tithe: formData.pays_tithe,
+      life_group: formData.life_group,
+    });
+  };
+
+  const handleSaveVolunteer = async () => {
+    await saveSectionData('volunteer', {
+      volunteer_areas: formData.volunteer_areas,
+      volunteer_outros_details: formData.volunteer_outros_details,
+    });
+  };
+
+  const handleSaveFamily = async () => {
+    await saveSectionData('family', {
+      is_married: formData.is_married,
+      spouse_name: formData.spouse_name,
+    });
+  };
+
+  const handleSave = async () => {
+    // Legacy function - sections now save individually
+    // This is kept for backwards compatibility if needed
+    console.warn('Using legacy handleSave - use section-specific saves instead');
   };
 
   const handleCancel = () => {
     if (profile) {
       setFormData({
-        name: profile.name,
-        email: profile.email,
-        phone: profile.phone,
+        name: profile.name || '',
+        email: profile.email || '',
+        phone: profile.phone || '',
         date_of_birth: profile.date_of_birth || '',
-        is_baptized: profile.is_baptized,
-        pays_tithe: profile.pays_tithe,
-        volunteer_areas: profile.volunteer_areas || [],
+        gender: profile.gender || '',
+        is_baptized: profile.is_baptized === true,
+        pays_tithe: profile.pays_tithe === true,
+        volunteer_areas: Array.isArray(profile.volunteer_areas) ? profile.volunteer_areas : [],
         volunteer_outros_details: profile.volunteer_outros_details || '',
         life_group: profile.life_group || '',
-        is_married: profile.is_married || false,
+        is_married: profile.is_married === true,
         spouse_name: profile.spouse_name || '',
       });
-      setIsEditing(false);
     }
+    setEditingSections({
+      personalInfo: false,
+      spiritualLife: false,
+      volunteer: false,
+      family: false,
+    });
   };
 
   if (loading) {
@@ -534,26 +706,41 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
           </div>
         )}
 
-        {/* Profile Card */}
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-3xl font-bold text-primary-700">
-              {profile ? t('profileTitle') : t('createProfileTitle')}
-            </h2>
-            {profile && !isEditing && (
-              <button
-                onClick={() => setIsEditing(true)}
-                className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors"
-              >
-                <FontAwesomeIcon icon={faEdit} className="mr-2" />
-                {t('editProfile')}
-              </button>
-            )}
+        {successMessage && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+            <strong className="font-bold">✓ </strong>
+            <span>{successMessage}</span>
           </div>
+        )}
 
-          {isEditing ? (
-            <form onSubmit={(e) => { e.preventDefault(); handleSave(); }} className="space-y-6">
-              {/* Name */}
+        {/* Header */}
+        <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
+          <h2 className="text-3xl font-bold text-primary-700">
+            {profile ? t('profileTitle') : t('createProfileTitle')}
+          </h2>
+          <p className="text-gray-600 mt-2">
+            {profile ? t('infoText') : (locale === 'pt' ? 'Preencha suas informações para criar seu perfil' : 'Fill in your information to create your profile')}
+          </p>
+        </div>
+
+        {/* SECTION 1: Personal Information */}
+        <ProfileSection
+          title={t('sections.personalInfo.title')}
+          description={t('sections.personalInfo.description')}
+          isExpanded={expandedSections.personalInfo}
+          isEditing={editingSections.personalInfo}
+          isSaving={savingSections.personalInfo}
+          onToggle={() => toggleSection('personalInfo')}
+          onEdit={() => handleEditSection('personalInfo')}
+          onSave={handleSavePersonalInfo}
+          onCancel={() => handleCancelSection('personalInfo')}
+          hasProfile={!!profile}
+          saveButtonText={t('saveSection')}
+          cancelButtonText={t('cancel')}
+          editButtonText={t('editSection')}
+          savingText={t('saving')}
+          editContent={
+            <>
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
                   <FontAwesomeIcon icon={faUser} className="mr-2 text-primary-600" />
@@ -566,11 +753,10 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                   required
                   value={formData.name}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                 />
               </div>
 
-              {/* Email */}
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                   <FontAwesomeIcon icon={faEnvelope} className="mr-2 text-primary-600" />
@@ -583,14 +769,13 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                   required
                   value={formData.email}
                   disabled
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-600 cursor-not-allowed"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
                 />
                 <p className="mt-1 text-sm text-gray-500">
                   {locale === 'pt' ? 'Email vinculado à sua conta' : 'Email linked to your account'}
                 </p>
               </div>
 
-              {/* Phone */}
               <div>
                 <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
                   <FontAwesomeIcon icon={faPhone} className="mr-2 text-primary-600" />
@@ -604,203 +789,233 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                   value={formData.phone}
                   onChange={handleInputChange}
                   placeholder={t('phonePlaceholder')}
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 ${
+                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 ${
                     phoneError ? 'border-red-500' : 'border-gray-300'
                   }`}
                 />
-                {phoneError && (
-                  <p className="mt-1 text-sm text-red-600">{phoneError}</p>
-                )}
+                {phoneError && <p className="mt-1 text-sm text-red-600">{phoneError}</p>}
               </div>
 
-              {/* Date of Birth */}
+              <div>
+                <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-2">
+                  {t('gender')}
+                </label>
+                <select
+                  id="gender"
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                >
+                  <option value="">{t('genderPlaceholder')}</option>
+                  {GENDER_OPTIONS.map(option => (
+                    <option key={option} value={option}>
+                      {t(`genderOptions.${option}`)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div>
                 <label htmlFor="date_of_birth" className="block text-sm font-medium text-gray-700 mb-2">
                   <FontAwesomeIcon icon={faBirthdayCake} className="mr-2 text-primary-600" />
-                  {t('dateOfBirth')}
+                  {t('dateOfBirth')} *
                 </label>
                 <input
                   type="date"
                   id="date_of_birth"
                   name="date_of_birth"
+                  required
                   value={formData.date_of_birth}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 ${
+                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 ${
                     dateError ? 'border-red-500' : 'border-gray-300'
                   }`}
                   max={new Date().toISOString().split('T')[0]}
                 />
-                {dateError && (
-                  <p className="mt-1 text-sm text-red-600">{t('dateOfBirthError')}</p>
-                )}
-                {!dateError && formData.date_of_birth && (
-                  <p className="mt-1 text-xs text-gray-500">{t('dateOfBirthHint')}</p>
-                )}
+                {dateError && <p className="mt-1 text-sm text-red-600">{t('dateOfBirthError')}</p>}
               </div>
-
-              {/* Baptized */}
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="is_baptized"
-                  name="is_baptized"
-                  checked={formData.is_baptized}
-                  onChange={handleInputChange}
-                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-                />
-                <label htmlFor="is_baptized" className="ml-3 text-sm font-medium text-gray-700">
-                  <FontAwesomeIcon icon={faCheckCircle} className="mr-2 text-primary-600" />
-                  {t('isBaptized')}
-                </label>
-              </div>
-
-              {/* Pays Tithe */}
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="pays_tithe"
-                  name="pays_tithe"
-                  checked={formData.pays_tithe}
-                  onChange={handleInputChange}
-                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-                />
-                <label htmlFor="pays_tithe" className="ml-3 text-sm font-medium text-gray-700">
-                  <FontAwesomeIcon icon={faChurch} className="mr-2 text-primary-600" />
-                  {t('paysTithe')}
-                </label>
-              </div>
-
-              {/* Life Group */}
+            </>
+          }
+          displayContent={
+            <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="life_group" className="block text-sm font-medium text-gray-700 mb-2">
-                  <FontAwesomeIcon icon={faUsers} className="mr-2 text-primary-600" />
-                  {t('lifeGroup')}
-                </label>
-                <select
-                  id="life_group"
-                  name="life_group"
-                  value={formData.life_group}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                >
-                  <option value="">{t('lifeGroupPlaceholder')}</option>
-                  {['roots', 'kitchener', 'cambridge', 'waterloo', 'youth'].map((groupKey) => {
-                    const groupName = tCells(`groups.${groupKey}.name`);
-                    return (
-                      <option key={groupKey} value={groupName}>
-                        {groupName}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-
-              {/* Marital Status */}
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="is_married"
-                  name="is_married"
-                  checked={formData.is_married}
-                  onChange={handleInputChange}
-                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-                />
-                <label htmlFor="is_married" className="ml-3 text-sm font-medium text-gray-700">
+                <div className="text-sm font-medium text-gray-500 mb-1">
                   <FontAwesomeIcon icon={faUser} className="mr-2 text-primary-600" />
-                  {t('married')}
-                </label>
+                  {t('name')}
+                </div>
+                <div className="text-lg text-gray-900">{profile?.name}</div>
               </div>
 
-              {/* Spouse Name */}
-              {formData.is_married && (
+              <div>
+                <div className="text-sm font-medium text-gray-500 mb-1">
+                  <FontAwesomeIcon icon={faEnvelope} className="mr-2 text-primary-600" />
+                  {t('email')}
+                </div>
+                <div className="text-lg text-gray-900">{profile?.email}</div>
+              </div>
+
+              <div>
+                <div className="text-sm font-medium text-gray-500 mb-1">
+                  <FontAwesomeIcon icon={faPhone} className="mr-2 text-primary-600" />
+                  {t('phone')}
+                </div>
+                <div className="text-lg text-gray-900">{profile?.phone}</div>
+              </div>
+
+              {profile?.gender && (
                 <div>
-                  <label htmlFor="spouse_name" className="block text-sm font-medium text-gray-700 mb-2">
-                    <FontAwesomeIcon icon={faUser} className="mr-2 text-primary-600" />
-                    {t('spouseName')}
-                  </label>
-                  <input
-                    type="text"
-                    id="spouse_name"
-                    name="spouse_name"
-                    value={formData.spouse_name}
-                    onChange={handleInputChange}
-                    placeholder={t('spouseNamePlaceholder')}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  />
+                  <div className="text-sm font-medium text-gray-500 mb-1">
+                    {t('gender')}
+                  </div>
+                  <div className="text-lg text-gray-900">{t(`genderOptions.${profile.gender}`)}</div>
                 </div>
               )}
 
-              {/* Children */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
-                  <FontAwesomeIcon icon={faUsers} className="mr-2 text-primary-600" />
-                  {t('children')}
-                </label>
-                {children.length === 0 ? (
-                  <p className="text-gray-500 text-sm mb-3">{t('noChildren')}</p>
-                ) : (
-                  <div className="space-y-3 mb-3">
-                    {children.map((child) => (
-                      <div key={child.id} className="flex gap-3 items-start bg-gray-50 p-3 rounded-lg">
-                        <div className="flex-1 space-y-2">
-                          <input
-                            type="text"
-                            value={child.name}
-                            onChange={(e) => handleUpdateChild(child.id, 'name', e.target.value)}
-                            placeholder={t('childName')}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                          />
-                          <div className="flex gap-2">
-                            <input
-                              type="date"
-                              value={child.date_of_birth}
-                              onChange={(e) => {
-                                // Update local state immediately
-                                setChildren(prev => prev.map(c =>
-                                  c.id === child.id ? { ...c, date_of_birth: e.target.value } : c
-                                ));
-                              }}
-                              onBlur={(e) => {
-                                // Only save to database when user finishes editing
-                                if (e.target.value) {
-                                  handleUpdateChild(child.id, 'date_of_birth', e.target.value);
-                                }
-                              }}
-                              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                            />
-                            <div className="flex items-center px-3 py-2 bg-gray-100 rounded-lg text-sm text-gray-700">
-                              {calculateAge(child.date_of_birth)} {locale === 'pt' ? (calculateAge(child.date_of_birth) === 1 ? 'ano' : 'anos') : (calculateAge(child.date_of_birth) === 1 ? 'year' : 'years')}
-                            </div>
-                          </div>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveChild(child.id)}
-                          className="text-red-600 hover:text-red-700 px-3 py-2"
-                        >
-                          <FontAwesomeIcon icon={faTimes} /> {t('removeChild')}
-                        </button>
-                      </div>
-                    ))}
+              {profile?.date_of_birth && (
+                <div>
+                  <div className="text-sm font-medium text-gray-500 mb-1">
+                    <FontAwesomeIcon icon={faBirthdayCake} className="mr-2 text-primary-600" />
+                    {t('dateOfBirth')}
+                  </div>
+                  <div className="text-lg text-gray-900">
+                    {new Date(profile.date_of_birth).toLocaleDateString(locale === 'pt' ? 'pt-BR' : 'en-US')}
+                  </div>
+                </div>
+              )}
+            </div>
+          }
+        />
+
+        {/* SECTION 2: Spiritual Life */}
+        {profile && (
+          <ProfileSection
+            title={t('sections.spiritualLife.title')}
+            description={t('sections.spiritualLife.description')}
+            isExpanded={expandedSections.spiritualLife}
+            isEditing={editingSections.spiritualLife}
+            isSaving={savingSections.spiritualLife}
+            onToggle={() => toggleSection('spiritualLife')}
+            onEdit={() => handleEditSection('spiritualLife')}
+            onSave={handleSaveSpiritualLife}
+            onCancel={() => handleCancelSection('spiritualLife')}
+            hasProfile={!!profile}
+            saveButtonText={t('saveSection')}
+            cancelButtonText={t('cancel')}
+            editButtonText={t('editSection')}
+            savingText={t('saving')}
+            editContent={
+              <>
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="is_baptized"
+                    name="is_baptized"
+                    checked={formData.is_baptized}
+                    onChange={handleInputChange}
+                    className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                  />
+                  <label htmlFor="is_baptized" className="ml-3 text-sm font-medium text-gray-700">
+                    <FontAwesomeIcon icon={faCheckCircle} className="mr-2 text-primary-600" />
+                    {t('isBaptized')}
+                  </label>
+                </div>
+
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="pays_tithe"
+                    name="pays_tithe"
+                    checked={formData.pays_tithe}
+                    onChange={handleInputChange}
+                    className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                  />
+                  <label htmlFor="pays_tithe" className="ml-3 text-sm font-medium text-gray-700">
+                    <FontAwesomeIcon icon={faChurch} className="mr-2 text-primary-600" />
+                    {t('paysTithe')}
+                  </label>
+                </div>
+
+                <div>
+                  <label htmlFor="life_group" className="block text-sm font-medium text-gray-700 mb-2">
+                    <FontAwesomeIcon icon={faUsers} className="mr-2 text-primary-600" />
+                    {t('lifeGroup')}
+                  </label>
+                  <select
+                    id="life_group"
+                    name="life_group"
+                    value={formData.life_group}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                  >
+                    <option value="">{t('lifeGroupPlaceholder')}</option>
+                    {['roots', 'kitchener', 'cambridge', 'waterloo', 'youth'].map((groupKey) => {
+                      const groupName = tCells(`groups.${groupKey}.name`);
+                      return (
+                        <option key={groupKey} value={groupName}>
+                          {groupName}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+              </>
+            }
+            displayContent={
+              <div className="space-y-4">
+                <div className="flex items-center">
+                  <FontAwesomeIcon
+                    icon={faCheckCircle}
+                    className={`mr-2 ${profile.is_baptized ? 'text-green-600' : 'text-gray-400'}`}
+                  />
+                  <span className={profile.is_baptized ? 'text-gray-900' : 'text-gray-500'}>
+                    {t('isBaptized')}: {profile.is_baptized ? t('yes') : t('no')}
+                  </span>
+                </div>
+
+                <div className="flex items-center">
+                  <FontAwesomeIcon
+                    icon={faChurch}
+                    className={`mr-2 ${profile.pays_tithe ? 'text-green-600' : 'text-gray-400'}`}
+                  />
+                  <span className={profile.pays_tithe ? 'text-gray-900' : 'text-gray-500'}>
+                    {t('paysTithe')}: {profile.pays_tithe ? t('yes') : t('no')}
+                  </span>
+                </div>
+
+                {profile.life_group && (
+                  <div>
+                    <div className="text-sm font-medium text-gray-500 mb-1">
+                      <FontAwesomeIcon icon={faUsers} className="mr-2 text-primary-600" />
+                      {t('lifeGroup')}
+                    </div>
+                    <div className="text-lg text-gray-900">{profile.life_group}</div>
                   </div>
                 )}
-                <button
-                  type="button"
-                  onClick={handleAddChild}
-                  disabled={!profile?.id}
-                  className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <FontAwesomeIcon icon={faUser} className="mr-2" />
-                  {t('addChild')}
-                </button>
               </div>
+            }
+          />
+        )}
 
-              {/* Volunteer Areas */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
-                  <FontAwesomeIcon icon={faHandsHelping} className="mr-2 text-primary-600" />
-                  {t('volunteerAreas')}
-                </label>
+        {/* SECTION 3: Volunteer */}
+        {profile && (
+          <ProfileSection
+            title={t('sections.volunteer.title')}
+            description={t('sections.volunteer.description')}
+            isExpanded={expandedSections.volunteer}
+            isEditing={editingSections.volunteer}
+            isSaving={savingSections.volunteer}
+            onToggle={() => toggleSection('volunteer')}
+            onEdit={() => handleEditSection('volunteer')}
+            onSave={handleSaveVolunteer}
+            onCancel={() => handleCancelSection('volunteer')}
+            hasProfile={!!profile}
+            saveButtonText={t('saveSection')}
+            cancelButtonText={t('cancel')}
+            editButtonText={t('editSection')}
+            savingText={t('saving')}
+            editContent={
+              <>
                 <p className="text-sm text-gray-600 mb-4 bg-blue-50 p-3 rounded-lg border border-blue-200">
                   {t('volunteerIntro')}
                 </p>
@@ -826,7 +1041,6 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                   ))}
                 </div>
 
-                {/* Additional volunteer details */}
                 <div className="mt-4">
                   <label htmlFor="volunteer_outros_details" className="block text-sm font-medium text-gray-700 mb-2">
                     {t('outrosDetailsLabel')}
@@ -838,161 +1052,16 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                     onChange={handleInputChange}
                     rows={3}
                     placeholder={t('outrosDetailsPlaceholder')}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                   />
                 </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex gap-4 pt-4">
-                <button
-                  type="submit"
-                  disabled={isSaving}
-                  className="flex-1 bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <FontAwesomeIcon icon={faSave} className="mr-2" />
-                  {isSaving ? t('saving') : t('save')}
-                </button>
-                {profile && (
-                  <button
-                    type="button"
-                    onClick={handleCancel}
-                    disabled={isSaving}
-                    className="flex-1 bg-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    <FontAwesomeIcon icon={faTimes} className="mr-2" />
-                    {t('cancel')}
-                  </button>
-                )}
-              </div>
-            </form>
-          ) : (
-            <div className="space-y-6">
-              {/* Display Profile Information */}
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <div className="text-sm font-medium text-gray-500 mb-1">
-                    <FontAwesomeIcon icon={faUser} className="mr-2 text-primary-600" />
-                    {t('name')}
-                  </div>
-                  <div className="text-lg text-gray-900">{profile?.name}</div>
-                </div>
-
-                <div>
-                  <div className="text-sm font-medium text-gray-500 mb-1">
-                    <FontAwesomeIcon icon={faEnvelope} className="mr-2 text-primary-600" />
-                    {t('email')}
-                  </div>
-                  <div className="text-lg text-gray-900">{profile?.email}</div>
-                </div>
-
-                <div>
-                  <div className="text-sm font-medium text-gray-500 mb-1">
-                    <FontAwesomeIcon icon={faPhone} className="mr-2 text-primary-600" />
-                    {t('phone')}
-                  </div>
-                  <div className="text-lg text-gray-900">{profile?.phone}</div>
-                </div>
-
-                {profile?.date_of_birth && (
-                  <div>
-                    <div className="text-sm font-medium text-gray-500 mb-1">
-                      <FontAwesomeIcon icon={faBirthdayCake} className="mr-2 text-primary-600" />
-                      {t('dateOfBirth')}
-                    </div>
-                    <div className="text-lg text-gray-900">
-                      {new Date(profile.date_of_birth).toLocaleDateString(locale === 'pt' ? 'pt-BR' : 'en-US')}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className="border-t pt-6">
-                <div className="grid md:grid-cols-2 gap-4 mb-4">
-                  <div className="flex items-center">
-                    <FontAwesomeIcon
-                      icon={faCheckCircle}
-                      className={`mr-2 ${profile?.is_baptized ? 'text-green-600' : 'text-gray-400'}`}
-                    />
-                    <span className={profile?.is_baptized ? 'text-gray-900' : 'text-gray-500'}>
-                      {t('isBaptized')}: {profile?.is_baptized ? t('yes') : t('no')}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center">
-                    <FontAwesomeIcon
-                      icon={faChurch}
-                      className={`mr-2 ${profile?.pays_tithe ? 'text-green-600' : 'text-gray-400'}`}
-                    />
-                    <span className={profile?.pays_tithe ? 'text-gray-900' : 'text-gray-500'}>
-                      {t('paysTithe')}: {profile?.pays_tithe ? t('yes') : t('no')}
-                    </span>
-                  </div>
-                </div>
-
-                {profile?.life_group && (
-                  <div className="mb-4">
-                    <div className="text-sm font-medium text-gray-500 mb-1">
-                      <FontAwesomeIcon icon={faUsers} className="mr-2 text-primary-600" />
-                      {t('lifeGroup')}
-                    </div>
-                    <div className="text-lg text-gray-900">{profile.life_group}</div>
-                  </div>
-                )}
-
-                {/* Family Information */}
-                {(profile?.is_married || children.length > 0) && (
-                  <div className="mb-4 border-t pt-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                      {locale === 'pt' ? 'Informações Familiares' : 'Family Information'}
-                    </h3>
-
-                    {profile?.is_married && (
-                      <div className="mb-3">
-                        <div className="text-sm font-medium text-gray-500 mb-1">
-                          <FontAwesomeIcon icon={faUser} className="mr-2 text-primary-600" />
-                          {t('isMarried')}
-                        </div>
-                        <div className="text-lg text-gray-900">{t('married')}</div>
-                        {profile.spouse_name && (
-                          <div className="mt-2">
-                            <div className="text-sm font-medium text-gray-500 mb-1">
-                              {t('spouseName')}:
-                            </div>
-                            <div className="text-lg text-gray-900">{profile.spouse_name}</div>
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {children && children.length > 0 && (
-                      <div>
-                        <div className="text-sm font-medium text-gray-500 mb-2">
-                          <FontAwesomeIcon icon={faUsers} className="mr-2 text-primary-600" />
-                          {t('children')}
-                        </div>
-                        <div className="space-y-2">
-                          {children.map((child) => (
-                            <div key={child.id} className="bg-gray-50 p-3 rounded-lg">
-                              <span className="font-medium text-gray-900">{child.name}</span>
-                              <span className="text-gray-600 ml-2">
-                                ({calculateAge(child.date_of_birth)} {locale === 'pt' ? (calculateAge(child.date_of_birth) === 1 ? 'ano' : 'anos') : (calculateAge(child.date_of_birth) === 1 ? 'year' : 'years')})
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {profile?.volunteer_areas && profile.volunteer_areas.length > 0 && (
-                  <div>
-                    <div className="text-sm font-medium text-gray-500 mb-2">
-                      <FontAwesomeIcon icon={faHandsHelping} className="mr-2 text-primary-600" />
-                      {t('volunteerAreas')}
-                    </div>
-                    <div className="flex flex-wrap gap-2">
+              </>
+            }
+            displayContent={
+              <div>
+                {profile.volunteer_areas && profile.volunteer_areas.length > 0 ? (
+                  <>
+                    <div className="flex flex-wrap gap-2 mb-3">
                       {profile.volunteer_areas.map((area) => (
                         <span
                           key={area}
@@ -1010,20 +1079,178 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                         <div className="text-sm text-gray-600 whitespace-pre-wrap">{profile.volunteer_outros_details}</div>
                       </div>
                     )}
+                  </>
+                ) : (
+                  <p className="text-gray-500 text-sm italic">
+                    {locale === 'pt' ? 'Nenhuma área de voluntariado selecionada' : 'No volunteer areas selected'}
+                  </p>
+                )}
+              </div>
+            }
+          />
+        )}
+
+        {/* SECTION 4: Family Information */}
+        {profile && (
+          <ProfileSection
+            title={t('sections.family.title')}
+            description={t('sections.family.description')}
+            isExpanded={expandedSections.family}
+            isEditing={editingSections.family}
+            isSaving={savingSections.family}
+            onToggle={() => toggleSection('family')}
+            onEdit={() => handleEditSection('family')}
+            onSave={handleSaveFamily}
+            onCancel={() => handleCancelSection('family')}
+            hasProfile={!!profile}
+            saveButtonText={t('saveSection')}
+            cancelButtonText={t('cancel')}
+            editButtonText={t('editSection')}
+            savingText={t('saving')}
+            editContent={
+              <>
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="is_married"
+                    name="is_married"
+                    checked={formData.is_married}
+                    onChange={handleInputChange}
+                    className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                  />
+                  <label htmlFor="is_married" className="ml-3 text-sm font-medium text-gray-700">
+                    <FontAwesomeIcon icon={faUser} className="mr-2 text-primary-600" />
+                    {t('married')}
+                  </label>
+                </div>
+
+                {formData.is_married && (
+                  <div>
+                    <label htmlFor="spouse_name" className="block text-sm font-medium text-gray-700 mb-2">
+                      <FontAwesomeIcon icon={faUser} className="mr-2 text-primary-600" />
+                      {t('spouseName')}
+                    </label>
+                    <input
+                      type="text"
+                      id="spouse_name"
+                      name="spouse_name"
+                      value={formData.spouse_name}
+                      onChange={handleInputChange}
+                      placeholder={t('spouseNamePlaceholder')}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                    />
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    <FontAwesomeIcon icon={faUsers} className="mr-2 text-primary-600" />
+                    {t('children')}
+                  </label>
+                  {children.length === 0 ? (
+                    <p className="text-gray-500 text-sm mb-3">{t('noChildren')}</p>
+                  ) : (
+                    <div className="space-y-3 mb-3">
+                      {children.map((child) => (
+                        <div key={child.id} className="flex gap-3 items-start bg-gray-50 p-3 rounded-lg">
+                          <div className="flex-1 space-y-2">
+                            <input
+                              type="text"
+                              value={child.name}
+                              onChange={(e) => handleUpdateChild(child.id, 'name', e.target.value)}
+                              placeholder={t('childName')}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                            />
+                            <div className="flex gap-2">
+                              <input
+                                type="date"
+                                value={child.date_of_birth}
+                                onChange={(e) => {
+                                  setChildren(prev => prev.map(c =>
+                                    c.id === child.id ? { ...c, date_of_birth: e.target.value } : c
+                                  ));
+                                }}
+                                onBlur={(e) => {
+                                  if (e.target.value) {
+                                    handleUpdateChild(child.id, 'date_of_birth', e.target.value);
+                                  }
+                                }}
+                                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                              />
+                              <div className="flex items-center px-3 py-2 bg-gray-100 rounded-lg text-sm text-gray-700">
+                                {calculateAge(child.date_of_birth)} {locale === 'pt' ? (calculateAge(child.date_of_birth) === 1 ? 'ano' : 'anos') : (calculateAge(child.date_of_birth) === 1 ? 'year' : 'years')}
+                              </div>
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveChild(child.id)}
+                            className="text-red-600 hover:text-red-700 px-3 py-2"
+                          >
+                            <FontAwesomeIcon icon={faTimes} /> {t('removeChild')}
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    onClick={handleAddChild}
+                    disabled={!profile?.id}
+                    className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <FontAwesomeIcon icon={faUser} className="mr-2" />
+                    {t('addChild')}
+                  </button>
+                </div>
+              </>
+            }
+            displayContent={
+              <div className="space-y-4">
+                <div className="flex items-center">
+                  <FontAwesomeIcon icon={faUser} className="mr-2 text-primary-600" />
+                  <span className="text-gray-900">
+                    {profile.is_married ? t('married') : t('single')}
+                  </span>
+                </div>
+
+                {profile.is_married && profile.spouse_name && (
+                  <div>
+                    <div className="text-sm font-medium text-gray-500 mb-1">
+                      {t('spouseName')}:
+                    </div>
+                    <div className="text-lg text-gray-900">{profile.spouse_name}</div>
+                  </div>
+                )}
+
+                {children && children.length > 0 && (
+                  <div>
+                    <div className="text-sm font-medium text-gray-500 mb-2">
+                      <FontAwesomeIcon icon={faUsers} className="mr-2 text-primary-600" />
+                      {t('children')}
+                    </div>
+                    <div className="space-y-2">
+                      {children.map((child) => (
+                        <div key={child.id} className="bg-gray-50 p-3 rounded-lg">
+                          <span className="font-medium text-gray-900">{child.name}</span>
+                          <span className="text-gray-600 ml-2">
+                            ({calculateAge(child.date_of_birth)} {locale === 'pt' ? (calculateAge(child.date_of_birth) === 1 ? 'ano' : 'anos') : (calculateAge(child.date_of_birth) === 1 ? 'year' : 'years')})
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
-            </div>
-          )}
-        </div>
+            }
+          />
+        )}
 
         {/* Info Section */}
-        {!isEditing && (
-          <div className="bg-primary-50 rounded-lg p-6">
-            <h3 className="text-xl font-bold text-primary-700 mb-3">{t('infoTitle')}</h3>
-            <p className="text-gray-700">{t('infoText')}</p>
-          </div>
-        )}
+        <div className="bg-primary-50 rounded-lg p-6">
+          <h3 className="text-xl font-bold text-primary-700 mb-3">{t('infoTitle')}</h3>
+          <p className="text-gray-700">{t('infoText')}</p>
+        </div>
       </div>
     </div>
   );

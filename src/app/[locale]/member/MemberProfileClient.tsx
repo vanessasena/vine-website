@@ -21,10 +21,8 @@ import {
   faChevronDown,
   faChevronUp,
 } from '@fortawesome/free-solid-svg-icons';
-import { VOLUNTEER_AREA_OPTIONS } from '@/lib/constants';
+import { VOLUNTEER_AREA_OPTIONS, GENDER_OPTIONS } from '@/lib/constants';
 import ProfileSection from '@/components/ProfileSection';
-
-const GENDER_OPTIONS = ['female', 'male'] as const;
 
 interface Child {
   id: string;
@@ -551,6 +549,10 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
           setError(t('dateOfBirthRequired'));
           return false;
         }
+        if (!payload.gender) {
+          setError(t('genderRequired'));
+          return false;
+        }
       }
 
       // All API calls require these fields; prevent accidental nulling when saving other sections
@@ -798,13 +800,14 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
 
               <div>
                 <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('gender')}
+                  {t('gender')} *
                 </label>
                 <select
                   id="gender"
                   name="gender"
                   value={formData.gender}
                   onChange={handleInputChange}
+                  required
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                 >
                   <option value="">{t('genderPlaceholder')}</option>

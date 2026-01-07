@@ -414,7 +414,8 @@
     "dateOfBirthError": "Please enter a valid date of birth (age between 5 and 120 years)",
     "dateOfBirthHint": "Valid date",
     "gender": "Gender",
-    "genderPlaceholder": "Select your gender (optional)",
+    "genderPlaceholder": "Select your gender",
+    "genderRequired": "Gender is required",
     "genderOptions": {
       "female": "Female",
       "male": "Male"

@@ -15,3 +15,10 @@ export const VOLUNTEER_AREA_OPTIONS = [
 ] as const;
 
 export type VolunteerArea = typeof VOLUNTEER_AREA_OPTIONS[number];
+
+export const GENDER_OPTIONS = [
+  'female',
+  'male',
+] as const;
+
+export type GenderOption = typeof GENDER_OPTIONS[number];

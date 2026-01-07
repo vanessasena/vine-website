@@ -413,7 +413,8 @@
     "dateOfBirthError": "Por favor, insira uma data de nascimento válida (idade entre 5 e 120 anos)",
     "dateOfBirthHint": "Data válida",
     "gender": "Gênero",
-    "genderPlaceholder": "Selecione seu gênero (opcional)",
+    "genderPlaceholder": "Selecione seu gênero",
+    "genderRequired": "Gênero é obrigatório",
     "genderOptions": {
       "female": "Feminino",
       "male": "Masculino"

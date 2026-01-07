@@ -91,9 +91,9 @@ export async function POST(request: NextRequest) {
     } = body;
 
     // Validate required fields
-    if (!name || !phone || !email || !date_of_birth) {
+    if (!name || !phone || !email || !date_of_birth || !gender) {
       return NextResponse.json(
-        { error: 'Name, phone, email, and date_of_birth are required' },
+        { error: 'Name, phone, email, date_of_birth, and gender are required' },
         { status: 400 }
       );
     }
@@ -121,7 +121,7 @@ export async function POST(request: NextRequest) {
         date_of_birth: date_of_birth || null,
         phone,
         email,
-        gender: gender || null,
+        gender,
         is_baptized: is_baptized || false,
         pays_tithe: pays_tithe || false,
         volunteer_areas: volunteer_areas || [],
@@ -181,9 +181,9 @@ export async function PUT(request: NextRequest) {
     } = body;
 
     // Validate required fields
-    if (!name || !phone || !email || !date_of_birth) {
+    if (!name || !phone || !email || !date_of_birth || !gender) {
       return NextResponse.json(
-        { error: 'Name, phone, email, and date_of_birth are required' },
+        { error: 'Name, phone, email, date_of_birth, and gender are required' },
         { status: 400 }
       );
     }
@@ -196,7 +196,7 @@ export async function PUT(request: NextRequest) {
         date_of_birth: date_of_birth || null,
         phone,
         email,
-        gender: gender || null,
+        gender,
         is_baptized: is_baptized || false,
         pays_tithe: pays_tithe || false,
         volunteer_areas: volunteer_areas || [],

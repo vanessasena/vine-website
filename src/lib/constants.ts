@@ -31,12 +31,13 @@ export const SPIRITUAL_COURSE_OPTIONS = [
 export type SpiritualCourseOption = typeof SPIRITUAL_COURSE_OPTIONS[number];
 
 export const CHURCH_ROLE_OPTIONS = [
-  'discipulador',
-  'lider',
-  'lider_em_treinamento',
-  'anfitriao',
-  'anjo_da_guarda',
   'membro',
+  'anjo_da_guarda',
+  'anfitriao',
+  'lider_em_treinamento',
+  'lider',
+  'discipulador',
+  'pastor',
 ] as const;
 
 export type ChurchRoleOption = typeof CHURCH_ROLE_OPTIONS[number];

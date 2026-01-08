@@ -452,6 +452,7 @@
     "churchRolePlaceholder": "Select your role",
     "churchRoleRequired": "Church role is required",
     "churchRoleOptions": {
+      "pastor": "Pastor",
       "discipulador": "Discipler",
       "lider": "Leader",
       "lider_em_treinamento": "Leader in Training",

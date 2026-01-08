@@ -75,10 +75,13 @@ export default function LoginClient({ locale }: LoginClientProps) {
           return;
         }
 
-        // Create new account
+        // Create new account with email confirmation redirect to member area
         const { data, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/${locale}/member`,
+          },
         });
 
         if (signUpError) {

@@ -376,7 +376,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
 
       // Add a placeholder child with today's date
       const today = new Date().toISOString().split('T')[0];
-      const placeholderName = locale === 'pt' ? 'Nova Criança' : 'New Child';
+      const placeholderName = locale === 'pt' ? 'Nome' : 'Name';
       const response = await fetch('/api/children', {
         method: 'POST',
         headers: {

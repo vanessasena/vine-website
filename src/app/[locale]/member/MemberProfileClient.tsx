@@ -798,13 +798,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
   };
 
   const handleSaveFamily = async () => {
-    // Validate spouse is selected if married
-    if (formData.is_married && !formData.spouse_id) {
-      setError(t('spouseRequired'));
-      return;
-    }
-
-    // Allow saving when married (spouse_id is optional, send empty string if not selected)
+    // Spouse is now optional even when married
     await saveSectionData('family', {
       is_married: formData.is_married,
       spouse_id: formData.spouse_id as string,
@@ -1416,7 +1410,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                     <div className="space-y-3 p-4 bg-gray-50 border border-gray-200 rounded-lg">
                       <label className="block text-sm font-medium text-gray-700">
                         <FontAwesomeIcon icon={faUser} className="mr-2 text-primary-600" />
-                        {t('spouseName')} *
+                        {t('spouseName')}
                       </label>
 
                       {/* Current Spouse Display */}

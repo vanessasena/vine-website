@@ -244,6 +244,13 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
     }
   }, [currentUserId]);
 
+  // Fetch available spouses when family section is opened for editing
+  useEffect(() => {
+    if (editingSections.family && expandedSections.family) {
+      fetchAvailableSpouses();
+    }
+  }, [editingSections.family, expandedSections.family]);
+
   const formatPhoneInput = (value: string): string => {
     // Remove all characters except digits, spaces, hyphens, parentheses, and plus
     let cleaned = value.replace(/[^\d\s\-()+ ]/g, '');
@@ -493,22 +500,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
     }));
   };
 
-  const handleEditSection = async (section: keyof typeof editingSections) => {
-
-      // Persist immediate changes in the Family section
-      const persistFamilyChange = async (nextData: { is_married?: boolean; spouse_id?: string; spouse_name?: string }) => {
-        setFormData(prev => ({ ...prev, ...nextData }));
-        const saved = await saveSectionData('family', {
-          is_married: (nextData.is_married ?? formData.is_married),
-          spouse_id: (nextData.spouse_id ?? formData.spouse_id) as string,
-        });
-        if (saved) {
-          // Refresh spouse options after change
-          fetchAvailableSpouses();
-          // Reload profile and children to reflect linkage updates
-          await checkAuthAndLoadProfile();
-        }
-      };
+  const handleEditSection = (section: keyof typeof editingSections) => {
     setEditingSections(prev => ({
       ...prev,
       [section]: true
@@ -522,7 +514,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
     if (section === 'family') {
       setSpouseSearchInput('');
       setShowSpouseDropdown(false);
-      await fetchAvailableSpouses();
+      fetchAvailableSpouses();
     }
   };
 
@@ -643,12 +635,6 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
     } finally {
       setLoadingSpouses(false);
     }
-  };
-
-  // Persist immediate changes in Family section (marital status/spouse)
-  const persistFamilyChange = async (nextData: { is_married?: boolean; spouse_id?: string; spouse_name?: string }) => {
-    setFormData(prev => ({ ...prev, ...nextData }));
-    // Don't save immediately anymore - let user save with Save Section button
   };
 
   const handleCancelSection = (section: keyof typeof editingSections) => {

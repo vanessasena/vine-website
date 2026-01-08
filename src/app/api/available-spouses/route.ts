@@ -50,8 +50,6 @@ export async function GET(request: NextRequest) {
       .neq('id', currentProfile.id)
       .order('name');
 
-    console.log('Current Profile:', currentProfile);
-    console.log('Available Spouses:', availableSpouses);
     if (error) {
       console.error('Error fetching available spouses:', error);
       return NextResponse.json({ error: 'Failed to fetch available spouses' }, { status: 500 });

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
@@ -77,6 +77,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
   const [loadingSpouses, setLoadingSpouses] = useState(false);
   const [spouseSearchInput, setSpouseSearchInput] = useState('');
   const [showSpouseDropdown, setShowSpouseDropdown] = useState(false);
+  const spouseDropdownRef = useRef<HTMLDivElement | null>(null);
 
   // Section states for collapsible UI
   const [expandedSections, setExpandedSections] = useState<{
@@ -523,6 +524,20 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
       fetchAvailableSpouses();
     }
   };
+
+  // Close spouse dropdown when clicking outside
+  useEffect(() => {
+    if (!showSpouseDropdown) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (spouseDropdownRef.current && !spouseDropdownRef.current.contains(event.target as Node)) {
+        setShowSpouseDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showSpouseDropdown]);
 
   // Merge user's children and spouse's children into one list for display
   // Deduplicate by child ID to avoid showing the same child twice
@@ -1450,7 +1465,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                       )}
 
                       {/* Spouse Autocomplete Search */}
-                      <div className="relative">
+                      <div className="relative" ref={spouseDropdownRef}>
                         <div className="relative">
                           <FontAwesomeIcon
                             icon={faUser}

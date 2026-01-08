@@ -525,10 +525,24 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
   };
 
   // Merge user's children and spouse's children into one list for display
-  const allChildren = [
-    ...children.map(c => ({ ...c, isFromCurrentUser: true })),
-    ...spouseChildren.map(c => ({ ...c, isFromCurrentUser: false }))
-  ];
+  // Deduplicate by child ID to avoid showing the same child twice
+  const allChildren = (() => {
+    const childrenMap = new Map();
+
+    // Add user's children first
+    children.forEach(c => {
+      childrenMap.set(c.id, { ...c, isFromCurrentUser: true });
+    });
+
+    // Add spouse's children, but skip if already in map (same child)
+    spouseChildren.forEach(c => {
+      if (!childrenMap.has(c.id)) {
+        childrenMap.set(c.id, { ...c, isFromCurrentUser: false });
+      }
+    });
+
+    return Array.from(childrenMap.values());
+  })();
 
   // Filter spouse list based on search input
   const filteredSpouses = availableSpouses.filter(spouse =>

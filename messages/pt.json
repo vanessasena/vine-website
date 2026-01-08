@@ -150,27 +150,27 @@
       "roots": {
         "name": "Célula de Kitchener (Roots)",
         "leaders": "Bruno e Mary",
-        "address": "56-105 Pinnacle Drive, Kitchener"
+        "address": "Kitchener, Doon"
       },
       "kitchener": {
         "name": "Célula de Kitchener (Escolhidos)",
         "leaders": "Eduardo e Nathalia",
-        "address": "855 Robert Ferrie Drive, Kitchener"
+        "address": "Kitchener, Doon South"
       },
       "cambridge": {
         "name": "Célula de Cambridge (Morada 70)",
         "leaders": "Hector e Dani",
-        "address": "70 Elmwood Avenue, Cambridge"
+        "address": "Cambridge, Greenway-Chaplin"
       },
       "waterloo": {
         "name": "Célula de Waterloo (Sinai)",
         "leaders": "Lucas e Flavia",
-        "address": "437 Woodrow Drive, Waterloo"
+        "address": "Waterloo, Laurelwood"
       },
       "youth": {
         "name": "Célula dos Adolescentes (Next Generation)",
         "leaders": "Pastores Boris e Elisangela",
-        "address": "15 Dressage Trail, Cambridge"
+        "address": "Kitchener, Downtown"
       }
     }
   },

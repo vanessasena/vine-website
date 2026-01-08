@@ -708,17 +708,22 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
   };
 
   const handleSavePersonalInfo = async () => {
-    await saveSectionData('personalInfo', {
+    const success = await saveSectionData('personalInfo', {
       name: formData.name,
       email: formData.email,
       phone: formData.phone,
       date_of_birth: formData.date_of_birth,
       gender: formData.gender,
     });
+    if (success) {
+      // Open next section (spiritualLife) in edit mode
+      setExpandedSections(prev => ({ ...prev, spiritualLife: true }));
+      setEditingSections(prev => ({ ...prev, spiritualLife: true }));
+    }
   };
 
   const handleSaveSpiritualLife = async () => {
-    await saveSectionData('spiritualLife', {
+    const success = await saveSectionData('spiritualLife', {
       is_baptized: formData.is_baptized,
       pays_tithe: formData.pays_tithe,
       spiritual_courses: formData.spiritual_courses,
@@ -726,13 +731,23 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
       church_role: formData.church_role,
       life_group: formData.life_group,
     });
+    if (success) {
+      // Open next section (volunteer) in edit mode
+      setExpandedSections(prev => ({ ...prev, volunteer: true }));
+      setEditingSections(prev => ({ ...prev, volunteer: true }));
+    }
   };
 
   const handleSaveVolunteer = async () => {
-    await saveSectionData('volunteer', {
+    const success = await saveSectionData('volunteer', {
       volunteer_areas: formData.volunteer_areas,
       volunteer_outros_details: formData.volunteer_outros_details,
     });
+    if (success) {
+      // Open next section (family) in edit mode
+      setExpandedSections(prev => ({ ...prev, family: true }));
+      setEditingSections(prev => ({ ...prev, family: true }));
+    }
   };
 
   const handleSaveFamily = async () => {
@@ -741,6 +756,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
       is_married: formData.is_married,
       spouse_id: formData.spouse_id as string,
     });
+    // Family is the last section, so don't open another section
   };
 
   const handleSave = async () => {

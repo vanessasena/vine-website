@@ -15,6 +15,7 @@ export default function LoginClient({ locale }: LoginClientProps) {
   const t = useTranslations('auth');
   const router = useRouter();
   const [isSignUp, setIsSignUp] = useState(false);
+  const [isResetPassword, setIsResetPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -37,6 +38,29 @@ export default function LoginClient({ locale }: LoginClientProps) {
     }
 
     try {
+      if (isResetPassword) {
+        // Send password reset email
+        const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/${locale}/update-password`,
+        });
+
+        if (resetError) {
+          setError(t('resetLinkError'));
+          setLoading(false);
+          return;
+        }
+
+        setSuccessMessage(t('resetLinkSent'));
+        setEmail('');
+        setLoading(false);
+        // Switch back to login after 3 seconds
+        setTimeout(() => {
+          setIsResetPassword(false);
+          setSuccessMessage('');
+        }, 3000);
+        return;
+      }
+
       if (isSignUp) {
         // Sign up validation
         if (password.length < 6) {
@@ -135,10 +159,10 @@ export default function LoginClient({ locale }: LoginClientProps) {
             <FontAwesomeIcon icon={faLock} className="h-6 w-6 text-primary-600" />
           </div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            {isSignUp ? t('signUpTitle') : t('title')}
+            {isResetPassword ? t('resetPasswordTitle') : isSignUp ? t('signUpTitle') : t('title')}
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            {isSignUp ? t('signUpSubtitle') : t('subtitle')}
+            {isResetPassword ? t('resetPasswordSubtitle') : isSignUp ? t('signUpSubtitle') : t('subtitle')}
           </p>
         </div>
 
@@ -186,10 +210,11 @@ export default function LoginClient({ locale }: LoginClientProps) {
               </div>
             </div>
 
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                {t('password')}
-              </label>
+            {!isResetPassword && (
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('password')}
+                </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <FontAwesomeIcon icon={faLock} className="h-5 w-5 text-gray-400" />
@@ -217,8 +242,9 @@ export default function LoginClient({ locale }: LoginClientProps) {
                 </button>
               </div>
             </div>
+            )}
 
-            {isSignUp && (
+            {isSignUp && !isResetPassword && (
               <div>
                 <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
                   {t('confirmPassword')}
@@ -262,19 +288,37 @@ export default function LoginClient({ locale }: LoginClientProps) {
               {loading ? (
                 <>
                   <FontAwesomeIcon icon={faSpinner} className="animate-spin h-5 w-5 mr-2" />
-                  {isSignUp ? t('signingUp') : t('signingIn')}
+                  {isResetPassword ? t('sendingResetLink') : isSignUp ? t('signingUp') : t('signingIn')}
                 </>
               ) : (
-                isSignUp ? t('signUp') : t('signIn')
+                isResetPassword ? t('sendResetLink') : isSignUp ? t('signUp') : t('signIn')
               )}
             </button>
           </div>
 
-          <div className="text-center">
+          <div className="text-center space-y-2">
+            {!isResetPassword && !isSignUp && (
+              <button
+                type="button"
+                onClick={() => {
+                  setIsResetPassword(true);
+                  setError('');
+                  setSuccessMessage('');
+                }}
+                className="text-sm text-primary-600 hover:text-primary-700 font-medium block w-full"
+              >
+                {t('forgotPassword')}
+              </button>
+            )}
+
             <button
               type="button"
               onClick={() => {
-                setIsSignUp(!isSignUp);
+                if (isResetPassword) {
+                  setIsResetPassword(false);
+                } else {
+                  setIsSignUp(!isSignUp);
+                }
                 setError('');
                 setSuccessMessage('');
                 setPassword('');
@@ -282,7 +326,9 @@ export default function LoginClient({ locale }: LoginClientProps) {
               }}
               className="text-sm text-primary-600 hover:text-primary-700 font-medium"
             >
-              {isSignUp ? (
+              {isResetPassword ? (
+                <span className="underline">{t('backToLoginLink')}</span>
+              ) : isSignUp ? (
                 <>
                   {t('haveAccount')} <span className="underline">{t('backToLogin')}</span>
                 </>

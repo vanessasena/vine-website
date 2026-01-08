@@ -508,6 +508,8 @@
     "spouseNotRegisteredMessage": "Se seu(sua) cônjuge não está aparecendo, peça que ele(a) registre uma conta primeiro.",
     "spouseGenderMissing": "Para ver opções de cônjuge, defina seu gênero no perfil.",
     "spouseAccountMessage": "Se seu cônjuge não está na lista acima, peça que ele/ela crie sua conta primeiro.",
+    "childrenAgeLimitNotice": "Cadastre aqui apenas filhos de até {age} anos. Com {age}+ devem ter a própria conta.",
+    "childAgeTooHigh": "Com mais de {age} anos, o filho deve ter sua própria conta.",
     "children": "Filhos",
     "childName": "Nome do Filho(a)",
     "childAge": "Idade",

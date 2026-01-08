@@ -377,7 +377,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
 
       // Add a placeholder child with today's date
       const today = new Date().toISOString().split('T')[0];
-      const placeholderName = locale === 'pt' ? 'Nome' : 'Name';
+      const placeholderName = locale === 'pt' ? 'Nome da criança' : "Child's name";
       const response = await fetch('/api/children', {
         method: 'POST',
         headers: {
@@ -559,6 +559,8 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
 
     return Array.from(childrenMap.values());
   })();
+
+  const childAgeLimit = 13;
 
   // Filter spouse list based on search input
   const filteredSpouses = availableSpouses.filter(spouse =>
@@ -1591,6 +1593,10 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                     </button>
                   </div>
 
+                  <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
+                    {t('childrenAgeLimitNotice', { age: childAgeLimit })}
+                  </div>
+
                   {/* Family Children List */}
                   {allChildren.length > 0 && (
                     <div className="space-y-2">
@@ -1657,6 +1663,12 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                                 className="w-full px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 text-sm"
                               />
                             </div>
+
+                            {child.date_of_birth && calculateAge(child.date_of_birth) > childAgeLimit && (
+                              <div className="p-2 bg-amber-50 border border-amber-200 rounded text-xs text-amber-800">
+                                {t('childAgeTooHigh', { age: childAgeLimit })}
+                              </div>
+                            )}
 
                             <div>
                               <label className="text-xs font-medium text-gray-600 mb-1 block">{t('childSpecialNeeds')}</label>

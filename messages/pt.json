@@ -143,6 +143,7 @@
     "whyCells": "Por que temos células?",
     "whyCellsDescription": "A estratégia de células é fundamental para a Igreja Videira porque segue o modelo bíblico de crescimento e multiplicação. Jesus fez discípulos em pequenos grupos e os enviou para fazer o mesmo. O propósito das células é promover a edificação espiritual, desenvolver relacionamentos saudáveis e fortalecer o corpo de Cristo. Além disso, as células permitem que a igreja seja mais eficaz na evangelização, alcançando pessoas que talvez nunca frequentariam um culto tradicional. Através do formato de células, a Igreja não apenas cresce em números, mas também em maturidade espiritual e comunhão.",
     "leaders": "Líderes",
+    "phone": "Telefone",
     "address": "Endereço",
     "findGroup": "Encontre seu Grupo",
     "joinUs": "Faça Parte",
@@ -150,26 +151,31 @@
       "roots": {
         "name": "Célula de Kitchener (Roots)",
         "leaders": "Bruno e Mary",
+        "phone": "+1 (647) 549-5115",
         "address": "Kitchener, Doon"
       },
       "kitchener": {
         "name": "Célula de Kitchener (Escolhidos)",
         "leaders": "Eduardo e Nathalia",
+        "phone": "+1 (226) 338-9420",
         "address": "Kitchener, Doon South"
       },
       "cambridge": {
         "name": "Célula de Cambridge (Morada 70)",
         "leaders": "Hector e Dani",
+        "phone": "+1 (519) 998-2268",
         "address": "Cambridge, Greenway-Chaplin"
       },
       "waterloo": {
         "name": "Célula de Waterloo (Sinai)",
         "leaders": "Lucas e Flavia",
+        "phone": "+1 (647) 835-5564",
         "address": "Waterloo, Laurelwood"
       },
       "youth": {
         "name": "Célula dos Adolescentes (Next Generation)",
         "leaders": "Pastores Boris e Elisangela",
+        "phone": "+1 (365) 228-2980",
         "address": "Kitchener, Downtown"
       }
     }

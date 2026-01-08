@@ -143,6 +143,7 @@
     "whyCells": "Why do we have life groups?",
     "whyCellsDescription": "The life group strategy is fundamental to Vine Church because it follows the biblical model of growth and multiplication. Jesus made disciples in small groups and sent them out to do the same. The purpose of life groups is to promote spiritual edification, develop healthy relationships and strengthen the body of Christ. Additionally, life groups allow the church to be more effective in evangelization, reaching people who might never attend a traditional service. Through the life group format, the Church not only grows in numbers, but also in spiritual maturity and fellowship.",
     "leaders": "Leaders",
+    "phone": "Phone",
     "address": "Address",
     "findGroup": "Find Your Group",
     "joinUs": "Join Us",
@@ -150,26 +151,31 @@
       "roots": {
         "name": "Kitchener Life Group (Roots)",
         "leaders": "Bruno and Mary",
+        "phone": "+1 (647) 549-5115",
         "address": "Kitchener, Doon"
       },
       "kitchener": {
         "name": "Kitchener Life Group (Escolhidos)",
         "leaders": "Eduardo and Nathalia",
+        "phone": "+1 (226) 338-9420",
         "address": "Kitchener, Doon South"
       },
       "cambridge": {
         "name": "Cambridge Life Group (Morada 70)",
         "leaders": "Hector and Dani",
+        "phone": "+1 (519) 998-2268",
         "address": "Cambridge, Greenway-Chaplin"
       },
       "waterloo": {
         "name": "Waterloo Life Group (Sinai)",
         "leaders": "Lucas and Flavia",
+        "phone": "+1 (647) 835-5564",
         "address": "Waterloo, Laurelwood"
       },
       "youth": {
         "name": "Youth Life Group (Next Generation)",
         "leaders": "Pastors Boris and Elisangela",
+        "phone": "+1 (365) 228-2980",
         "address": "Kitchener, Downtown"
       }
     }

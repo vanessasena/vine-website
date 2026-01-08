@@ -12,7 +12,8 @@ import {
   faHandsHelping,
   faPray,
   faBook,
-  faExternalLinkAlt
+  faExternalLinkAlt,
+  faPhone
 } from '@fortawesome/free-solid-svg-icons';
 import type { Metadata } from 'next';
 
@@ -129,6 +130,19 @@ export default function CellsPage({ params: { locale } }: PageProps) {
                         <p className="text-gray-600">{t(`groups.${group.id}.leaders`)}</p>
                       </div>
                     </div>
+
+                    {t(`groups.${group.id}.phone`) && (
+                      <div className="flex items-start">
+                        <FontAwesomeIcon
+                          icon={faPhone}
+                          className="text-primary-600 mt-1 mr-3 flex-shrink-0"
+                        />
+                        <div>
+                          <p className="font-semibold text-gray-700 mb-1">{t('phone')}:</p>
+                          <p className="text-gray-600">{t(`groups.${group.id}.phone`)}</p>
+                        </div>
+                      </div>
+                    )}
 
                     {t(`groups.${group.id}.address`) && (
                       <div className="flex items-start">

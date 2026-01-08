@@ -476,11 +476,11 @@
     "volunteerDescriptions": {
       "worship": "Ministério de louvor e adoração - vocais, instrumentos e apoio técnico. Inclui mesa de som e iluminação.",
       "vine_web": "Desenvolvimento e manutenção do site da igreja",
-      "kids": "Ministério infantil - ensino, brincadeiras e cuidado com as crianças. Na igreja videira, somente mulheres podem servir no ministério infantil.",
-      "store": "Atendimento e organização da loja da igreja",
+      "kids": "Ministério infantil - ensino, brincadeiras e cuidado com as crianças. Na Vine Church, somente mulheres podem servir no ministério infantil.",
+      "store": "Atendimento e organização da Vine Store",
       "vine_media": "Criação de conteúdo para redes sociais e comunicação visual",
       "vine_clean": "Limpeza e organização do espaço da igreja",
-      "cozinha": "Preparação de alimentos e café para eventos e cultos. Atendimento na Vine Cafe.",
+      "cozinha": "Preparação de alimentos para eventos e cultos. Atendimento na Vine Cafe.",
       "vine_welcome": "Recepção e acolhimento de visitantes e membros",
       "vine_care": "Ações sociais e apoio à comunidade"
     },
@@ -492,7 +492,7 @@
     "spouseName": "Nome do Cônjuge",
     "spouseNamePlaceholder": "Nome completo do cônjuge",
     "selectSpouse": "Selecione seu cônjuge da lista",
-    "spouseSelectOptional": "Opcional: Selecione seu cônjuge na lista abaixo se ele/ela possuir uma conta",
+    "spouseSelectOptional": "Selecione seu cônjuge na lista abaixo. Caso ele/ela nao esteja listado, peça que crie uma conta primeiro.",
     "currentSpouse": "Cônjuge Atual",
     "removeSpouse": "Remover Cônjuge",
     "changeSpouse": "Alterar para um cônjuge diferente (opcional)",

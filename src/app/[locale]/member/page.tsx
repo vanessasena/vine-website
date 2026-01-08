@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { useTranslations } from 'next-intl';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
-import VolunteersClient from './VolunteersClient';
+import MemberProfileClient from './MemberProfileClient';
 
 interface PageProps {
   params: {
@@ -13,23 +13,23 @@ interface PageProps {
 export async function generateMetadata({ params: { locale } }: PageProps): Promise<Metadata> {
   const baseUrl = 'https://vinechurch.ca';
   return {
-    title: locale === 'pt' ? 'Voluntários - Vine Church KWC' : 'Volunteers - Vine Church KWC',
+    title: locale === 'pt' ? 'Área do Membro - Vine Church KWC' : 'Member Area - Vine Church KWC',
     description: locale === 'pt'
-      ? 'Cadastre-se para ser voluntário na Vine Church KWC. Faça parte da nossa equipe e sirva ao Senhor.'
-      : 'Register to be a volunteer at Vine Church KWC. Be part of our team and serve the Lord.',
+      ? 'Gerencie seu perfil de membro na Vine Church KWC.'
+      : 'Manage your member profile at Vine Church KWC.',
     alternates: {
-      canonical: `${baseUrl}/${locale}/volunteers`,
+      canonical: `${baseUrl}/${locale}/member`,
       languages: {
-        'pt': `${baseUrl}/pt/volunteers`,
-        'en': `${baseUrl}/en/volunteers`,
-        'x-default': `${baseUrl}/pt/volunteers`,
+        'pt': `${baseUrl}/pt/member`,
+        'en': `${baseUrl}/en/member`,
+        'x-default': `${baseUrl}/pt/member`,
       },
     },
   };
 }
 
-export default function VolunteersPage({ params: { locale } }: PageProps) {
-  const t = useTranslations('volunteers');
+export default function MemberPage({ params: { locale } }: PageProps) {
+  const t = useTranslations('member');
 
   return (
     <main>
@@ -48,8 +48,8 @@ export default function VolunteersPage({ params: { locale } }: PageProps) {
         </div>
       </section>
 
-      {/* Volunteers Content */}
-      <VolunteersClient locale={locale} />
+      {/* Member Profile Content */}
+      <MemberProfileClient locale={locale} />
 
       <Footer locale={locale} />
     </main>

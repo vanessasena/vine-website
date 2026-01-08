@@ -16,7 +16,8 @@ import {
   faSpinner,
   faDatabase,
   faFile,
-  faSignOutAlt
+  faSignOutAlt,
+  faUser
 } from '@fortawesome/free-solid-svg-icons';
 import { getSession, signOut } from '@/lib/auth';
 
@@ -169,6 +170,16 @@ export default function AdminClient({ locale }: { locale: string }) {
       if (!session) {
         router.push(`/${locale}/login`);
       } else {
+        // Check if user has admin role
+        const { isAdmin } = await import('@/lib/roles');
+        const hasAdminRole = await isAdmin(session.user.id);
+
+        if (!hasAdminRole) {
+          // User is not an admin, redirect to member area
+          router.push(`/${locale}/member`);
+          return;
+        }
+
         setAuthenticated(true);
         setCheckingAuth(false);
       }
@@ -338,6 +349,13 @@ export default function AdminClient({ locale }: { locale: string }) {
               <p className="mt-2 text-white text-opacity-90">{t('subtitle')}</p>
             </div>
             <div className="flex gap-3">
+              <Link
+                href={`/${locale}/member`}
+                className="inline-flex items-center bg-white bg-opacity-20 hover:bg-opacity-30 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+              >
+                <FontAwesomeIcon icon={faUser} className="mr-2" />
+                {locale === 'pt' ? 'Meu Perfil' : 'My Profile'}
+              </Link>
               <button
                 onClick={handleSignOut}
                 className="inline-flex items-center bg-white bg-opacity-20 hover:bg-opacity-30 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
@@ -374,14 +392,14 @@ export default function AdminClient({ locale }: { locale: string }) {
           </Link>
 
           <Link
-            href={`/${locale}/admin/volunteers`}
+            href={`/${locale}/admin/members`}
             className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200 border-l-4 border-secondary-600"
           >
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              {locale === 'pt' ? 'Gerenciar Voluntários' : 'Manage Volunteers'}
+              {locale === 'pt' ? 'Perfis de Membros' : 'Member Profiles'}
             </h3>
             <p className="text-gray-600 text-sm">
-              {locale === 'pt' ? 'Visualizar cadastros de voluntários' : 'View volunteer registrations'}
+              {locale === 'pt' ? 'Visualizar perfis dos membros cadastrados' : 'View registered member profiles'}
             </p>
           </Link>
 

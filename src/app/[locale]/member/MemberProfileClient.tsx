@@ -74,6 +74,8 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [availableSpouses, setAvailableSpouses] = useState<Array<{ id: string; name: string; phone: string }>>([]);
   const [loadingSpouses, setLoadingSpouses] = useState(false);
+  const [spouseSearchInput, setSpouseSearchInput] = useState('');
+  const [showSpouseDropdown, setShowSpouseDropdown] = useState(false);
 
   // Section states for collapsible UI
   const [expandedSections, setExpandedSections] = useState<{
@@ -515,8 +517,28 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
 
     // Fetch available spouses when editing family section
     if (section === 'family') {
+      setSpouseSearchInput('');
+      setShowSpouseDropdown(false);
       fetchAvailableSpouses();
     }
+  };
+
+  // Filter spouse list based on search input
+  const filteredSpouses = availableSpouses.filter(spouse =>
+    spouse.name.toLowerCase().includes(spouseSearchInput.toLowerCase()) ||
+    spouse.phone.includes(spouseSearchInput)
+  );
+
+  const handleSelectSpouse = (spouse: { id: string; name: string; phone: string }) => {
+    setFormData(prev => ({ ...prev, spouse_id: spouse.id, spouse_name: spouse.name }));
+    setSpouseSearchInput('');
+    setShowSpouseDropdown(false);
+  };
+
+  const handleRemoveSpouse = () => {
+    setFormData(prev => ({ ...prev, spouse_id: '', spouse_name: '' }));
+    setSpouseSearchInput('');
+    setShowSpouseDropdown(false);
   };
 
   const fetchAvailableSpouses = async () => {
@@ -557,14 +579,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
   // Persist immediate changes in Family section (marital status/spouse)
   const persistFamilyChange = async (nextData: { is_married?: boolean; spouse_id?: string; spouse_name?: string }) => {
     setFormData(prev => ({ ...prev, ...nextData }));
-    const saved = await saveSectionData('family', {
-      is_married: (nextData.is_married ?? formData.is_married),
-      spouse_id: (nextData.spouse_id ?? formData.spouse_id) as string,
-    });
-    if (saved) {
-      await fetchAvailableSpouses();
-      await checkAuthAndLoadProfile();
-    }
+    // Don't save immediately anymore - let user save with Save Section button
   };
 
   const handleCancelSection = (section: keyof typeof editingSections) => {
@@ -751,6 +766,12 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
   };
 
   const handleSaveFamily = async () => {
+    // Validate spouse is selected if married
+    if (formData.is_married && !formData.spouse_id) {
+      setError(t('spouseRequired'));
+      return;
+    }
+
     // Allow saving when married (spouse_id is optional, send empty string if not selected)
     await saveSectionData('family', {
       is_married: formData.is_married,
@@ -1334,81 +1355,157 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
             savingText={t('saving')}
             editContent={
               <>
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id="is_married"
-                    name="is_married"
-                    checked={formData.is_married}
-                    onChange={(e) => persistFamilyChange({ is_married: e.target.checked })}
-                    className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-                  />
-                  <label htmlFor="is_married" className="ml-3 text-sm font-medium text-gray-700">
-                    <FontAwesomeIcon icon={faUser} className="mr-2 text-primary-600" />
-                    {t('married')}
-                  </label>
-                </div>
+                <div className="space-y-4">
+                  {/* Is Married Toggle */}
+                  <div className="flex items-center p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <input
+                      type="checkbox"
+                      id="is_married"
+                      name="is_married"
+                      checked={formData.is_married}
+                      onChange={(e) => {
+                        setFormData(prev => ({ ...prev, is_married: e.target.checked }));
+                        // Clear spouse if unmarrying
+                        if (!e.target.checked) {
+                          setFormData(prev => ({ ...prev, spouse_id: '', spouse_name: '' }));
+                          setSpouseSearchInput('');
+                        }
+                      }}
+                      className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                    />
+                    <label htmlFor="is_married" className="ml-3 text-sm font-medium text-gray-700">
+                      <FontAwesomeIcon icon={faUser} className="mr-2 text-primary-600" />
+                      {t('married')}
+                    </label>
+                  </div>
 
-                {formData.is_married && (
-                  <div className="space-y-3">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {/* Spouse Selection */}
+                  {formData.is_married && (
+                    <div className="space-y-3 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                      <label className="block text-sm font-medium text-gray-700">
                         <FontAwesomeIcon icon={faUser} className="mr-2 text-primary-600" />
-                        {t('spouseName')}
+                        {t('spouseName')} *
                       </label>
 
-                      {/* Show current spouse if exists */}
+                      {/* Current Spouse Display */}
                       {formData.spouse_name && formData.spouse_id && (
-                        <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="text-sm font-medium text-gray-900">{t('currentSpouse')}</p>
-                              <p className="text-sm text-gray-700">{formData.spouse_name}</p>
+                        <div className="p-3 bg-green-50 border border-green-200 rounded-lg flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="flex-shrink-0 w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
+                              <FontAwesomeIcon icon={faUser} className="text-primary-600" />
                             </div>
-                            <button
-                              type="button"
-                              onClick={() => persistFamilyChange({ spouse_id: '', spouse_name: '' })}
-                              className="px-3 py-1 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg border border-red-200"
-                            >
-                              {t('removeSpouse')}
-                            </button>
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{formData.spouse_name}</p>
+                              <p className="text-xs text-gray-500">{t('spouseLinked')}</p>
+                            </div>
                           </div>
+                          <button
+                            type="button"
+                            onClick={handleRemoveSpouse}
+                            className="px-3 py-1 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg border border-red-200 transition-colors"
+                          >
+                            {t('change')}
+                          </button>
                         </div>
                       )}
 
-                      {/* Show dropdown to select/change spouse */}
-                      <p className="text-xs text-gray-600 mb-2">
-                        {formData.spouse_id ? t('changeSpouse') : t('spouseSelectOptional')}
-                      </p>
-                      {loadingSpouses ? (
-                        <div className="text-sm text-gray-500">{t('loading')}</div>
-                      ) : (
-                        <>
-                          <select
-                            id="spouse_id"
-                            name="spouse_id"
-                            value={formData.spouse_id}
-                            onChange={(e) => persistFamilyChange({ spouse_id: e.target.value })}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                          >
-                            <option value="">{t('selectSpouse')}</option>
-                            {availableSpouses.map((spouse) => (
-                              <option key={spouse.id} value={spouse.id}>
-                                {spouse.name} ({spouse.phone})
-                              </option>
-                            ))}
-                          </select>
-                          {availableSpouses.length === 0 && !formData.spouse_id && (
-                            <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800 mt-2">
-                              <p className="font-medium mb-1">{t('spouseNotFound')}</p>
-                              <p>{t('spouseAccountMessage')}</p>
-                            </div>
-                          )}
-                        </>
+                      {/* Spouse Autocomplete Search */}
+                      <div className="relative">
+                        <div className="relative">
+                          <FontAwesomeIcon
+                            icon={faUser}
+                            className="absolute left-3 top-3 text-gray-400 text-sm"
+                          />
+                          <input
+                            type="text"
+                            placeholder={t('searchSpouseByNameOrPhone')}
+                            value={spouseSearchInput}
+                            onChange={(e) => {
+                              setSpouseSearchInput(e.target.value);
+                              setShowSpouseDropdown(true);
+                            }}
+                            onFocus={() => setShowSpouseDropdown(true)}
+                            className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                          />
+                        </div>
+
+                        {/* Dropdown Menu */}
+                        {showSpouseDropdown && (
+                          <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10 max-h-64 overflow-y-auto">
+                            {loadingSpouses ? (
+                              <div className="p-4 text-center text-gray-500 text-sm">
+                                {t('loading')}...
+                              </div>
+                            ) : filteredSpouses.length > 0 ? (
+                              filteredSpouses.map((spouse) => (
+                                <button
+                                  key={spouse.id}
+                                  type="button"
+                                  onClick={() => handleSelectSpouse(spouse)}
+                                  className="w-full text-left px-4 py-3 hover:bg-primary-50 border-b border-gray-100 last:border-b-0 transition-colors flex items-center gap-3"
+                                >
+                                  <div className="flex-shrink-0 w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
+                                    <FontAwesomeIcon icon={faUser} className="text-primary-600 text-xs" />
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-medium text-gray-900 truncate">{spouse.name}</p>
+                                    <p className="text-xs text-gray-500">{spouse.phone}</p>
+                                  </div>
+                                </button>
+                              ))
+                            ) : spouseSearchInput ? (
+                              <div className="p-4 text-center space-y-3">
+                                <div>
+                                  <p className="text-sm text-gray-500 mb-1">{t('spouseNotFound')}</p>
+                                  <p className="text-xs text-gray-400">{t('tryDifferentSearch')}</p>
+                                </div>
+                                <div className="pt-3 border-t border-gray-200">
+                                  <p className="text-xs text-amber-700 bg-amber-50 p-2 rounded">
+                                    {t('spouseNotRegisteredMessage')}
+                                  </p>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="p-4 space-y-3">
+                                <div>
+                                  <p className="text-sm text-gray-600 mb-2 font-medium">{t('availableSpouses')}</p>
+                                  {availableSpouses.length === 0 ? (
+                                    <div className="space-y-2">
+                                      <p className="text-sm text-gray-500">{t('noSpousesAvailable')}</p>
+                                      <div className="p-2 bg-blue-50 border border-blue-200 rounded text-xs text-blue-800">
+                                        {t('spouseNotRegisteredMessage')}
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <div className="space-y-1">
+                                      {availableSpouses.slice(0, 5).map((spouse) => (
+                                        <button
+                                          key={spouse.id}
+                                          type="button"
+                                          onClick={() => handleSelectSpouse(spouse)}
+                                          className="w-full text-left text-sm text-gray-700 hover:text-primary-600 px-2 py-1"
+                                        >
+                                          {spouse.name}
+                                        </button>
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+
+                      {availableSpouses.length === 0 && !formData.spouse_id && (
+                        <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
+                          <p className="font-medium mb-1">{t('spouseNotFound')}</p>
+                          <p className="text-xs">{t('spouseAccountMessage')}</p>
+                        </div>
                       )}
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-3">

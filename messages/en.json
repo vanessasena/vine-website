@@ -151,27 +151,27 @@
       "roots": {
         "name": "Kitchener Life Group (Roots)",
         "leaders": "Bruno and Mary",
-        "address": "56-105 Pinnacle Drive, Kitchener"
+        "address": "Kitchener, Doon"
       },
       "kitchener": {
         "name": "Kitchener Life Group (Escolhidos)",
         "leaders": "Eduardo and Nathalia",
-        "address": "855 Robert Ferrie Drive, Kitchener"
+        "address": "Kitchener, Doon South"
       },
       "cambridge": {
         "name": "Cambridge Life Group (Morada 70)",
         "leaders": "Hector and Dani",
-        "address": "70 Elmwood Avenue, Cambridge"
+        "address": "Cambridge, Greenway-Chaplin"
       },
       "waterloo": {
         "name": "Waterloo Life Group (Sinai)",
         "leaders": "Lucas and Flavia",
-        "address": "437 Woodrow Drive, Waterloo"
+        "address": "Waterloo, Laurelwood"
       },
       "youth": {
         "name": "Youth Life Group (Next Generation)",
         "leaders": "Pastors Boris and Elisangela",
-        "address": "15 Dressage Trail, Cambridge"
+        "address": "Kitchener, Downtown"
       }
     }
   },

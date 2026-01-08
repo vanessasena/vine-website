@@ -467,7 +467,9 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
 
   const calculateAge = (dateOfBirth: string): number => {
     const today = new Date();
-    const birthDate = new Date(dateOfBirth);
+    // Parse date as UTC to avoid timezone shifts (YYYY-MM-DD)
+    const [year, month, day] = dateOfBirth.split('-').map(Number);
+    const birthDate = new Date(year, month - 1, day);
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
 
@@ -986,7 +988,13 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                     {t('dateOfBirth')}
                   </div>
                   <div className="text-lg text-gray-900">
-                    {new Date(profile.date_of_birth).toLocaleDateString(locale === 'pt' ? 'pt-BR' : 'en-US')}
+                    {(() => {
+                      // Parse date as local to avoid timezone shifts (YYYY-MM-DD)
+                      const [year, month, day] = profile.date_of_birth.split('-').map(Number);
+                      const date = new Date(year, month - 1, day);
+                      const formatted = date.toLocaleDateString(locale === 'pt' ? 'pt-BR' : 'en-US');
+                      return formatted;
+                    })()}
                   </div>
                 </div>
               )}

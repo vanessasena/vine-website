@@ -40,12 +40,13 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Profile not found' }, { status: 404 });
     }
 
-    // Get all members who are either not married or don't have a spouse linked
+    // Get all members who don't have a spouse linked yet
+    // Regardless of their is_married status (they might be waiting for spouse to register)
     // Exclude the current user's profile
     const { data: availableSpouses, error } = await supabase
       .from('member_profiles')
       .select('id, name, phone, is_married, spouse_id')
-      .or('is_married.eq.false,spouse_id.is.null')
+      .is('spouse_id', null)
       .neq('id', currentProfile.id)
       .order('name');
 

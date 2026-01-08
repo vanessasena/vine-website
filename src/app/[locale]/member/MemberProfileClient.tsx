@@ -493,7 +493,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
     }));
   };
 
-  const handleEditSection = (section: keyof typeof editingSections) => {
+  const handleEditSection = async (section: keyof typeof editingSections) => {
 
       // Persist immediate changes in the Family section
       const persistFamilyChange = async (nextData: { is_married?: boolean; spouse_id?: string; spouse_name?: string }) => {
@@ -522,7 +522,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
     if (section === 'family') {
       setSpouseSearchInput('');
       setShowSpouseDropdown(false);
-      fetchAvailableSpouses();
+      await fetchAvailableSpouses();
     }
   };
 

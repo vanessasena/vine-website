@@ -169,7 +169,7 @@ export default function LoginClient({ locale }: LoginClientProps) {
           </p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit} autoComplete="on">
           {error && (
             <div className="rounded-md bg-red-50 p-4">
               <div className="flex">
@@ -204,6 +204,8 @@ export default function LoginClient({ locale }: LoginClientProps) {
                   name="email"
                   type="email"
                   autoComplete="email"
+                  autoCapitalize="off"
+                  spellCheck={false}
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}

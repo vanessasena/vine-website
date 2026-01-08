@@ -506,6 +506,7 @@
     "spouseRequired": "Cônjuge é obrigatório quando o estado civil é casado",
     "spouseNotFound": "Cônjuge não encontrado no sistema",
     "spouseNotRegisteredMessage": "Se seu(sua) cônjuge não está aparecendo, peça que ele(a) registre uma conta primeiro.",
+    "spouseGenderMissing": "Para ver opções de cônjuge, defina seu gênero no perfil.",
     "spouseAccountMessage": "Se seu cônjuge não está na lista acima, peça que ele/ela crie sua conta primeiro.",
     "children": "Filhos",
     "childName": "Nome do Filho(a)",

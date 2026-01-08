@@ -77,6 +77,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
   const [loadingSpouses, setLoadingSpouses] = useState(false);
   const [spouseSearchInput, setSpouseSearchInput] = useState('');
   const [showSpouseDropdown, setShowSpouseDropdown] = useState(false);
+  const [spouseWarning, setSpouseWarning] = useState<string | null>(null);
   const spouseDropdownRef = useRef<HTMLDivElement | null>(null);
 
   // Section states for collapsible UI
@@ -627,6 +628,11 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
       if (response.ok) {
         const data = await response.json();
         setAvailableSpouses(data.data || []);
+        if (data.warning === 'missing_gender') {
+          setSpouseWarning(t('spouseGenderMissing'));
+        } else {
+          setSpouseWarning(null);
+        }
       } else {
         console.error('Error fetching spouses:', response.statusText);
       }
@@ -1441,6 +1447,12 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                         <FontAwesomeIcon icon={faUser} className="mr-2 text-primary-600" />
                         {t('spouseName')}
                       </label>
+
+                      {spouseWarning && (
+                        <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded text-sm text-amber-800">
+                          {spouseWarning}
+                        </div>
+                      )}
 
                       {/* Current Spouse Display */}
                       {formData.spouse_name && formData.spouse_id && (

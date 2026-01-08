@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
     // Get current user's profile ID
     const { data: currentProfile, error: profileError } = await supabase
       .from('member_profiles')
-      .select('id, spouse_id')
+      .select('id, spouse_id, gender')
       .eq('user_id', user.id)
       .single();
 
@@ -43,11 +43,17 @@ export async function GET(request: NextRequest) {
     // Get all members who don't have a spouse linked yet
     // Regardless of their is_married status (they might be waiting for spouse to register)
     // Exclude the current user's profile
+    // If the current user's gender is not set, return a warning (cannot determine opposite gender)
+    if (!currentProfile.gender) {
+      return NextResponse.json({ data: [], warning: 'missing_gender' });
+    }
+
     const { data: availableSpouses, error } = await supabase
       .from('member_profiles')
-      .select('id, name, phone, is_married, spouse_id')
+      .select('id, name, phone, is_married, spouse_id, gender')
       .is('spouse_id', null)
       .neq('id', currentProfile.id)
+      .neq('gender', currentProfile.gender)
       .order('name');
 
     if (error) {

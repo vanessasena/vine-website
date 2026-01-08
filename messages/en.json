@@ -507,6 +507,7 @@
     "spouseRequired": "Spouse is required when marital status is married",
     "spouseNotFound": "Spouse not found in the system",
     "spouseNotRegisteredMessage": "If your spouse is not showing up, please ask them to register an account first.",
+    "spouseGenderMissing": "To see spouse options, set your gender in your profile.",
     "spouseAccountMessage": "If your spouse is not in the list above, please ask them to create their account first.",
     "children": "Children",
     "childName": "Child Name",

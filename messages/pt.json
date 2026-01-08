@@ -511,6 +511,7 @@
     "childAge": "Idade",
     "childAllergies": "Alergias",
     "childAllergiesPlaceholder": "ex.: amendoim, leite",
+    "childSpecialNeeds": "Necessidades Especiais",
     "addChild": "Adicionar Filho(a)",
     "removeChild": "Remover",
     "noChildren": "Nenhum filho cadastrado",

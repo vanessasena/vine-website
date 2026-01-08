@@ -512,6 +512,7 @@
     "childAge": "Age",
     "childAllergies": "Allergies",
     "childAllergiesPlaceholder": "e.g., peanuts, dairy",
+    "childSpecialNeeds": "Special Needs",
     "addChild": "Add Child",
     "removeChild": "Remove",
     "noChildren": "No children registered",

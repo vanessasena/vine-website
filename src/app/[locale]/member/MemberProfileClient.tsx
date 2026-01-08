@@ -71,6 +71,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
   const [dateError, setDateError] = useState(false);
   const [userRole, setUserRole] = useState<'member' | 'admin' | null>(null);
   const [children, setChildren] = useState<Child[]>([]);
+  const [spouseChildren, setSpouseChildren] = useState<Child[]>([]);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [availableSpouses, setAvailableSpouses] = useState<Array<{ id: string; name: string; phone: string }>>([]);
   const [loadingSpouses, setLoadingSpouses] = useState(false);
@@ -523,20 +524,51 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
     }
   };
 
+  // Merge user's children and spouse's children into one list for display
+  const allChildren = [
+    ...children.map(c => ({ ...c, isFromCurrentUser: true })),
+    ...spouseChildren.map(c => ({ ...c, isFromCurrentUser: false }))
+  ];
+
   // Filter spouse list based on search input
   const filteredSpouses = availableSpouses.filter(spouse =>
     spouse.name.toLowerCase().includes(spouseSearchInput.toLowerCase()) ||
     spouse.phone.includes(spouseSearchInput)
   );
 
-  const handleSelectSpouse = (spouse: { id: string; name: string; phone: string }) => {
+  const handleSelectSpouse = async (spouse: { id: string; name: string; phone: string }) => {
     setFormData(prev => ({ ...prev, spouse_id: spouse.id, spouse_name: spouse.name }));
     setSpouseSearchInput('');
     setShowSpouseDropdown(false);
+
+    // Fetch spouse's children
+    try {
+      const { createClient } = await import('@supabase/supabase-js');
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+      );
+
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      const response = await fetch(`/api/children?parent_id=${spouse.id}`, {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setSpouseChildren(data.data || []);
+      }
+    } catch (error) {
+      console.error('Error fetching spouse children:', error);
+    }
   };
 
   const handleRemoveSpouse = () => {
     setFormData(prev => ({ ...prev, spouse_id: '', spouse_name: '' }));
+    setSpouseChildren([]);
     setSpouseSearchInput('');
     setShowSpouseDropdown(false);
   };
@@ -1507,47 +1539,76 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                   )}
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-3">
-                    <FontAwesomeIcon icon={faUsers} className="mr-2 text-primary-600" />
-                    {t('children')}
-                  </label>
-                  {children.length === 0 ? (
-                    <p className="text-gray-500 text-sm mb-3">{t('noChildren')}</p>
-                  ) : (
-                    <div className="space-y-3 mb-3">
-                      {children.map((child) => (
-                        <div key={child.id} className="flex gap-3 items-start bg-gray-50 p-3 rounded-lg">
-                          <div className="flex-1 space-y-2">
-                            <input
-                              type="text"
-                              value={child.name}
-                              onChange={(e) => handleUpdateChild(child.id, 'name', e.target.value)}
-                              placeholder={t('childName')}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                            />
-                            <div className="flex gap-2">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-sm font-medium text-gray-700">
+                      <FontAwesomeIcon icon={faUsers} className="mr-2 text-primary-600" />
+                      {t('children')}
+                    </label>
+                    <button
+                      type="button"
+                      onClick={handleAddChild}
+                      disabled={!profile?.id}
+                      className="px-3 py-1 text-sm bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    >
+                      <FontAwesomeIcon icon={faUser} />
+                      {t('addChild')}
+                    </button>
+                  </div>
+
+                  {/* Family Children List */}
+                  {allChildren.length > 0 && (
+                    <div className="space-y-2">
+                      {allChildren.map((child) => (
+                        <div key={child.id} className="border border-gray-200 rounded-lg p-4 bg-white hover:shadow-md transition-shadow">
+                          <div className="space-y-3">
+                            <div className="flex items-center justify-between">
                               <input
-                                type="date"
-                                value={child.date_of_birth}
-                                onChange={(e) => {
-                                  setChildren(prev => prev.map(c =>
-                                    c.id === child.id ? { ...c, date_of_birth: e.target.value } : c
-                                  ));
-                                }}
-                                onBlur={(e) => {
-                                  if (e.target.value) {
-                                    handleUpdateChild(child.id, 'date_of_birth', e.target.value);
-                                  }
-                                }}
-                                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                                type="text"
+                                value={child.name}
+                                onChange={(e) => handleUpdateChild(child.id, 'name', e.target.value)}
+                                placeholder={t('childName')}
+                                className="flex-1 px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 text-sm font-medium"
                               />
-                              <div className="flex items-center px-3 py-2 bg-gray-100 rounded-lg text-sm text-gray-700">
-                                {calculateAge(child.date_of_birth)} {locale === 'pt' ? (calculateAge(child.date_of_birth) === 1 ? 'ano' : 'anos') : (calculateAge(child.date_of_birth) === 1 ? 'year' : 'years')}
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveChild(child.id)}
+                                className="ml-2 text-red-600 hover:text-red-700 hover:bg-red-50 px-2 py-1 rounded transition-colors"
+                                title={t('removeChild')}
+                              >
+                                <FontAwesomeIcon icon={faTimes} />
+                              </button>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-2">
+                              <div>
+                                <label className="text-xs font-medium text-gray-600 mb-1 block">{locale === 'pt' ? 'Data de Nasc.' : 'Birth Date'}</label>
+                                <input
+                                  type="date"
+                                  value={child.date_of_birth}
+                                  onChange={(e) => {
+                                    setChildren(prev => prev.map(c =>
+                                      c.id === child.id ? { ...c, date_of_birth: e.target.value } : c
+                                    ));
+                                  }}
+                                  onBlur={(e) => {
+                                    if (e.target.value) {
+                                      handleUpdateChild(child.id, 'date_of_birth', e.target.value);
+                                    }
+                                  }}
+                                  className="w-full px-2 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 text-sm"
+                                />
+                              </div>
+                              <div>
+                                <label className="text-xs font-medium text-gray-600 mb-1 block">{t('childAge')}</label>
+                                <div className="px-2 py-1 bg-primary-50 text-primary-700 rounded-lg text-sm font-medium text-center">
+                                  {calculateAge(child.date_of_birth)} {locale === 'pt' ? 'anos' : 'yrs'}
+                                </div>
                               </div>
                             </div>
+
                             <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-1">{t('childAllergies')}</label>
+                              <label className="text-xs font-medium text-gray-600 mb-1 block">{t('childAllergies')}</label>
                               <input
                                 type="text"
                                 value={child.allergies || ''}
@@ -1558,30 +1619,47 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                                 }}
                                 onBlur={(e) => handleUpdateChild(child.id, 'allergies', e.target.value)}
                                 placeholder={t('childAllergiesPlaceholder')}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                                className="w-full px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 text-sm"
+                              />
+                            </div>
+
+                            <div>
+                              <label className="text-xs font-medium text-gray-600 mb-1 block">{t('childSpecialNeeds')}</label>
+                              <input
+                                type="text"
+                                value={child.special_needs || ''}
+                                onChange={(e) => {
+                                  setChildren(prev => prev.map(c =>
+                                    c.id === child.id ? { ...c, special_needs: e.target.value } : c
+                                  ));
+                                }}
+                                onBlur={(e) => handleUpdateChild(child.id, 'special_needs', e.target.value)}
+                                placeholder={locale === 'pt' ? 'ex.: autismo, TDAH, cadeira de rodas' : 'e.g., autism, ADHD, wheelchair'}
+                                className="w-full px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 text-sm"
                               />
                             </div>
                           </div>
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveChild(child.id)}
-                            className="text-red-600 hover:text-red-700 px-3 py-2"
-                          >
-                            <FontAwesomeIcon icon={faTimes} /> {t('removeChild')}
-                          </button>
                         </div>
                       ))}
                     </div>
                   )}
-                  <button
-                    type="button"
-                    onClick={handleAddChild}
-                    disabled={!profile?.id}
-                    className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <FontAwesomeIcon icon={faUser} className="mr-2" />
-                    {t('addChild')}
-                  </button>
+
+                  {/* Empty State */}
+                  {allChildren.length === 0 && (
+                    <div className="p-6 bg-gray-50 border border-dashed border-gray-300 rounded-lg text-center">
+                      <FontAwesomeIcon icon={faUsers} className="text-gray-400 text-2xl mb-2" />
+                      <p className="text-sm text-gray-500 mb-3">{t('noChildren')}</p>
+                      <button
+                        type="button"
+                        onClick={handleAddChild}
+                        disabled={!profile?.id}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50"
+                      >
+                        <FontAwesomeIcon icon={faUser} />
+                        {t('addChild')}
+                      </button>
+                    </div>
+                  )}
                 </div>
               </>
             }

@@ -72,7 +72,12 @@ export default function UpdatePasswordClient({ locale }: UpdatePasswordClientPro
       });
 
       if (updateError) {
-        setError(t('passwordUpdateError'));
+        // Display the actual error message from the API
+        if (updateError.message) {
+          setError(updateError.message);
+        } else {
+          setError(t('passwordUpdateError'));
+        }
         setLoading(false);
         return;
       }

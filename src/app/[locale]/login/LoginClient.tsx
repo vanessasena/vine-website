@@ -45,7 +45,12 @@ export default function LoginClient({ locale }: LoginClientProps) {
         });
 
         if (resetError) {
-          setError(t('resetLinkError'));
+          // Display the actual error message from the API
+          if (resetError.message) {
+            setError(resetError.message);
+          } else {
+            setError(t('resetLinkError'));
+          }
           setLoading(false);
           return;
         }
@@ -85,8 +90,11 @@ export default function LoginClient({ locale }: LoginClientProps) {
         });
 
         if (signUpError) {
+          // Display the actual error message from the API
           if (signUpError.message.includes('already registered')) {
             setError(t('emailInUse'));
+          } else if (signUpError.message) {
+            setError(signUpError.message);
           } else {
             setError(t('signUpError'));
           }
@@ -112,7 +120,12 @@ export default function LoginClient({ locale }: LoginClientProps) {
         });
 
         if (signInError) {
-          setError(t('invalidCredentials'));
+          // Display the actual error message from the API
+          if (signInError.message) {
+            setError(signInError.message);
+          } else {
+            setError(t('invalidCredentials'));
+          }
           setLoading(false);
           return;
         }

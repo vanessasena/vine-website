@@ -247,6 +247,13 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
     }
   }, [currentUserId]);
 
+    // Fetch available spouses when family section is opened for editing
+  useEffect(() => {
+    if (editingSections.family && expandedSections.family) {
+      fetchAvailableSpouses();
+    }
+  }, [editingSections.family, expandedSections.family]);
+
   const formatPhoneInput = (value: string): string => {
     // Remove all characters except digits, spaces, hyphens, parentheses, and plus
     let cleaned = value.replace(/[^\d\s\-()+ ]/g, '');

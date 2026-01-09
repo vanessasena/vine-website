@@ -1635,19 +1635,58 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                             </div>
 
                             <div>
-                              <label className="text-xs font-medium text-gray-600 mb-1 block">{t('childAllergies')}</label>
-                              <input
-                                type="text"
-                                value={child.allergies || ''}
-                                onChange={(e) => {
-                                  setChildren(prev => prev.map(c =>
-                                    c.id === child.id ? { ...c, allergies: e.target.value } : c
-                                  ));
-                                }}
-                                onBlur={(e) => handleUpdateChild(child.id, 'allergies', e.target.value)}
-                                placeholder={t('childAllergiesPlaceholder')}
-                                className="w-full px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 text-sm"
-                              />
+                              <label className="text-xs font-medium text-gray-600 mb-2 block">{t('childHasAllergies')}</label>
+                              <div className="space-y-2">
+                                <label className="flex items-center">
+                                  <input
+                                    type="radio"
+                                    name={`allergies-${child.id}`}
+                                    value="no"
+                                    checked={child.allergies === null || child.allergies === undefined}
+                                    onChange={(e) => {
+                                      if (e.target.checked) {
+                                        setChildren(prev => prev.map(c =>
+                                          c.id === child.id ? { ...c, allergies: null } : c
+                                        ));
+                                        handleUpdateChild(child.id, 'allergies', null);
+                                      }
+                                    }}
+                                    className="mr-2"
+                                  />
+                                  <span className="text-sm text-gray-700">{t('childNoAllergies')}</span>
+                                </label>
+                                <label className="flex items-center">
+                                  <input
+                                    type="radio"
+                                    name={`allergies-${child.id}`}
+                                    value="yes"
+                                    checked={child.allergies !== null && child.allergies !== undefined}
+                                    onChange={(e) => {
+                                      if (e.target.checked) {
+                                        setChildren(prev => prev.map(c =>
+                                          c.id === child.id ? { ...c, allergies: '' } : c
+                                        ));
+                                      }
+                                    }}
+                                    className="mr-2"
+                                  />
+                                  <span className="text-sm text-gray-700">{t('childHasAllergiesYes')}</span>
+                                </label>
+                              </div>
+                              {child.allergies !== null && child.allergies !== undefined && (
+                                <input
+                                  type="text"
+                                  value={child.allergies}
+                                  onChange={(e) => {
+                                    setChildren(prev => prev.map(c =>
+                                      c.id === child.id ? { ...c, allergies: e.target.value } : c
+                                    ));
+                                  }}
+                                  onBlur={(e) => handleUpdateChild(child.id, 'allergies', e.target.value)}
+                                  placeholder={t('childAllergiesPlaceholder')}
+                                  className="w-full px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 text-sm mt-2"
+                                />
+                              )}
                             </div>
 
                             {child.date_of_birth && calculateAge(child.date_of_birth) > childAgeLimit && (
@@ -1657,19 +1696,58 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                             )}
 
                             <div>
-                              <label className="text-xs font-medium text-gray-600 mb-1 block">{t('childSpecialNeeds')}</label>
-                              <input
-                                type="text"
-                                value={child.special_needs || ''}
-                                onChange={(e) => {
-                                  setChildren(prev => prev.map(c =>
-                                    c.id === child.id ? { ...c, special_needs: e.target.value } : c
-                                  ));
-                                }}
-                                onBlur={(e) => handleUpdateChild(child.id, 'special_needs', e.target.value)}
-                                placeholder={locale === 'pt' ? 'ex.: autismo, TDAH, cadeira de rodas' : 'e.g., autism, ADHD, wheelchair'}
-                                className="w-full px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 text-sm"
-                              />
+                              <label className="text-xs font-medium text-gray-600 mb-2 block">{t('childHasSpecialNeeds')}</label>
+                              <div className="space-y-2">
+                                <label className="flex items-center">
+                                  <input
+                                    type="radio"
+                                    name={`special_needs-${child.id}`}
+                                    value="no"
+                                    checked={child.special_needs === null || child.special_needs === undefined}
+                                    onChange={(e) => {
+                                      if (e.target.checked) {
+                                        setChildren(prev => prev.map(c =>
+                                          c.id === child.id ? { ...c, special_needs: null } : c
+                                        ));
+                                        handleUpdateChild(child.id, 'special_needs', null);
+                                      }
+                                    }}
+                                    className="mr-2"
+                                  />
+                                  <span className="text-sm text-gray-700">{t('childNoSpecialNeeds')}</span>
+                                </label>
+                                <label className="flex items-center">
+                                  <input
+                                    type="radio"
+                                    name={`special_needs-${child.id}`}
+                                    value="yes"
+                                    checked={child.special_needs !== null && child.special_needs !== undefined}
+                                    onChange={(e) => {
+                                      if (e.target.checked) {
+                                        setChildren(prev => prev.map(c =>
+                                          c.id === child.id ? { ...c, special_needs: '' } : c
+                                        ));
+                                      }
+                                    }}
+                                    className="mr-2"
+                                  />
+                                  <span className="text-sm text-gray-700">{t('childHasSpecialNeedsYes')}</span>
+                                </label>
+                              </div>
+                              {child.special_needs !== null && child.special_needs !== undefined && (
+                                <input
+                                  type="text"
+                                  value={child.special_needs}
+                                  onChange={(e) => {
+                                    setChildren(prev => prev.map(c =>
+                                      c.id === child.id ? { ...c, special_needs: e.target.value } : c
+                                    ));
+                                  }}
+                                  onBlur={(e) => handleUpdateChild(child.id, 'special_needs', e.target.value)}
+                                  placeholder={locale === 'pt' ? 'ex.: autismo, TDAH, cadeira de rodas' : 'e.g., autism, ADHD, wheelchair'}
+                                  className="w-full px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 text-sm mt-2"
+                                />
+                              )}
                             </div>
                           </div>
                         </div>

@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { VOLUNTEER_AREA_OPTIONS } from '@/lib/constants';
+import { VOLUNTEER_AREA_OPTIONS, GENDER_OPTIONS, SPIRITUAL_COURSE_OPTIONS } from '@/lib/constants';
 import {
   faUsers,
   faFilter,
@@ -16,6 +16,9 @@ import {
   faTimes,
   faChevronLeft,
   faChevronRight,
+  faSearch,
+  faHome,
+  faCross,
 } from '@fortawesome/free-solid-svg-icons';
 
 interface Child {
@@ -31,10 +34,13 @@ interface MemberProfile {
   user_id: string;
   name: string;
   date_of_birth: string | null;
+  gender: string | null;
   phone: string;
   email: string;
   is_baptized: boolean;
   pays_tithe: boolean;
+  spiritual_courses: string[];
+  encounter_with_god: boolean;
   volunteer_areas: string[];
   volunteer_outros_details: string | null;
   life_group: string | null;
@@ -58,7 +64,17 @@ export default function MembersAdminClient({ locale }: MembersAdminClientProps) 
   const [error, setError] = useState<string | null>(null);
   const [selectedMember, setSelectedMember] = useState<MemberProfile | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+
+  // Filter states
+  const [searchName, setSearchName] = useState<string>('');
+  const [selectedLifeGroup, setSelectedLifeGroup] = useState<string>('all');
+  const [selectedGender, setSelectedGender] = useState<string>('all');
+  const [selectedTithe, setSelectedTithe] = useState<string>('all'); // all, yes, no
+  const [selectedBaptized, setSelectedBaptized] = useState<string>('all'); // all, yes, no
+  const [selectedEncounter, setSelectedEncounter] = useState<string>('all'); // all, yes, no
+  const [selectedCourse, setSelectedCourse] = useState<string>('all');
   const [selectedArea, setSelectedArea] = useState<string>('all');
+  const [showFamiliesOnly, setShowFamiliesOnly] = useState<boolean>(false);
 
   useEffect(() => {
     fetchMembers();
@@ -154,13 +170,76 @@ export default function MembersAdminClient({ locale }: MembersAdminClientProps) 
     });
   };
 
-  // Filter members by selected area
+  // Enhanced filtering logic with multiple criteria
   const filteredMembers = useMemo(() => {
-    if (selectedArea === 'all') {
-      return members;
-    }
-    return members.filter(member => member.volunteer_areas.includes(selectedArea));
-  }, [members, selectedArea]);
+    return members.filter(member => {
+      // Name search filter
+      if (searchName && !member.name.toLowerCase().includes(searchName.toLowerCase())) {
+        return false;
+      }
+
+      // Life group filter
+      if (selectedLifeGroup !== 'all' && member.life_group !== selectedLifeGroup) {
+        return false;
+      }
+
+      // Gender filter
+      if (selectedGender !== 'all' && member.gender !== selectedGender) {
+        return false;
+      }
+
+      // Tithe filter
+      if (selectedTithe === 'yes' && !member.pays_tithe) {
+        return false;
+      }
+      if (selectedTithe === 'no' && member.pays_tithe) {
+        return false;
+      }
+
+      // Baptized filter
+      if (selectedBaptized === 'yes' && !member.is_baptized) {
+        return false;
+      }
+      if (selectedBaptized === 'no' && member.is_baptized) {
+        return false;
+      }
+
+      // Encounter with God filter
+      if (selectedEncounter === 'yes' && !member.encounter_with_god) {
+        return false;
+      }
+      if (selectedEncounter === 'no' && member.encounter_with_god) {
+        return false;
+      }
+
+      // Spiritual course filter
+      if (selectedCourse !== 'all' && !member.spiritual_courses.includes(selectedCourse)) {
+        return false;
+      }
+
+      // Volunteer area filter
+      if (selectedArea !== 'all' && !member.volunteer_areas.includes(selectedArea)) {
+        return false;
+      }
+
+      // Families only filter
+      if (showFamiliesOnly && memberChildren[member.id]?.length === 0 && !member.is_married) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [members, searchName, selectedLifeGroup, selectedGender, selectedTithe, selectedBaptized, selectedEncounter, selectedCourse, selectedArea, showFamiliesOnly, memberChildren]);
+
+  // Get unique life groups for filter dropdown
+  const lifeGroups = useMemo(() => {
+    const groups = members
+      .filter((m) => m.life_group)
+      .map((m) => m.life_group as string)
+      .filter((value, index, self) => self.indexOf(value) === index)
+      .sort();
+    return groups;
+  }, [members]);
 
   // Paginate filtered results
   const totalPages = Math.ceil(filteredMembers.length / ITEMS_PER_PAGE);
@@ -170,14 +249,40 @@ export default function MembersAdminClient({ locale }: MembersAdminClientProps) 
     return filteredMembers.slice(startIndex, endIndex);
   }, [filteredMembers, currentPage]);
 
-  // Reset to page 1 when filter changes
+  // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedArea]);
+  }, [searchName, selectedLifeGroup, selectedGender, selectedTithe, selectedBaptized, selectedEncounter, selectedCourse, selectedArea, showFamiliesOnly]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Helper function to get translation for boolean filter values
+  const getBooleanLabel = (value: string): string => {
+    if (locale === 'pt') {
+      return value === 'yes' ? 'Sim' : value === 'no' ? 'Não' : 'Todos';
+    }
+    return value === 'yes' ? 'Yes' : value === 'no' ? 'No' : 'All';
+  };
+
+  // Helper function to get translation for gender
+  const getGenderLabel = (gender: string): string => {
+    const genderMap: Record<string, Record<string, string>> = {
+      female: { pt: 'Feminino', en: 'Female' },
+      male: { pt: 'Masculino', en: 'Male' },
+    };
+    return genderMap[gender]?.[locale === 'pt' ? 'pt' : 'en'] || gender;
+  };
+
+  // Helper function to get translation for courses
+  const getCourseLabel = (course: string): string => {
+    const courseMap: Record<string, Record<string, string>> = {
+      maturidade_no_espirito: { pt: 'Maturidade no Espírito', en: 'Maturity in the Spirit' },
+      treinamento_de_lideres: { pt: 'Treinamento de Líderes', en: 'Leadership Training' },
+    };
+    return courseMap[course]?.[locale === 'pt' ? 'pt' : 'en'] || course;
   };
 
   if (loading) {
@@ -200,101 +305,298 @@ export default function MembersAdminClient({ locale }: MembersAdminClientProps) 
   }
 
   return (
-    <div className="py-8">
-      <div className="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <h2 className="text-2xl font-bold text-gray-900">
-          <FontAwesomeIcon icon={faUsers} className="mr-2" />
-          {locale === 'pt' ? 'Membros Cadastrados' : 'Registered Members'} ({filteredMembers.length}
-          {selectedArea !== 'all' && ` ${locale === 'pt' ? 'de' : 'of'} ${members.length}`})
-        </h2>
+    <div className="py-8 space-y-6">
+      {/* Header */}
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <h1 className="text-3xl font-bold text-gray-900 flex items-center">
+            <FontAwesomeIcon icon={faUsers} className="mr-3 text-primary-600" />
+            {locale === 'pt' ? 'Gerenciamento de Membros' : 'Members Management'}
+          </h1>
+          <div className="bg-primary-100 text-primary-700 px-4 py-2 rounded-lg font-semibold">
+            {filteredMembers.length} / {members.length}
+          </div>
+        </div>
 
-        {/* Area Filter */}
-        <div className="flex items-center gap-2">
-          <FontAwesomeIcon icon={faFilter} className="text-gray-600" />
-          <select
-            value={selectedArea}
-            onChange={(e) => setSelectedArea(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-          >
-            <option value="all">{locale === 'pt' ? 'Todas as Áreas' : 'All Areas'}</option>
-            {VOLUNTEER_AREA_OPTIONS.map((area) => (
-              <option key={area} value={area}>
-                {t(`volunteerOptions.${area}`)}
-              </option>
-            ))}
-          </select>
+        {/* Search Bar */}
+        <div className="relative">
+          <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-3 text-gray-400" />
+          <input
+            type="text"
+            placeholder={locale === 'pt' ? 'Buscar por nome...' : 'Search by name...'}
+            value={searchName}
+            onChange={(e) => setSearchName(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+          />
         </div>
       </div>
 
+      {/* Filters Section */}
+      <div className="bg-white rounded-lg shadow p-6 space-y-4">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-gray-900 flex items-center">
+            <FontAwesomeIcon icon={faFilter} className="mr-2 text-primary-600" />
+            {locale === 'pt' ? 'Filtros' : 'Filters'}
+          </h2>
+          <button
+            onClick={() => {
+              setSearchName('');
+              setSelectedLifeGroup('all');
+              setSelectedGender('all');
+              setSelectedTithe('all');
+              setSelectedBaptized('all');
+              setSelectedEncounter('all');
+              setSelectedCourse('all');
+              setSelectedArea('all');
+              setShowFamiliesOnly(false);
+              setCurrentPage(1);
+            }}
+            className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+          >
+            {locale === 'pt' ? 'Limpar Filtros' : 'Clear Filters'}
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Life Group Filter */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              {locale === 'pt' ? 'Célula' : 'Life Group'}
+            </label>
+            <select
+              value={selectedLifeGroup}
+              onChange={(e) => setSelectedLifeGroup(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            >
+              <option value="all">{locale === 'pt' ? 'Todas' : 'All'}</option>
+              {lifeGroups.map((group) => (
+                <option key={group} value={group}>
+                  {group}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Gender Filter */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              {locale === 'pt' ? 'Gênero' : 'Gender'}
+            </label>
+            <select
+              value={selectedGender}
+              onChange={(e) => setSelectedGender(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            >
+              <option value="all">{locale === 'pt' ? 'Todos' : 'All'}</option>
+              {GENDER_OPTIONS.map((gender) => (
+                <option key={gender} value={gender}>
+                  {getGenderLabel(gender)}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Baptized Filter */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              {locale === 'pt' ? 'Batizado' : 'Baptized'}
+            </label>
+            <select
+              value={selectedBaptized}
+              onChange={(e) => setSelectedBaptized(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            >
+              <option value="all">{locale === 'pt' ? 'Todos' : 'All'}</option>
+              <option value="yes">{getBooleanLabel('yes')}</option>
+              <option value="no">{getBooleanLabel('no')}</option>
+            </select>
+          </div>
+
+          {/* Tithe Filter */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              {locale === 'pt' ? 'Dizimista' : 'Tither'}
+            </label>
+            <select
+              value={selectedTithe}
+              onChange={(e) => setSelectedTithe(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            >
+              <option value="all">{locale === 'pt' ? 'Todos' : 'All'}</option>
+              <option value="yes">{getBooleanLabel('yes')}</option>
+              <option value="no">{getBooleanLabel('no')}</option>
+            </select>
+          </div>
+
+          {/* Encounter with God Filter */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              {locale === 'pt' ? 'Encontro com Deus' : 'Encounter with God'}
+            </label>
+            <select
+              value={selectedEncounter}
+              onChange={(e) => setSelectedEncounter(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            >
+              <option value="all">{locale === 'pt' ? 'Todos' : 'All'}</option>
+              <option value="yes">{getBooleanLabel('yes')}</option>
+              <option value="no">{getBooleanLabel('no')}</option>
+            </select>
+          </div>
+
+          {/* Spiritual Course Filter */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              {locale === 'pt' ? 'Curso' : 'Course'}
+            </label>
+            <select
+              value={selectedCourse}
+              onChange={(e) => setSelectedCourse(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            >
+              <option value="all">{locale === 'pt' ? 'Todos' : 'All'}</option>
+              {SPIRITUAL_COURSE_OPTIONS.map((course) => (
+                <option key={course} value={course}>
+                  {getCourseLabel(course)}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Volunteer Area Filter */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              {locale === 'pt' ? 'Área de Voluntário' : 'Volunteer Area'}
+            </label>
+            <select
+              value={selectedArea}
+              onChange={(e) => setSelectedArea(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            >
+              <option value="all">{locale === 'pt' ? 'Todas' : 'All'}</option>
+              {VOLUNTEER_AREA_OPTIONS.map((area) => (
+                <option key={area} value={area}>
+                  {t(`volunteerOptions.${area}`)}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Families Only Filter */}
+          <div className="flex items-end">
+            <label className="flex items-center gap-2 cursor-pointer h-10 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors w-full">
+              <input
+                type="checkbox"
+                checked={showFamiliesOnly}
+                onChange={(e) => setShowFamiliesOnly(e.target.checked)}
+                className="w-4 h-4 rounded border-gray-300 text-primary-600"
+              />
+              <span className="text-sm font-medium text-gray-700">
+                <FontAwesomeIcon icon={faHome} className="mr-1" />
+                {locale === 'pt' ? 'Apenas Famílias' : 'Families Only'}
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      {/* Members Grid */}
       {filteredMembers.length === 0 ? (
-        <div className="bg-gray-100 rounded-lg p-8 text-center">
-          <p className="text-gray-600">
-            {selectedArea === 'all'
-              ? locale === 'pt'
-                ? 'Nenhum membro cadastrado ainda.'
-                : 'No members registered yet.'
-              : locale === 'pt'
-              ? 'Nenhum membro encontrado para esta área.'
-              : 'No members found for this area.'}
+        <div className="bg-gray-50 rounded-lg p-12 text-center">
+          <FontAwesomeIcon icon={faUsers} className="text-4xl text-gray-300 mb-4" />
+          <p className="text-gray-600 text-lg">
+            {locale === 'pt' ? 'Nenhum membro encontrado com os filtros selecionados.' : 'No members found with the selected filters.'}
           </p>
         </div>
       ) : (
         <>
-          <div className="grid gap-6">
-            {paginatedMembers.map((member) => (
-              <div
-                key={member.id}
-                className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow cursor-pointer"
-                onClick={() => setSelectedMember(member)}
-              >
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900">{member.name}</h3>
-                    <p className="text-sm text-gray-500">
-                      {locale === 'pt' ? 'Cadastrado em' : 'Registered on'} {formatDate(member.created_at)}
-                    </p>
+          <div className="grid gap-4">
+            {paginatedMembers.map((member) => {
+              const memberHasChildren = memberChildren[member.id]?.length ?? 0;
+              return (
+                <div
+                  key={member.id}
+                  className="bg-white rounded-lg shadow hover:shadow-lg transition-all cursor-pointer border-l-4 border-primary-500 overflow-hidden"
+                  onClick={() => setSelectedMember(member)}
+                >
+                  <div className="p-5">
+                    {/* Header with name and key info */}
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold text-gray-900">{member.name}</h3>
+                        <div className="flex flex-wrap gap-3 mt-2">
+                          <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
+                            {member.life_group || (locale === 'pt' ? 'Sem célula' : 'No life group')}
+                          </span>
+                          {member.gender && (
+                            <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
+                              {getGenderLabel(member.gender)}
+                            </span>
+                          )}
+                          {memberHasChildren > 0 && (
+                            <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">
+                              <FontAwesomeIcon icon={faHome} className="mr-1" />
+                              {memberHasChildren} {locale === 'pt' ? (memberHasChildren === 1 ? 'filho' : 'filhos') : (memberHasChildren === 1 ? 'child' : 'children')}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Contact info */}
+                    <div className="grid md:grid-cols-2 gap-4 mb-4 pb-4 border-b border-gray-200">
+                      <div className="flex items-center text-sm text-gray-600">
+                        <FontAwesomeIcon icon={faEnvelope} className="mr-2 text-primary-600 w-4" />
+                        {member.email}
+                      </div>
+                      <div className="flex items-center text-sm text-gray-600">
+                        <FontAwesomeIcon icon={faPhone} className="mr-2 text-primary-600 w-4" />
+                        {member.phone}
+                      </div>
+                    </div>
+
+                    {/* Status badges */}
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {member.is_baptized && (
+                        <span className="flex items-center text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                          <FontAwesomeIcon icon={faCheckCircle} className="mr-1" />
+                          {locale === 'pt' ? 'Batizado' : 'Baptized'}
+                        </span>
+                      )}
+                      {member.pays_tithe && (
+                        <span className="flex items-center text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                          <FontAwesomeIcon icon={faChurch} className="mr-1" />
+                          {locale === 'pt' ? 'Dizimista' : 'Tither'}
+                        </span>
+                      )}
+                      {member.encounter_with_god && (
+                        <span className="flex items-center text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                          <FontAwesomeIcon icon={faCross} className="mr-1" />
+                          {locale === 'pt' ? 'Encontro' : 'Encounter'}
+                        </span>
+                      )}
+                      {member.spiritual_courses.length > 0 && (
+                        <span className="flex items-center text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full">
+                          📚 {member.spiritual_courses.length} {locale === 'pt' ? 'curso(s)' : 'course(s)'}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Volunteer areas */}
+                    {member.volunteer_areas.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        <FontAwesomeIcon icon={faHandsHelping} className="text-gray-500 mt-0.5" />
+                        {member.volunteer_areas.map((area) => (
+                          <span key={area} className="text-xs bg-primary-100 text-primary-700 px-2 py-1 rounded-full">
+                            {t(`volunteerOptions.${area}`)}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
-
-                <div className="grid md:grid-cols-2 gap-4 mb-4">
-                  <div className="flex items-center text-gray-700">
-                    <FontAwesomeIcon icon={faEnvelope} className="mr-2 text-primary-600" />
-                    {member.email}
-                  </div>
-                  <div className="flex items-center text-gray-700">
-                    <FontAwesomeIcon icon={faPhone} className="mr-2 text-primary-600" />
-                    {member.phone}
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4 mb-4">
-                    {member.is_baptized && (
-                  <span className={`flex items-center ${member.is_baptized ? 'text-green-600' : 'text-gray-400'}`}>
-                    <FontAwesomeIcon icon={faCheckCircle} className="mr-1" />
-                    {locale === 'pt' ? 'Batizado' : 'Baptized'}
-                  </span>)}
-                        {member.pays_tithe && (
-                  <span className={`flex items-center ${member.pays_tithe ? 'text-green-600' : 'text-gray-400'}`}>
-                    <FontAwesomeIcon icon={faChurch} className="mr-1" />
-                    {locale === 'pt' ? 'Dizimista' : 'Tither'}
-                  </span>)}
-                </div>
-
-                {member.volunteer_areas.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    <FontAwesomeIcon icon={faHandsHelping} className="text-gray-500 mt-1" />
-                    {member.volunteer_areas.map((area) => (
-                      <span
-                        key={area}
-                        className="bg-primary-100 text-primary-700 px-3 py-1 rounded-full text-sm"
-                      >
-                        {t(`volunteerOptions.${area}`)}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Pagination Controls */}
@@ -311,14 +613,9 @@ export default function MembersAdminClient({ locale }: MembersAdminClientProps) 
 
               <div className="flex gap-1">
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
-                  const showPage =
-                    page === 1 ||
-                    page === totalPages ||
-                    Math.abs(page - currentPage) <= 1;
-
+                  const showPage = page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1;
                   const showEllipsis =
-                    (page === 2 && currentPage > 3) ||
-                    (page === totalPages - 1 && currentPage < totalPages - 2);
+                    (page === 2 && currentPage > 3) || (page === totalPages - 1 && currentPage < totalPages - 2);
 
                   if (showEllipsis) {
                     return (
@@ -337,9 +634,7 @@ export default function MembersAdminClient({ locale }: MembersAdminClientProps) 
                       key={page}
                       onClick={() => handlePageChange(page)}
                       className={`px-4 py-2 rounded-lg transition-colors ${
-                        page === currentPage
-                          ? 'bg-primary-600 text-white'
-                          : 'bg-white border border-gray-300 hover:bg-gray-50'
+                        page === currentPage ? 'bg-primary-600 text-white' : 'bg-white border border-gray-300 hover:bg-gray-50'
                       }`}
                     >
                       {page}
@@ -368,101 +663,157 @@ export default function MembersAdminClient({ locale }: MembersAdminClientProps) 
           onClick={() => setSelectedMember(null)}
         >
           <div
-            className="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-lg shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-6">
-              <div className="flex justify-between items-start mb-6">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-1">{selectedMember.name}</h2>
-                  <p className="text-sm text-gray-500">
-                    {locale === 'pt' ? 'Cadastrado em' : 'Registered on'} {formatDate(selectedMember.created_at)}
-                  </p>
-                </div>
-                <button
-                  onClick={() => setSelectedMember(null)}
-                  className="text-gray-400 hover:text-gray-600 text-2xl"
-                >
-                  <FontAwesomeIcon icon={faTimes} />
-                </button>
+            {/* Header */}
+            <div className="sticky top-0 bg-gradient-to-r from-primary-600 to-primary-700 text-white p-6 flex justify-between items-start">
+              <div>
+                <h2 className="text-3xl font-bold mb-1">{selectedMember.name}</h2>
+                <p className="text-primary-100 text-sm">
+                  {locale === 'pt' ? 'Cadastrado em' : 'Registered on'} {formatDate(selectedMember.created_at)}
+                </p>
               </div>
+              <button
+                onClick={() => setSelectedMember(null)}
+                className="text-white hover:text-primary-100 text-2xl"
+              >
+                <FontAwesomeIcon icon={faTimes} />
+              </button>
+            </div>
 
-              <div className="space-y-4">
+            {/* Content */}
+            <div className="p-6 space-y-6">
+              {/* Contact Information */}
+              <section>
+                <h3 className="text-lg font-bold text-gray-900 mb-4 border-b pb-2">
+                  {locale === 'pt' ? 'Informações de Contato' : 'Contact Information'}
+                </h3>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <div className="text-sm font-medium text-gray-500 mb-1">
+                    <label className="text-sm font-medium text-gray-600">
                       <FontAwesomeIcon icon={faEnvelope} className="mr-2 text-primary-600" />
-                      {t('email')}
-                    </div>
-                    <div className="text-lg text-gray-900">{selectedMember.email}</div>
+                      {locale === 'pt' ? 'Email' : 'Email'}
+                    </label>
+                    <p className="text-gray-900 mt-1">{selectedMember.email}</p>
                   </div>
-
                   <div>
-                    <div className="text-sm font-medium text-gray-500 mb-1">
+                    <label className="text-sm font-medium text-gray-600">
                       <FontAwesomeIcon icon={faPhone} className="mr-2 text-primary-600" />
-                      {t('phone')}
-                    </div>
-                    <div className="text-lg text-gray-900">{selectedMember.phone}</div>
+                      {locale === 'pt' ? 'Telefone' : 'Phone'}
+                    </label>
+                    <p className="text-gray-900 mt-1">{selectedMember.phone}</p>
                   </div>
+                </div>
+              </section>
 
+              {/* Personal Information */}
+              <section>
+                <h3 className="text-lg font-bold text-gray-900 mb-4 border-b pb-2">
+                  {locale === 'pt' ? 'Informações Pessoais' : 'Personal Information'}
+                </h3>
+                <div className="grid md:grid-cols-2 gap-4">
                   {selectedMember.date_of_birth && (
                     <div>
-                      <div className="text-sm font-medium text-gray-500 mb-1">
+                      <label className="text-sm font-medium text-gray-600">
                         <FontAwesomeIcon icon={faBirthdayCake} className="mr-2 text-primary-600" />
-                        {t('dateOfBirth')}
-                      </div>
-                      <div className="text-lg text-gray-900">
-                        {formatDate(selectedMember.date_of_birth)}
-                      </div>
+                        {locale === 'pt' ? 'Data de Nascimento' : 'Date of Birth'}
+                      </label>
+                      <p className="text-gray-900 mt-1">
+                        {formatDate(selectedMember.date_of_birth)} ({calculateAge(selectedMember.date_of_birth)} {locale === 'pt' ? 'anos' : 'years'})
+                      </p>
+                    </div>
+                  )}
+                  {selectedMember.gender && (
+                    <div>
+                      <label className="text-sm font-medium text-gray-600">
+                        {locale === 'pt' ? 'Gênero' : 'Gender'}
+                      </label>
+                      <p className="text-gray-900 mt-1">{getGenderLabel(selectedMember.gender)}</p>
                     </div>
                   )}
                 </div>
+              </section>
 
-                <div className="border-t pt-4">
-                  <div className="grid md:grid-cols-2 gap-4 mb-4">
-                    <div className="flex items-center">
-                      <FontAwesomeIcon
-                        icon={faCheckCircle}
-                        className={`mr-2 ${selectedMember.is_baptized ? 'text-green-600' : 'text-gray-400'}`}
-                      />
-                      <span className={selectedMember.is_baptized ? 'text-gray-900' : 'text-gray-500'}>
-                        {t('isBaptized')}: {selectedMember.is_baptized ? t('yes') : t('no')}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center">
-                      <FontAwesomeIcon
-                        icon={faChurch}
-                        className={`mr-2 ${selectedMember.pays_tithe ? 'text-green-600' : 'text-gray-400'}`}
-                      />
-                      <span className={selectedMember.pays_tithe ? 'text-gray-900' : 'text-gray-500'}>
-                        {t('paysTithe')}: {selectedMember.pays_tithe ? t('yes') : t('no')}
-                      </span>
-                    </div>
+              {/* Spiritual Status */}
+              <section>
+                <h3 className="text-lg font-bold text-gray-900 mb-4 border-b pb-2">
+                  {locale === 'pt' ? 'Status Espiritual' : 'Spiritual Status'}
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <span className="text-gray-700 font-medium">
+                      <FontAwesomeIcon icon={faCheckCircle} className="mr-2 text-primary-600" />
+                      {locale === 'pt' ? 'Batizado' : 'Baptized'}
+                    </span>
+                    <span className={`px-3 py-1 rounded-full font-semibold ${selectedMember.is_baptized ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-600'}`}>
+                      {selectedMember.is_baptized ? (locale === 'pt' ? 'Sim' : 'Yes') : (locale === 'pt' ? 'Não' : 'No')}
+                    </span>
                   </div>
 
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <span className="text-gray-700 font-medium">
+                      <FontAwesomeIcon icon={faChurch} className="mr-2 text-primary-600" />
+                      {locale === 'pt' ? 'Dizimista' : 'Tither'}
+                    </span>
+                    <span className={`px-3 py-1 rounded-full font-semibold ${selectedMember.pays_tithe ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-600'}`}>
+                      {selectedMember.pays_tithe ? (locale === 'pt' ? 'Sim' : 'Yes') : (locale === 'pt' ? 'Não' : 'No')}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <span className="text-gray-700 font-medium">
+                      <FontAwesomeIcon icon={faCross} className="mr-2 text-primary-600" />
+                      {locale === 'pt' ? 'Encontro com Deus' : 'Encounter with God'}
+                    </span>
+                    <span className={`px-3 py-1 rounded-full font-semibold ${selectedMember.encounter_with_god ? 'bg-blue-100 text-blue-700' : 'bg-gray-200 text-gray-600'}`}>
+                      {selectedMember.encounter_with_god ? (locale === 'pt' ? 'Sim' : 'Yes') : (locale === 'pt' ? 'Não' : 'No')}
+                    </span>
+                  </div>
+                </div>
+              </section>
+
+              {/* Spiritual Courses */}
+              {selectedMember.spiritual_courses.length > 0 && (
+                <section>
+                  <h3 className="text-lg font-bold text-gray-900 mb-4 border-b pb-2">
+                    {locale === 'pt' ? 'Cursos Espirituais' : 'Spiritual Courses'}
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedMember.spiritual_courses.map((course) => (
+                      <span key={course} className="bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-medium">
+                        {getCourseLabel(course)}
+                      </span>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Church Information */}
+              <section>
+                <h3 className="text-lg font-bold text-gray-900 mb-4 border-b pb-2">
+                  {locale === 'pt' ? 'Informações da Igreja' : 'Church Information'}
+                </h3>
+                <div className="space-y-3">
                   {selectedMember.life_group && (
-                    <div className="mb-4">
-                      <div className="text-sm font-medium text-gray-500 mb-1">
+                    <div className="p-3 bg-gray-50 rounded-lg">
+                      <label className="text-sm font-medium text-gray-600">
                         <FontAwesomeIcon icon={faUsers} className="mr-2 text-primary-600" />
-                        {t('lifeGroup')}
-                      </div>
-                      <div className="text-lg text-gray-900">{selectedMember.life_group}</div>
+                        {locale === 'pt' ? 'Célula' : 'Life Group'}
+                      </label>
+                      <p className="text-gray-900 mt-1 font-semibold">{selectedMember.life_group}</p>
                     </div>
                   )}
 
                   {selectedMember.volunteer_areas.length > 0 && (
-                    <div>
-                      <div className="text-sm font-medium text-gray-500 mb-2">
+                    <div className="p-3 bg-gray-50 rounded-lg">
+                      <label className="text-sm font-medium text-gray-600 block mb-2">
                         <FontAwesomeIcon icon={faHandsHelping} className="mr-2 text-primary-600" />
-                        {t('volunteerAreas')}
-                      </div>
+                        {locale === 'pt' ? 'Áreas de Voluntariado' : 'Volunteer Areas'}
+                      </label>
                       <div className="flex flex-wrap gap-2">
                         {selectedMember.volunteer_areas.map((area) => (
-                          <span
-                            key={area}
-                            className="bg-primary-100 text-primary-700 px-3 py-1 rounded-full text-sm"
-                          >
+                          <span key={area} className="bg-primary-100 text-primary-700 px-3 py-1 rounded-full text-sm font-medium">
                             {t(`volunteerOptions.${area}`)}
                           </span>
                         ))}
@@ -471,67 +822,73 @@ export default function MembersAdminClient({ locale }: MembersAdminClientProps) 
                   )}
 
                   {selectedMember.volunteer_outros_details && (
-                    <div className="mt-3 p-3 bg-gray-50 rounded-lg">
-                      <div className="text-sm font-medium text-gray-700 mb-1">
-                        {locale === 'pt' ? 'Detalhes Adicionais' : 'Additional Details'}:
-                      </div>
-                      <div className="text-sm text-gray-600 whitespace-pre-wrap">{selectedMember.volunteer_outros_details}</div>
-                    </div>
-                  )}
-
-                  {/* Family Information */}
-                  {(selectedMember.is_married || memberChildren[selectedMember.id]?.length > 0) && (
-                    <div className="mt-4 border-t pt-4">
-                      <div className="text-sm font-medium text-gray-500 mb-3">
-                        {locale === 'pt' ? 'Informações Familiares' : 'Family Information'}
-                      </div>
-
-                      {selectedMember.is_married && (
-                        <div className="mb-3">
-                          <div className="flex items-center text-gray-900 mb-1">
-                            <FontAwesomeIcon icon={faCheckCircle} className="mr-2 text-green-600" />
-                            <span className="font-medium">{t('married')}</span>
-                          </div>
-                          {selectedMember.spouse_name && (
-                            <div className="ml-6 text-gray-700">
-                              <span className="text-sm text-gray-500">{t('spouseName')}: </span>
-                              {selectedMember.spouse_name}
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      {memberChildren[selectedMember.id] && memberChildren[selectedMember.id].length > 0 && (
-                        <div>
-                          <div className="text-sm font-medium text-gray-500 mb-2">
-                            <FontAwesomeIcon icon={faUsers} className="mr-2 text-primary-600" />
-                            {t('children')}
-                          </div>
-                          <div className="space-y-2">
-                            {memberChildren[selectedMember.id].map((child) => (
-                              <div key={child.id} className="bg-gray-50 p-2 rounded-lg ml-6">
-                                <span className="font-medium text-gray-900">{child.name}</span>
-                                <span className="text-gray-600 ml-2">
-                                  ({calculateAge(child.date_of_birth)} {locale === 'pt' ? (calculateAge(child.date_of_birth) === 1 ? 'ano' : 'anos') : (calculateAge(child.date_of_birth) === 1 ? 'year' : 'years')})
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
+                    <div className="p-3 bg-yellow-50 rounded-lg border-l-4 border-yellow-400">
+                      <label className="text-sm font-medium text-gray-700">
+                        {locale === 'pt' ? 'Detalhes Adicionais' : 'Additional Details'}
+                      </label>
+                      <p className="text-gray-700 mt-1 whitespace-pre-wrap">{selectedMember.volunteer_outros_details}</p>
                     </div>
                   )}
                 </div>
-              </div>
+              </section>
 
-              <div className="mt-6 flex justify-end">
-                <button
-                  onClick={() => setSelectedMember(null)}
-                  className="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-400 transition-colors"
-                >
-                  {locale === 'pt' ? 'Fechar' : 'Close'}
-                </button>
-              </div>
+              {/* Family Information */}
+              {(selectedMember.is_married || memberChildren[selectedMember.id]?.length > 0) && (
+                <section>
+                  <h3 className="text-lg font-bold text-gray-900 mb-4 border-b pb-2">
+                    <FontAwesomeIcon icon={faHome} className="mr-2 text-primary-600" />
+                    {locale === 'pt' ? 'Informações Familiares' : 'Family Information'}
+                  </h3>
+
+                  {selectedMember.is_married && (
+                    <div className="p-3 bg-purple-50 rounded-lg mb-3">
+                      <div className="flex items-center mb-2">
+                        <FontAwesomeIcon icon={faCheckCircle} className="mr-2 text-purple-600" />
+                        <span className="font-medium text-gray-900">{locale === 'pt' ? 'Casado(a)' : 'Married'}</span>
+                      </div>
+                      {selectedMember.spouse_name && (
+                        <p className="text-gray-700 ml-6">
+                          {locale === 'pt' ? 'Cônjuge: ' : 'Spouse: '} <span className="font-semibold">{selectedMember.spouse_name}</span>
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  {memberChildren[selectedMember.id] && memberChildren[selectedMember.id].length > 0 && (
+                    <div className="p-3 bg-green-50 rounded-lg">
+                      <label className="text-sm font-medium text-gray-700 block mb-3">
+                        <FontAwesomeIcon icon={faUsers} className="mr-2 text-green-600" />
+                        {locale === 'pt' ? 'Filhos' : 'Children'} ({memberChildren[selectedMember.id].length})
+                      </label>
+                      <div className="space-y-2">
+                        {memberChildren[selectedMember.id].map((child) => (
+                          <div key={child.id} className="bg-white p-3 rounded-lg border border-green-200">
+                            <div className="font-semibold text-gray-900">{child.name}</div>
+                            <div className="text-sm text-gray-600">
+                              {locale === 'pt' ? 'Idade: ' : 'Age: '}
+                              {calculateAge(child.date_of_birth)} {locale === 'pt' ? (calculateAge(child.date_of_birth) === 1 ? 'ano' : 'anos') : (calculateAge(child.date_of_birth) === 1 ? 'year' : 'years')}
+                            </div>
+                            <div className="text-xs text-gray-500 mt-1">
+                              {locale === 'pt' ? 'Nascido em: ' : 'Born: '}
+                              {formatDate(child.date_of_birth)}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </section>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="sticky bottom-0 bg-gray-50 p-6 flex justify-end border-t">
+              <button
+                onClick={() => setSelectedMember(null)}
+                className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors font-medium"
+              >
+                {locale === 'pt' ? 'Fechar' : 'Close'}
+              </button>
             </div>
           </div>
         </div>

@@ -1632,7 +1632,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                   </div>
 
                   <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
-                    {t('childrenAgeLimitNotice', { age: childAgeLimit })}
+                    {t('childrenAgeLimitNotice', { age: childAgeLimit, agePlus: childAgeLimit + 1 })}
                   </div>
 
                   {/* Family Children List */}

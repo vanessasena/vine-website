@@ -515,7 +515,7 @@
     "spouseNotRegisteredMessage": "If your spouse is not showing up, please ask them to register an account first.",
     "spouseGenderMissing": "To see spouse options, set your gender in your profile.",
     "spouseAccountMessage": "If your spouse is not in the list above, please ask them to create their account first.",
-    "childrenAgeLimitNotice": "Only add children up to {age} years old here. At {age}+ they should have their own account.",
+    "childrenAgeLimitNotice": "Only add children up to {age} years old here. At {agePlus} years old they should have their own account.",
     "childAgeTooHigh": "If over {age} years old, they should have their own account.",
     "children": "Children",
     "childName": "Child Name",

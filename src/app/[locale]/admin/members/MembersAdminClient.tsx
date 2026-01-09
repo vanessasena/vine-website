@@ -69,12 +69,12 @@ export default function MembersAdminClient({ locale }: MembersAdminClientProps) 
   const [searchName, setSearchName] = useState<string>('');
   const [selectedLifeGroup, setSelectedLifeGroup] = useState<string>('all');
   const [selectedGender, setSelectedGender] = useState<string>('all');
+  const [selectedMaritalStatus, setSelectedMaritalStatus] = useState<string>('all'); // all, married, single
   const [selectedTithe, setSelectedTithe] = useState<string>('all'); // all, yes, no
   const [selectedBaptized, setSelectedBaptized] = useState<string>('all'); // all, yes, no
   const [selectedEncounter, setSelectedEncounter] = useState<string>('all'); // all, yes, no
   const [selectedCourse, setSelectedCourse] = useState<string>('all');
   const [selectedArea, setSelectedArea] = useState<string>('all');
-  const [showFamiliesOnly, setShowFamiliesOnly] = useState<boolean>(false);
 
   useEffect(() => {
     fetchMembers();
@@ -222,14 +222,17 @@ export default function MembersAdminClient({ locale }: MembersAdminClientProps) 
         return false;
       }
 
-      // Families only filter
-      if (showFamiliesOnly && memberChildren[member.id]?.length === 0 && !member.is_married) {
+      // Marital status filter
+      if (selectedMaritalStatus === 'married' && !member.is_married) {
+        return false;
+      }
+      if (selectedMaritalStatus === 'single' && member.is_married) {
         return false;
       }
 
       return true;
     });
-  }, [members, searchName, selectedLifeGroup, selectedGender, selectedTithe, selectedBaptized, selectedEncounter, selectedCourse, selectedArea, showFamiliesOnly, memberChildren]);
+  }, [members, searchName, selectedLifeGroup, selectedGender, selectedMaritalStatus, selectedTithe, selectedBaptized, selectedEncounter, selectedCourse, selectedArea, memberChildren]);
 
   // Get unique life groups for filter dropdown
   const lifeGroups = useMemo(() => {
@@ -252,7 +255,7 @@ export default function MembersAdminClient({ locale }: MembersAdminClientProps) 
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchName, selectedLifeGroup, selectedGender, selectedTithe, selectedBaptized, selectedEncounter, selectedCourse, selectedArea, showFamiliesOnly]);
+  }, [searchName, selectedLifeGroup, selectedGender, selectedMaritalStatus, selectedTithe, selectedBaptized, selectedEncounter, selectedCourse, selectedArea]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -343,12 +346,12 @@ export default function MembersAdminClient({ locale }: MembersAdminClientProps) 
               setSearchName('');
               setSelectedLifeGroup('all');
               setSelectedGender('all');
+              setSelectedMaritalStatus('all');
               setSelectedTithe('all');
               setSelectedBaptized('all');
               setSelectedEncounter('all');
               setSelectedCourse('all');
               setSelectedArea('all');
-              setShowFamiliesOnly(false);
               setCurrentPage(1);
             }}
             className="text-sm text-primary-600 hover:text-primary-700 font-medium"
@@ -482,20 +485,20 @@ export default function MembersAdminClient({ locale }: MembersAdminClientProps) 
             </select>
           </div>
 
-          {/* Families Only Filter */}
-          <div className="flex items-end">
-            <label className="flex items-center gap-2 cursor-pointer h-10 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors w-full">
-              <input
-                type="checkbox"
-                checked={showFamiliesOnly}
-                onChange={(e) => setShowFamiliesOnly(e.target.checked)}
-                className="w-4 h-4 rounded border-gray-300 text-primary-600"
-              />
-              <span className="text-sm font-medium text-gray-700">
-                <FontAwesomeIcon icon={faHome} className="mr-1" />
-                {locale === 'pt' ? 'Apenas Famílias' : 'Families Only'}
-              </span>
+          {/* Marital Status Filter */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              {locale === 'pt' ? 'Estado Civil' : 'Marital Status'}
             </label>
+            <select
+              value={selectedMaritalStatus}
+              onChange={(e) => setSelectedMaritalStatus(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            >
+              <option value="all">{locale === 'pt' ? 'Todos' : 'All'}</option>
+              <option value="married">{locale === 'pt' ? 'Casados' : 'Married'}</option>
+              <option value="single">{locale === 'pt' ? 'Solteiros' : 'Single'}</option>
+            </select>
           </div>
         </div>
       </div>

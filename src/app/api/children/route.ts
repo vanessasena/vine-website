@@ -76,7 +76,9 @@ export async function POST(request: NextRequest) {
       allergies,
       medical_notes,
       special_needs,
-      photo_permission
+      photo_permission,
+      has_allergies,
+      has_special_needs
     } = body;
 
     // Validate required fields (name is optional)
@@ -98,7 +100,9 @@ export async function POST(request: NextRequest) {
         allergies: allergies || null,
         medical_notes: medical_notes || null,
         special_needs: special_needs || null,
-        photo_permission: photo_permission !== undefined ? photo_permission : true
+        photo_permission: photo_permission !== undefined ? photo_permission : true,
+        has_allergies: has_allergies !== undefined ? has_allergies : null,
+        has_special_needs: has_special_needs !== undefined ? has_special_needs : null
       })
       .select()
       .single();
@@ -186,7 +190,9 @@ export async function PUT(request: NextRequest) {
       allergies,
       medical_notes,
       special_needs,
-      photo_permission
+      photo_permission,
+      has_allergies,
+      has_special_needs
     } = body;
 
     if (!id) {
@@ -204,7 +210,9 @@ export async function PUT(request: NextRequest) {
         allergies: allergies || null,
         medical_notes: medical_notes || null,
         special_needs: special_needs || null,
-        photo_permission: photo_permission !== undefined ? photo_permission : true
+        photo_permission: photo_permission !== undefined ? photo_permission : true,
+        has_allergies: has_allergies !== undefined ? has_allergies : null,
+        has_special_needs: has_special_needs !== undefined ? has_special_needs : null
       })
       .eq('id', id)
       .select()

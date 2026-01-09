@@ -532,6 +532,7 @@
     "addChild": "Add Child",
     "removeChild": "Remove",
     "noChildren": "No children registered",
+    "pleaseCompleteChildInfo": "Please select Yes or No for allergies and special needs for all children before saving.",
     "yes": "Yes",
     "no": "No",
     "infoTitle": "Keep your profile updated",

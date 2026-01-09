@@ -531,6 +531,7 @@
     "addChild": "Adicionar Filho(a)",
     "removeChild": "Remover",
     "noChildren": "Nenhum filho cadastrado",
+    "pleaseCompleteChildInfo": "Por favor, selecione Sim ou Não para alergias e necessidades especiais de todos os filhos antes de salvar.",
     "yes": "Sim",
     "no": "Não",
     "infoTitle": "Mantenha seu perfil atualizado",

@@ -30,6 +30,8 @@ interface Child {
   medical_notes: string | null;
   special_needs: string | null;
   photo_permission: boolean;
+  has_allergies: boolean | null;
+  has_special_needs: boolean | null;
 }
 
 interface MemberProfile {
@@ -78,6 +80,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
   const [spouseSearchInput, setSpouseSearchInput] = useState('');
   const [showSpouseDropdown, setShowSpouseDropdown] = useState(false);
   const [spouseWarning, setSpouseWarning] = useState<string | null>(null);
+  const [childValidationErrors, setChildValidationErrors] = useState<{ [key: string]: string }>({});
   const spouseDropdownRef = useRef<HTMLDivElement | null>(null);
 
   // Section states for collapsible UI
@@ -243,13 +246,6 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
       // This ensures fresh data when user ID changes
     }
   }, [currentUserId]);
-
-  // Fetch available spouses when family section is opened for editing
-  useEffect(() => {
-    if (editingSections.family && expandedSections.family) {
-      fetchAvailableSpouses();
-    }
-  }, [editingSections.family, expandedSections.family]);
 
   const formatPhoneInput = (value: string): string => {
     // Remove all characters except digits, spaces, hyphens, parentheses, and plus
@@ -435,6 +431,37 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
 
   const handleUpdateChild = async (childId: string, field: keyof Child, value: any) => {
     try {
+      // Validate that allergies and special needs selections are made
+      const child = children.find(c => c.id === childId);
+      if (!child) return;
+
+      // Check if we're updating has_allergies or has_special_needs
+      if (field === 'has_allergies' || field === 'has_special_needs') {
+        // Create a temporary child object with the update
+        const updatedChild = { ...child, [field]: value };
+
+        // Check if both selections are now made
+        if (updatedChild.has_allergies === null || updatedChild.has_special_needs === null) {
+          // At least one is still not selected, show error
+          const missing: string[] = [];
+          if (updatedChild.has_allergies === null) missing.push('allergies');
+          if (updatedChild.has_special_needs === null) missing.push('special needs');
+
+          setChildValidationErrors(prev => ({
+            ...prev,
+            [childId]: `Please select Yes or No for: ${missing.join(' and ')}`
+          }));
+          return;
+        } else {
+          // Both are selected, clear error
+          setChildValidationErrors(prev => {
+            const newErrors = { ...prev };
+            delete newErrors[childId];
+            return newErrors;
+          });
+        }
+      }
+
       const { createClient } = await import('@supabase/supabase-js');
       const supabase = createClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL || '',
@@ -445,14 +472,11 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
       if (!session) return;
 
       // Update local state optimistically
-      setChildren(prev => prev.map(child =>
-        child.id === childId ? { ...child, [field]: value } : child
+      setChildren(prev => prev.map(c =>
+        c.id === childId ? { ...c, [field]: value } : c
       ));
 
       // Update in database
-      const child = children.find(c => c.id === childId);
-      if (!child) return;
-
       const response = await fetch('/api/children', {
         method: 'PUT',
         headers: {
@@ -596,7 +620,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
     setShowSpouseDropdown(false);
   };
 
-  const fetchAvailableSpouses = async () => {
+  const fetchAvailableSpouses = useCallback(async () => {
     try {
       setLoadingSpouses(true);
 
@@ -634,7 +658,7 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
     } finally {
       setLoadingSpouses(false);
     }
-  };
+  }, [t]);
 
   const handleCancelSection = (section: keyof typeof editingSections) => {
     if (profile) {
@@ -820,6 +844,28 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
   };
 
   const handleSaveFamily = async () => {
+    // Validate that all children have allergies and special needs selections made
+    const validationErrors: { [key: string]: string } = {};
+
+    allChildren.forEach(child => {
+      const missing: string[] = [];
+      if (child.has_allergies === null) missing.push('allergies');
+      if (child.has_special_needs === null) missing.push('special needs');
+
+      if (missing.length > 0) {
+        validationErrors[child.id] = `Please select Yes or No for: ${missing.join(' and ')}`;
+      }
+    });
+
+    if (Object.keys(validationErrors).length > 0) {
+      setChildValidationErrors(validationErrors);
+      setError(t('pleaseCompleteChildInfo'));
+      return;
+    }
+
+    // Clear errors if all children are valid
+    setChildValidationErrors({});
+
     // Spouse is now optional even when married
     await saveSectionData('family', {
       is_married: formData.is_married,
@@ -1587,6 +1633,11 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                     <div className="space-y-2">
                       {allChildren.map((child) => (
                         <div key={child.id} className="border border-gray-200 rounded-lg p-4 bg-white hover:shadow-md transition-shadow">
+                          {childValidationErrors[child.id] && (
+                            <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+                              {childValidationErrors[child.id]}
+                            </div>
+                          )}
                           <div className="space-y-3">
                             <div className="flex items-center justify-between">
                               <input
@@ -1641,13 +1692,13 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                                     type="radio"
                                     name={`allergies-${child.id}`}
                                     value="no"
-                                    checked={child.allergies === null || child.allergies === undefined}
+                                    checked={child.has_allergies === false}
                                     onChange={(e) => {
                                       if (e.target.checked) {
                                         setChildren(prev => prev.map(c =>
-                                          c.id === child.id ? { ...c, allergies: null } : c
+                                          c.id === child.id ? { ...c, has_allergies: false, allergies: null } : c
                                         ));
-                                        handleUpdateChild(child.id, 'allergies', null);
+                                        handleUpdateChild(child.id, 'has_allergies', false);
                                       }
                                     }}
                                     className="mr-2"
@@ -1659,12 +1710,13 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                                     type="radio"
                                     name={`allergies-${child.id}`}
                                     value="yes"
-                                    checked={child.allergies !== null && child.allergies !== undefined}
+                                    checked={child.has_allergies === true}
                                     onChange={(e) => {
                                       if (e.target.checked) {
                                         setChildren(prev => prev.map(c =>
-                                          c.id === child.id ? { ...c, allergies: '' } : c
+                                          c.id === child.id ? { ...c, has_allergies: true, allergies: '' } : c
                                         ));
+                                        handleUpdateChild(child.id, 'has_allergies', true);
                                       }
                                     }}
                                     className="mr-2"
@@ -1672,10 +1724,10 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                                   <span className="text-sm text-gray-700">{t('childHasAllergiesYes')}</span>
                                 </label>
                               </div>
-                              {child.allergies !== null && child.allergies !== undefined && (
+                              {child.has_allergies === true && (
                                 <input
                                   type="text"
-                                  value={child.allergies}
+                                  value={child.allergies || ''}
                                   onChange={(e) => {
                                     setChildren(prev => prev.map(c =>
                                       c.id === child.id ? { ...c, allergies: e.target.value } : c
@@ -1702,13 +1754,13 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                                     type="radio"
                                     name={`special_needs-${child.id}`}
                                     value="no"
-                                    checked={child.special_needs === null || child.special_needs === undefined}
+                                    checked={child.has_special_needs === false}
                                     onChange={(e) => {
                                       if (e.target.checked) {
                                         setChildren(prev => prev.map(c =>
-                                          c.id === child.id ? { ...c, special_needs: null } : c
+                                          c.id === child.id ? { ...c, has_special_needs: false, special_needs: null } : c
                                         ));
-                                        handleUpdateChild(child.id, 'special_needs', null);
+                                        handleUpdateChild(child.id, 'has_special_needs', false);
                                       }
                                     }}
                                     className="mr-2"
@@ -1720,12 +1772,13 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                                     type="radio"
                                     name={`special_needs-${child.id}`}
                                     value="yes"
-                                    checked={child.special_needs !== null && child.special_needs !== undefined}
+                                    checked={child.has_special_needs === true}
                                     onChange={(e) => {
                                       if (e.target.checked) {
                                         setChildren(prev => prev.map(c =>
-                                          c.id === child.id ? { ...c, special_needs: '' } : c
+                                          c.id === child.id ? { ...c, has_special_needs: true, special_needs: '' } : c
                                         ));
+                                        handleUpdateChild(child.id, 'has_special_needs', true);
                                       }
                                     }}
                                     className="mr-2"
@@ -1733,10 +1786,10 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                                   <span className="text-sm text-gray-700">{t('childHasSpecialNeedsYes')}</span>
                                 </label>
                               </div>
-                              {child.special_needs !== null && child.special_needs !== undefined && (
+                              {child.has_special_needs === true && (
                                 <input
                                   type="text"
-                                  value={child.special_needs}
+                                  value={child.special_needs || ''}
                                   onChange={(e) => {
                                     setChildren(prev => prev.map(c =>
                                       c.id === child.id ? { ...c, special_needs: e.target.value } : c

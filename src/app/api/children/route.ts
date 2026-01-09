@@ -79,10 +79,10 @@ export async function POST(request: NextRequest) {
       photo_permission
     } = body;
 
-    // Validate required fields
-    if (!name || !date_of_birth || !parent1_id) {
+    // Validate required fields (name is optional)
+    if (!date_of_birth || !parent1_id) {
       return NextResponse.json(
-        { error: 'name, date_of_birth, and parent1_id are required' },
+        { error: 'date_of_birth and parent1_id are required' },
         { status: 400 }
       );
     }

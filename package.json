@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "backup:prod": "if not exist backups mkdir backups && docker run --rm -e PGPASSWORD=\"%SUPABASE_DB_PASSWORD%\" -v \"%CD%\\backups:/backup\" postgres:17 pg_dump -h %SUPABASE_DB_HOST% -p %SUPABASE_DB_PORT% -U %SUPABASE_DB_USER% -d postgres -F p --no-owner --no-privileges -f /backup/vine-prod-backup.sql"
+    "backup:prod": "docker run --rm -e PGPASSWORD=\"%SUPABASE_DB_PASSWORD%\" -v \"%CD%\\backups:/backup\" postgres:17 pg_dump -h %SUPABASE_DB_HOST% -p %SUPABASE_DB_PORT% -U %SUPABASE_DB_USER% -d postgres -F p --no-owner --no-privileges -f /backup/vine-prod-backup.sql"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.1.0",

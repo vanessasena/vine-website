@@ -38,3 +38,5 @@ next-env.d.ts
 
 # database backups
 /backups
+backup-scheduled.ps1
+setup-backup-task.ps1

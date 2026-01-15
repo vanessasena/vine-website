@@ -83,6 +83,30 @@ Notes:
 - The dump contains data in `COPY ... FROM stdin;` sections; this is normal for plain-format dumps.
 - To create schema-only or data-only variants, append `-s` or `-a` to the `pg_dump` options. If you want dedicated npm scripts for those, we can add them.
 
+### Automated Weekly Backups
+
+Set up automatic backups every Tuesday at 11:00 AM using Windows Task Scheduler:
+
+1. **Configure credentials** - Edit `backup-scheduled.ps1` and update the Supabase connection details:
+   ```powershell
+   $env:SUPABASE_DB_HOST = "your-pooler-host.supabase.com"
+   $env:SUPABASE_DB_PORT = "6543"
+   $env:SUPABASE_DB_USER = "postgres.your-project-ref"
+   $env:SUPABASE_DB_PASSWORD = "YOUR_ACTUAL_PASSWORD"
+   ```
+
+2. **Create the scheduled task** - Run as Administrator:
+   ```powershell
+   .\setup-backup-task.ps1
+   ```
+
+3. **Test the task** (optional):
+   ```powershell
+   Start-ScheduledTask -TaskName "Vine Website Database Backup"
+   ```
+
+Backup logs are saved to `backups/backup-log.txt`.
+
 ## Project Structure
 
 ```

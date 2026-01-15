@@ -45,6 +45,44 @@ The sermons feature uses Supabase (PostgreSQL) for data storage. See [SUPABASE_S
 
 **Note**: The application includes a fallback mechanism, so it will work with static data even without database configuration.
 
+## Production Backup
+
+Create a full backup of the production Supabase database using Dockerized `pg_dump`.
+
+- Prerequisites: Docker Desktop installed and running
+- Credentials: Supabase Dashboard → Settings → Database → use the DB password
+
+Commands (Windows PowerShell):
+
+```powershell
+# 1) Set your Supabase connection details for this session
+$env:SUPABASE_DB_HOST="your-pooler-host.supabase.com"
+$env:SUPABASE_DB_PORT="6543"
+$env:SUPABASE_DB_USER="postgres.your-project-ref"
+$env:SUPABASE_DB_PASSWORD="YOUR_SUPABASE_DB_PASSWORD"
+
+# 2) Run the backup script (writes backups/vine-prod-backup.sql)
+npm run backup:prod
+```
+
+**Connection details:**
+- Get host, port, and user from: Supabase Dashboard → Settings → Database → Connection string
+- Typically uses session pooling (port 6543) with user format `postgres.<project-ref>`
+- Format: plain SQL (includes schema + data via COPY blocks)
+- Excludes: ownership and privileges (`--no-owner --no-privileges`) for easier restore
+
+Restore (example using Docker Postgres locally):
+
+```powershell
+# Run psql inside Postgres 17 container to restore the plain SQL dump
+docker run --rm -v "$PWD\\backups:/backup" postgres:17 psql \
+  -h your-local-host -p 5432 -U postgres -d postgres -f /backup/vine-prod-backup.sql
+```
+
+Notes:
+- The dump contains data in `COPY ... FROM stdin;` sections; this is normal for plain-format dumps.
+- To create schema-only or data-only variants, append `-s` or `-a` to the `pg_dump` options. If you want dedicated npm scripts for those, we can add them.
+
 ## Project Structure
 
 ```

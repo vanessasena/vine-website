@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient, createSupabaseAdminClient } from '@/lib/supabase';
-import { sermons as staticSermons, type Sermon } from '@/data/sermons';
+import { type Sermon } from '@/data/sermons';
 import type { Database } from '@/lib/database.types';
 
 // Transform database sermon to app sermon format
@@ -25,24 +25,13 @@ function transformDbSermon(dbSermon: any): Sermon {
   };
 }
 
-// Helper function to get sorted static sermons
-function getSortedStaticSermons(): Sermon[] {
-  return [...staticSermons].sort((a, b) => {
-    const [yearA, monthA, dayA] = a.date.split('-').map(Number);
-    const [yearB, monthB, dayB] = b.date.split('-').map(Number);
-    const dateA = new Date(yearA, monthA - 1, dayA);
-    const dateB = new Date(yearB, monthB - 1, dayB);
-    return dateB.getTime() - dateA.getTime();
-  });
-}
-
 // GET - Fetch all sermons
 export async function GET() {
   const supabase = createSupabaseServerClient();
 
-  // If supabase client is not available, use static data
+  // If supabase client is not available, return server error
   if (!supabase) {
-    return NextResponse.json({ sermons: getSortedStaticSermons(), source: 'static' });
+    return NextResponse.json({ error: 'Database unavailable' }, { status: 500 });
   }
 
   try {
@@ -53,17 +42,17 @@ export async function GET() {
 
     if (error) {
       console.error('Error fetching sermons:', error);
-      return NextResponse.json({ sermons: getSortedStaticSermons(), source: 'static' });
+      return NextResponse.json({ error: 'Failed to fetch sermons' }, { status: 500 });
     }
 
     if (!data || data.length === 0) {
-      return NextResponse.json({ sermons: getSortedStaticSermons(), source: 'static' });
+      return NextResponse.json({ sermons: [] });
     }
 
-    return NextResponse.json({ sermons: data.map(transformDbSermon), source: 'database' });
+    return NextResponse.json({ sermons: data.map(transformDbSermon) });
   } catch (err) {
     console.error('Unexpected error fetching sermons:', err);
-    return NextResponse.json({ sermons: getSortedStaticSermons(), source: 'static' });
+    return NextResponse.json({ error: 'Failed to fetch sermons' }, { status: 500 });
   }
 }
 
@@ -75,7 +64,7 @@ export async function POST(request: NextRequest) {
   if (!supabase) {
     return NextResponse.json(
       { error: 'Database not configured. Cannot create sermons.' },
-      { status: 503 }
+      { status: 500 }
     );
   }
 

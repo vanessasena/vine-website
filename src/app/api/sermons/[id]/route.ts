@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient, createSupabaseAdminClient } from '@/lib/supabase';
-import { sermons as staticSermons, type Sermon } from '@/data/sermons';
+import { type Sermon } from '@/data/sermons';
 import type { Database } from '@/lib/database.types';
 
 type SermonUpdate = Database['public']['Tables']['sermons']['Update'];
@@ -38,13 +38,9 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   const { id } = params;
   const supabase = createSupabaseServerClient();
 
-  // If supabase client is not available, use static data
+  // If supabase client is not available, return server error
   if (!supabase) {
-    const sermon = staticSermons.find(s => s.id === id);
-    if (!sermon) {
-      return NextResponse.json({ error: 'Sermon not found' }, { status: 404 });
-    }
-    return NextResponse.json({ sermon, source: 'static' });
+    return NextResponse.json({ error: 'Database unavailable' }, { status: 500 });
   }
 
   try {
@@ -55,15 +51,15 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       .single();
 
     if (error) {
-      // Try static data as fallback
-      const staticSermon = staticSermons.find(s => s.id === id);
-      if (staticSermon) {
-        return NextResponse.json({ sermon: staticSermon, source: 'static' });
-      }
+      console.error('Error fetching sermon from database:', error);
+      return NextResponse.json({ error: 'Failed to fetch sermon' }, { status: 500 });
+    }
+
+    if (!data) {
       return NextResponse.json({ error: 'Sermon not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ sermon: transformDbSermon(data), source: 'database' });
+    return NextResponse.json({ sermon: transformDbSermon(data) });
   } catch (err) {
     console.error('Unexpected error fetching sermon:', err);
     return NextResponse.json({ error: 'Failed to fetch sermon' }, { status: 500 });

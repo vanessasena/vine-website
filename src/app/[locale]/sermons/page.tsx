@@ -9,10 +9,8 @@ import {
   faCalendarAlt,
   faUser,
   faArrowRight,
-  faBible
 } from '@fortawesome/free-solid-svg-icons';
 import { getSortedSermons, formatDate } from '@/lib/sermons';
-import type { Sermon } from '@/data/sermons';
 import type { Metadata } from 'next';
 
 interface PageProps {

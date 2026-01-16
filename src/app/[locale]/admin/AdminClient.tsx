@@ -14,31 +14,12 @@ import {
   faSave,
   faTimes,
   faSpinner,
-  faDatabase,
-  faFile,
   faSignOutAlt,
-  faUser
+  faUser,
+  faCheck
 } from '@fortawesome/free-solid-svg-icons';
 import { getSession, signOut } from '@/lib/auth';
-
-interface Sermon {
-  id: string;
-  title: {
-    pt: string;
-    en: string;
-  };
-  preacher: string;
-  date: string;
-  excerpt: {
-    pt: string;
-    en: string;
-  };
-  content: {
-    pt: string;
-    en: string;
-  };
-  scripture?: string;
-}
+import { Sermon } from '@/lib/sermons';
 
 interface SermonFormData {
   id: string;
@@ -146,7 +127,6 @@ export default function AdminClient({ locale }: { locale: string }) {
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [sermons, setSermons] = useState<Sermon[]>([]);
   const [loading, setLoading] = useState(true);
-  const [dataSource, setDataSource] = useState<'database' | 'static'>('static');
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
@@ -198,7 +178,6 @@ export default function AdminClient({ locale }: { locale: string }) {
       const response = await fetch('/api/sermons');
       const data = await response.json();
       setSermons(data.sermons || []);
-      setDataSource(data.source || 'static');
     } catch (err) {
       setError(t('messages.loadError'));
       console.error('Error fetching sermons:', err);
@@ -437,19 +416,8 @@ export default function AdminClient({ locale }: { locale: string }) {
           </div>
         )}
 
-        {/* Data Source Indicator */}
-        <div className="mb-6 flex items-center justify-between">
-          <div className="flex items-center text-sm text-gray-600">
-            <FontAwesomeIcon
-              icon={dataSource === 'database' ? faDatabase : faFile}
-              className={`mr-2 ${dataSource === 'database' ? 'text-green-600' : 'text-yellow-600'}`}
-            />
-            <span>{t('source')}: </span>
-            <span className="font-medium ml-1">
-              {dataSource === 'database' ? t('database') : t('static')}
-            </span>
-          </div>
-
+        {/* Add Sermon Button */}
+        <div className="mb-6 flex items-center justify-end">
           {!showForm && (
             <button
               onClick={handleAddNew}

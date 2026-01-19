@@ -3,7 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { createClient } from '@supabase/supabase-js';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft, faClipboardCheck, faUsers, faHistory, faChild } from '@fortawesome/free-solid-svg-icons';
 import CheckinForm from './CheckinForm';
 import CurrentCheckins from './CurrentCheckins';
 import CheckinHistory from './CheckinHistory';
@@ -105,63 +108,84 @@ export default function KidsCheckinClient({ locale }: KidsCheckinClientProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
-            {t('kidsCheckin.title')}
-          </h1>
-          <p className="mt-2 text-gray-600">
-            {t('kidsCheckin.welcome')} {userName}
-          </p>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      {/* Header with gradient */}
+      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <Link
+                href={`/${locale}/admin`}
+                className="flex items-center space-x-2 text-white hover:text-blue-100 transition-colors bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg backdrop-blur-sm"
+              >
+                <FontAwesomeIcon icon={faArrowLeft} className="w-4 h-4" />
+                <span className="hidden sm:inline">{t('admin.backToAdmin')}</span>
+              </Link>
+              <div className="hidden sm:block w-px h-8 bg-white/30"></div>
+              <FontAwesomeIcon icon={faChild} className="w-8 h-8" />
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold">
+                  {t('kidsCheckin.title')}
+                </h1>
+                <p className="text-blue-100 text-sm mt-1">
+                  {t('kidsCheckin.welcome')} {userName}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
 
-        {/* Tab Navigation */}
-        <div className="border-b border-gray-200 mb-8">
-          <nav className="flex space-x-8" role="tablist">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Tab Navigation with modern design */}
+        <div className="bg-white rounded-xl shadow-md mb-6 overflow-hidden">
+          <nav className="flex" role="tablist">
             <button
               role="tab"
               aria-selected={activeTab === 'checkin'}
               onClick={() => setActiveTab('checkin')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              className={`flex-1 flex items-center justify-center space-x-2 py-4 px-6 font-medium text-sm transition-all ${
                 activeTab === 'checkin'
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
+                  : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
               }`}
             >
-              {t('kidsCheckin.tabs.checkin')}
+              <FontAwesomeIcon icon={faClipboardCheck} className="w-5 h-5" />
+              <span>{t('kidsCheckin.tabs.checkin')}</span>
             </button>
             <button
               role="tab"
               aria-selected={activeTab === 'current'}
               onClick={() => setActiveTab('current')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              className={`flex-1 flex items-center justify-center space-x-2 py-4 px-6 font-medium text-sm transition-all ${
                 activeTab === 'current'
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
+                  : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
               }`}
             >
-              {t('kidsCheckin.tabs.currentCheckins')}
+              <FontAwesomeIcon icon={faUsers} className="w-5 h-5" />
+              <span>{t('kidsCheckin.tabs.currentCheckins')}</span>
             </button>
             <button
               role="tab"
               aria-selected={activeTab === 'history'}
               onClick={() => setActiveTab('history')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              className={`flex-1 flex items-center justify-center space-x-2 py-4 px-6 font-medium text-sm transition-all ${
                 activeTab === 'history'
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
+                  : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
               }`}
             >
-              {t('kidsCheckin.tabs.history')}
+              <FontAwesomeIcon icon={faHistory} className="w-5 h-5" />
+              <span>{t('kidsCheckin.tabs.history')}</span>
             </button>
           </nav>
         </div>
 
-        {/* Tab Content */}
-        <div className="bg-white rounded-lg shadow">
+        {/* Tab Content with better styling */}
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
           {activeTab === 'checkin' && (
-            <div className="p-6">
+            <div className="p-6 sm:p-8">
               <CheckinForm
                 teacherName={userName}
                 onCheckInSuccess={handleCheckInSuccess}
@@ -170,7 +194,7 @@ export default function KidsCheckinClient({ locale }: KidsCheckinClientProps) {
           )}
 
           {activeTab === 'current' && (
-            <div className="p-6">
+            <div className="p-6 sm:p-8">
               <CurrentCheckins
                 refreshTrigger={refreshTrigger}
                 onCheckOutSuccess={handleCheckOutSuccess}
@@ -179,7 +203,7 @@ export default function KidsCheckinClient({ locale }: KidsCheckinClientProps) {
           )}
 
           {activeTab === 'history' && (
-            <div className="p-6">
+            <div className="p-6 sm:p-8">
               <CheckinHistory />
             </div>
           )}

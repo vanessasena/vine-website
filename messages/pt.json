@@ -224,6 +224,7 @@
     "preview": "Visualizar",
     "edit": "Editar",
     "signOut": "Sair",
+    "backToAdmin": "Voltar ao Admin",
     "checkingAuth": "Verificando autenticação...",
     "form": {
       "id": "ID (slug da URL)",
@@ -566,7 +567,7 @@
   },
   "kidsCheckin": {
     "title": "Check-in Vine Kids",
-    "welcome": "Bem-vindo,",
+    "welcome": "Bem-vindo(a),",
     "subtitle": "Sistema de check-in para ministério infantil",
     "tabs": {
       "checkin": "Check-in",
@@ -614,6 +615,9 @@
       "checkedInByPlaceholder": "Seu nome",
       "notes": "Observações",
       "notesPlaceholder": "Observações adicionais (opcional)",
+      "searchChildPlaceholder": "Digite o nome da criança para pesquisar...",
+      "clearSelection": "Limpar seleção",
+      "noChildrenFound": "Nenhuma criança encontrada",
       "fromDate": "De",
       "toDate": "Até",
       "status": "Status"

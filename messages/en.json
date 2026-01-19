@@ -223,6 +223,7 @@
     "preview": "Preview",
     "edit": "Edit",
     "signOut": "Sign Out",
+    "backToAdmin": "Back to Admin",
     "checkingAuth": "Checking authentication...",
     "form": {
       "id": "ID (URL slug)",
@@ -613,6 +614,9 @@
       "checkedInByPlaceholder": "Your name",
       "notes": "Notes",
       "notesPlaceholder": "Additional notes (optional)",
+      "searchChildPlaceholder": "Type child's name to search...",
+      "clearSelection": "Clear selection",
+      "noChildrenFound": "No children found",
       "fromDate": "From",
       "toDate": "To",
       "status": "Status"

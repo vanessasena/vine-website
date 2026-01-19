@@ -16,7 +16,7 @@ export default function Navigation({ locale }: NavigationProps) {
   const t = useTranslations('navigation');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userRole, setUserRole] = useState<'member' | 'admin' | null>(null);
+  const [userRole, setUserRole] = useState<'member' | 'admin' | 'teacher' | null>(null);
   const pathname = usePathname();
   const router = useRouter();
 

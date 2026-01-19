@@ -19,6 +19,8 @@ This is a bilingual (Portuguese/English) church website built with Next.js for V
 - Use semantic HTML and accessibility best practices
 - All locale-aware routes should use `/${locale}/...` pattern
 - Client components can extract locale from pathname using `usePathname()`
+- **Always check for and reuse existing utility functions** in `src/lib/` before creating new ones
+- **Never duplicate code** - if functionality exists, import and use it
 
 ## Database & Backend
 - **Supabase**: Backend-as-a-Service for database, authentication, and file storage
@@ -40,6 +42,26 @@ This is a bilingual (Portuguese/English) church website built with Next.js for V
 - **Authentication**: Uses Supabase Auth with session management
 - **Data Source Indicator**: Shows whether data is from database or static fallback
 
+## Kids Check-in System
+- **Access**: `/${locale}/kids-checkin` (requires authentication as teacher or admin)
+- **Features**:
+  - Check in/out member children and visitor children
+  - Capture visitor child information (name, DOB, parent details, allergies, special needs, emergency contact)
+  - View currently checked-in children with health and emergency information
+  - Check-in history with date range and status filtering
+- **Authentication Pattern**: Server page passes locale to client component, which handles auth check
+  - Use `createClient()` with Supabase in client components to verify session
+  - Check user role from `users` table (must be 'teacher' or 'admin')
+  - Redirect to login if not authenticated, to home if insufficient permissions
+- **Database Tables**:
+  - `visitor_children`: Stores temporary visitor child records
+  - `check_ins`: Tracks all check-in/check-out events
+  - `current_checked_in_children` view: Quick access to currently checked-in children
+- **API Routes**:
+  - `GET/POST/PUT /api/check-ins`: Manage check-in records
+  - `GET/POST/PUT /api/visitor-children`: Manage visitor child records
+  - Both routes require role-based access control (teacher/admin only)
+
 ## Content Structure
 - Quem somos (About Us)
 - Agenda (Schedule)
@@ -50,6 +72,22 @@ This is a bilingual (Portuguese/English) church website built with Next.js for V
   - Dynamic sermon listing and detail pages
   - Markdown-formatted content
 - Células (Cell Groups)
+
+## Church Information
+
+## Common Issues & Solutions
+
+### Date Display Issues
+**Problem**: Dates from database showing one day earlier when displayed
+**Cause**: ISO date strings (e.g., "2020-01-15") are treated as UTC by JavaScript's `new Date()`, causing timezone offset issues
+**Solution**: Always use `formatLocalDate()` from `src/lib/utils.ts` to display dates from the database
+```typescript
+import { formatLocalDate } from '@/lib/utils';
+// Use formatLocalDate(dateString) instead of new Date(dateString).toLocaleDateString()
+```
+
+## Utility Functions
+- **`formatLocalDate(dateString)`**: Formats ISO date strings as local dates, avoiding timezone offset issues. Located in `src/lib/utils.ts`
 
 ## Church Information
 - Location: Kitchener, Ontario

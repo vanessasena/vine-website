@@ -4,6 +4,25 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
+async function getUserDisplayName(
+  supabase: any,
+  user: any
+) {
+  const { data: profile } = await supabase
+    .from('member_profiles')
+    .select('name')
+    .eq('user_id', user.id)
+    .maybeSingle();
+
+  return (
+    (profile?.name as string) ||
+    user.user_metadata?.name ||
+    user.user_metadata?.full_name ||
+    user.email ||
+    'Teacher'
+  );
+}
+
 // GET /api/check-ins - Fetch current checked-in children or check-in history
 export async function GET(request: NextRequest) {
   try {
@@ -38,7 +57,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: 'Failed to fetch check-ins' }, { status: 500 });
       }
 
-      return NextResponse.json({ data: checkIns || [] });
+      return NextResponse.json(checkIns || []);
     }
 
     // Build query
@@ -77,9 +96,10 @@ export async function GET(request: NextRequest) {
     if (serviceDate) {
       query = query.eq('service_date', serviceDate);
     } else {
-      // Default to today if no date specified
-      const today = new Date().toISOString().split('T')[0];
-      query = query.eq('service_date', today);
+      // Default to today's local date if no date specified
+      const today = new Date();
+      const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+      query = query.eq('service_date', todayStr);
     }
 
     query = query.order('checked_in_at', { ascending: false });
@@ -91,7 +111,41 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to fetch check-ins' }, { status: 500 });
     }
 
-    return NextResponse.json({ data: checkIns || [] });
+    const transformed = (checkIns || []).map((ci) => {
+      const child = ci.member_child || ci.visitor_child;
+      const isMember = !!ci.member_child;
+
+      const parentName = isMember
+        ? ci.member_child?.parent1?.name || ci.member_child?.parent2?.name || ''
+        : ci.visitor_child?.parent_name || '';
+
+      const parentPhone = isMember
+        ? ci.member_child?.parent1?.phone || ci.member_child?.parent2?.phone || ''
+        : ci.visitor_child?.parent_phone || '';
+
+      return {
+        checked_in_id: ci.id,
+        child_name: child?.name || 'Child',
+        child_dob: child?.date_of_birth || '',
+        is_member: isMember,
+        parent_name: parentName,
+        parent_phone: parentPhone,
+        allergies: child?.allergies || null,
+        special_needs: child?.special_needs || null,
+        emergency_contact_name: isMember ? null : ci.visitor_child?.emergency_contact_name || null,
+        emergency_contact_phone: isMember ? null : ci.visitor_child?.emergency_contact_phone || null,
+        checked_in_at: ci.checked_in_at,
+        checked_in_by_name: ci.checked_in_by_name,
+        checked_out_at: ci.checked_out_at,
+        checked_out_by_name: ci.checked_out_by_name,
+        service_date: ci.service_date,
+        service_time: ci.service_time,
+        notes: ci.checkin_notes || null,
+        status: ci.status,
+      };
+    });
+
+    return NextResponse.json(transformed);
   } catch (error) {
     console.error('Error in GET /api/check-ins:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
@@ -132,14 +186,13 @@ export async function POST(request: NextRequest) {
       service_time,
       member_child_id,
       visitor_child_id,
-      checked_in_by_name,
       checkin_notes
     } = body;
 
     // Validate required fields
-    if (!service_date || !service_time || !checked_in_by_name) {
+    if (!service_date || !service_time) {
       return NextResponse.json(
-        { error: 'service_date, service_time, and checked_in_by_name are required' },
+        { error: 'service_date and service_time are required' },
         { status: 400 }
       );
     }
@@ -153,6 +206,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Insert check-in record
+    const displayName = await getUserDisplayName(supabase, user);
+
     const { data: checkIn, error } = await supabase
       .from('check_ins')
       .insert({
@@ -161,7 +216,7 @@ export async function POST(request: NextRequest) {
         member_child_id: member_child_id || null,
         visitor_child_id: visitor_child_id || null,
         checked_in_by: user.id,
-        checked_in_by_name,
+        checked_in_by_name: displayName,
         checkin_notes: checkin_notes || null,
         status: 'checked_in'
       })
@@ -211,16 +266,17 @@ export async function PUT(request: NextRequest) {
     const body = await request.json();
     const {
       id,
-      checked_out_by_name,
       checkout_notes
     } = body;
 
-    if (!id || !checked_out_by_name) {
+    if (!id) {
       return NextResponse.json(
-        { error: 'id and checked_out_by_name are required' },
+        { error: 'id is required' },
         { status: 400 }
       );
     }
+
+    const displayName = await getUserDisplayName(supabase, user);
 
     // Update check-in to checked-out status
     const { data: checkIn, error } = await supabase
@@ -228,7 +284,7 @@ export async function PUT(request: NextRequest) {
       .update({
         checked_out_at: new Date().toISOString(),
         checked_out_by: user.id,
-        checked_out_by_name,
+        checked_out_by_name: displayName,
         checkout_notes: checkout_notes || null,
         status: 'checked_out'
       })

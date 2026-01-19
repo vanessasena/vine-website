@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to fetch visitor children' }, { status: 500 });
     }
 
-    return NextResponse.json({ data: children || [] });
+    return NextResponse.json(children || []);
   } catch (error) {
     console.error('Error in GET /api/visitor-children:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
@@ -131,7 +131,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to create visitor child' }, { status: 500 });
     }
 
-    return NextResponse.json({ data: child }, { status: 201 });
+    return NextResponse.json(child, { status: 201 });
   } catch (error) {
     console.error('Error in POST /api/visitor-children:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

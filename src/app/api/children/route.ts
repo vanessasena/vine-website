@@ -25,6 +25,33 @@ export async function GET(request: NextRequest) {
     // Get parent_id from query params
     const { searchParams } = new URL(request.url);
     const parent_id = searchParams.get('parent_id');
+    const fetch_all = searchParams.get('all'); // For teachers/admins to fetch all children
+
+    // Check if user is teacher or admin (for fetching all children)
+    if (fetch_all === 'true') {
+      const { data: userData } = await supabase
+        .from('users')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+
+      if (userData?.role !== 'teacher' && userData?.role !== 'admin') {
+        return NextResponse.json({ error: 'Forbidden - requires teacher or admin role' }, { status: 403 });
+      }
+
+      // Fetch all children for teachers/admins
+      const { data: children, error } = await supabase
+        .from('children')
+        .select('*')
+        .order('name', { ascending: true });
+
+      if (error) {
+        console.error('Error fetching all children:', error);
+        return NextResponse.json({ error: 'Failed to fetch children' }, { status: 500 });
+      }
+
+      return NextResponse.json(children || []);
+    }
 
     if (!parent_id) {
       return NextResponse.json({ error: 'parent_id is required' }, { status: 400 });

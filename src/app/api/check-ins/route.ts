@@ -43,6 +43,8 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status'); // 'checked_in' or 'checked_out' or null for all
     const serviceDate = searchParams.get('service_date');
+    const fromDate = searchParams.get('from_date');
+    const toDate = searchParams.get('to_date');
     const useView = searchParams.get('use_view') === 'true';
 
     // If use_view is true, use the materialized view for current check-ins
@@ -93,10 +95,20 @@ export async function GET(request: NextRequest) {
       query = query.eq('status', status);
     }
 
+    // Handle date filtering
     if (serviceDate) {
+      // Specific service date
       query = query.eq('service_date', serviceDate);
+    } else if (fromDate || toDate) {
+      // Date range filtering
+      if (fromDate) {
+        query = query.gte('service_date', fromDate);
+      }
+      if (toDate) {
+        query = query.lte('service_date', toDate);
+      }
     } else {
-      // Default to today's local date if no date specified
+      // Default to today's local date if no date parameters specified
       const today = new Date();
       const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
       query = query.eq('service_date', todayStr);

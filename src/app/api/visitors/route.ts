@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     const body = await request.json();
 
-    const { visit_date, name, phone, how_found, how_found_details } = body;
+    const { visit_date, name, phone, how_found, how_found_details, children } = body;
 
     // Validate required fields
     if (!visit_date || !name || !phone || !how_found) {
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Insert visitor record
-    const { data, error } = await supabase
+    const { data: visitorData, error: visitorError } = await supabase
       .from('visitors')
       .insert([
         {
@@ -31,18 +31,46 @@ export async function POST(request: NextRequest) {
           how_found_details: how_found_details || null,
         },
       ])
-      .select();
+      .select()
+      .single();
 
-    if (error) {
-      console.error('Error inserting visitor:', error);
+    if (visitorError) {
+      console.error('Error inserting visitor:', visitorError);
       return NextResponse.json(
         { error: 'Failed to register visitor' },
         { status: 500 }
       );
     }
 
+    // If children are provided, insert them with visitor_id reference
+    if (Array.isArray(children) && children.length > 0) {
+      const childrenWithVisitorId = children.map(child => ({
+        ...child,
+        visitor_id: visitorData.id,
+        parent_name: name, // Use parent visitor name
+        parent_phone: phone, // Use parent visitor phone
+      }));
+
+      const { error: childrenError } = await supabase
+        .from('visitor_children')
+        .insert(childrenWithVisitorId);
+
+      if (childrenError) {
+        console.error('Error inserting visitor children:', childrenError);
+        // Still return success for visitor, but log the error
+        return NextResponse.json(
+          {
+            success: true,
+            data: visitorData,
+            warning: 'Visitor registered but some children could not be registered',
+          },
+          { status: 201 }
+        );
+      }
+    }
+
     return NextResponse.json(
-      { success: true, data },
+      { success: true, data: visitorData },
       { status: 201 }
     );
   } catch (error) {

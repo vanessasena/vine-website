@@ -8,7 +8,7 @@ import {
   faCakeCandles,
   faUserGroup,
   faClock,
-  faUser,
+  faHouseUser,
   faUsers,
   faTriangleExclamation,
   faCircleInfo,
@@ -244,7 +244,7 @@ export default function CurrentCheckins({
                         ? 'bg-blue-100 text-blue-700'
                         : 'bg-amber-100 text-amber-700'
                     }`}>
-                      <FontAwesomeIcon icon={child.is_member ? faUser : faUsers} className="h-3.5 w-3.5 mr-1" />
+                      <FontAwesomeIcon icon={child.is_member ? faHouseUser : faUsers} className="h-3.5 w-3.5 mr-1" />
                       {child.is_member ? 'Membro' : 'Visitante'}
                     </span>
                   </div>

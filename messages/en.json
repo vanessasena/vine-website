@@ -645,6 +645,7 @@
       "notesPlaceholder": "Additional notes (optional)",
       "searchChildPlaceholder": "Type child's name to search...",
       "clearSelection": "Clear selection",
+      "phoneReminder": "Please confirm the phone number with the child's guardian before completing check-in.",
       "noChildrenFound": "No children found",
       "yearsOld": "years old",
       "fromDate": "From",

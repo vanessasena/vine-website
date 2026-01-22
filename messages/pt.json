@@ -646,6 +646,7 @@
       "notesPlaceholder": "Observações adicionais (opcional)",
       "searchChildPlaceholder": "Digite o nome da criança para pesquisar...",
       "clearSelection": "Limpar seleção",
+      "phoneReminder": "Confirme o número de telefone com o responsável antes de concluir o check-in.",
       "noChildrenFound": "Nenhuma criança encontrada",
       "yearsOld": "anos",
       "fromDate": "De",

@@ -7,12 +7,13 @@ import { createClient } from '@supabase/supabase-js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCakeCandles,
-  faUser,
+  faHouseUser,
   faUsers,
   faUserGroup,
   faPhone,
   faCheckCircle,
-  faCircleXmark
+  faCircleXmark,
+  faCircleInfo
 } from '@fortawesome/free-solid-svg-icons';
 import { formatLocalDate, getLocalISODate } from '@/lib/utils';
 
@@ -313,6 +314,10 @@ export default function CheckinForm({
 
       <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-xl p-8 space-y-8">
         <div className="relative" ref={dropdownRef}>
+          <div className="mb-3 inline-flex items-start gap-2 rounded-lg bg-blue-50 text-blue-800 text-sm px-3 py-2 border border-blue-100">
+            <FontAwesomeIcon icon={faCircleInfo} className="h-4 w-4 mt-0.5 text-blue-500" />
+            <span>{t('kidsCheckin.form.phoneReminder')}</span>
+          </div>
           <label htmlFor="childSearch" className="block text-sm font-semibold text-gray-900 mb-2">
             {t('kidsCheckin.form.selectChild')}
           </label>
@@ -361,7 +366,7 @@ export default function CheckinForm({
                                   ? 'bg-blue-100 text-blue-700'
                                   : 'bg-amber-100 text-amber-700'
                               }`}>
-                                <FontAwesomeIcon icon={child.type === 'member' ? faUser : faUsers} className="h-3.5 w-3.5 mr-1" />
+                                <FontAwesomeIcon icon={child.type === 'member' ? faHouseUser : faUsers} className="h-3.5 w-3.5 mr-1" />
                                 {child.type === 'member' ? 'Member' : 'Visitor'}
                               </span>
                             </div>

@@ -13,7 +13,7 @@ import {
   faCakeCandles,
   faUserGroup,
   faClock,
-  faUser,
+  faHouseUser,
   faUsers,
   faNoteSticky
 } from '@fortawesome/free-solid-svg-icons';
@@ -273,7 +273,7 @@ export default function CheckinHistory() {
                             ? 'bg-blue-100 text-blue-700'
                             : 'bg-amber-100 text-amber-700'
                         }`}>
-                          <FontAwesomeIcon icon={record.is_member ? faUser : faUsers} className="h-3.5 w-3.5 mr-1" />
+                          <FontAwesomeIcon icon={record.is_member ? faHouseUser : faUsers} className="h-3.5 w-3.5 mr-1" />
                           {record.is_member ? 'Membro' : 'Visitante'}
                         </span>
                         {getStatusBadge(record.status)}

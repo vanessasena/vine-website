@@ -111,7 +111,7 @@ export default function KidsCheckinClient({ locale }: KidsCheckinClientProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Header with gradient */}
-      <header className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white shadow-2xl">
+      <header className="bg-gradient-to-r from-primary-600 via-secondary-600 to-accent-600 text-white shadow-2xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-4">
@@ -157,7 +157,7 @@ export default function KidsCheckinClient({ locale }: KidsCheckinClientProps) {
               onClick={() => setActiveTab('checkin')}
               className={`flex-1 flex items-center justify-center space-x-2 py-4 px-6 font-medium text-sm transition-all ${
                 activeTab === 'checkin'
-                  ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
+                  ? 'bg-gradient-to-r from-primary-600 via-secondary-600 to-accent-600 text-white shadow-lg'
                   : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
               }`}
             >
@@ -170,7 +170,7 @@ export default function KidsCheckinClient({ locale }: KidsCheckinClientProps) {
               onClick={() => setActiveTab('current')}
               className={`flex-1 flex items-center justify-center space-x-2 py-4 px-6 font-medium text-sm transition-all ${
                 activeTab === 'current'
-                  ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
+                  ? 'bg-gradient-to-r from-primary-600 via-secondary-600 to-accent-600 text-white shadow-lg'
                   : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
               }`}
             >
@@ -183,7 +183,7 @@ export default function KidsCheckinClient({ locale }: KidsCheckinClientProps) {
               onClick={() => setActiveTab('history')}
               className={`flex-1 flex items-center justify-center space-x-2 py-4 px-6 font-medium text-sm transition-all ${
                 activeTab === 'history'
-                  ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
+                  ? 'bg-gradient-to-r from-primary-600 via-secondary-600 to-accent-600 text-white shadow-lg'
                   : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
               }`}
             >

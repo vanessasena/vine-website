@@ -647,6 +647,7 @@
       "searchChildPlaceholder": "Digite o nome da criança para pesquisar...",
       "clearSelection": "Limpar seleção",
       "noChildrenFound": "Nenhuma criança encontrada",
+      "yearsOld": "anos",
       "fromDate": "De",
       "toDate": "Até",
       "status": "Status"

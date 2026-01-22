@@ -42,7 +42,11 @@ export async function GET(request: NextRequest) {
       // Fetch all children for teachers/admins
       const { data: children, error } = await supabase
         .from('children')
-        .select('*')
+        .select(`
+          *,
+          parent1:member_profiles!children_parent1_id_fkey(id, name, phone),
+          parent2:member_profiles!children_parent2_id_fkey(id, name, phone)
+        `)
         .order('name', { ascending: true });
 
       if (error) {
@@ -50,7 +54,14 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: 'Failed to fetch children' }, { status: 500 });
       }
 
-      return NextResponse.json(children || []);
+      // Transform to include parent name and phone
+      const transformedChildren = (children || []).map((child: any) => ({
+        ...child,
+        parent_name: child.parent1?.name || child.parent2?.name || '',
+        parent_phone: child.parent1?.phone || child.parent2?.phone || ''
+      }));
+
+      return NextResponse.json(transformedChildren || []);
     }
 
     if (!parent_id) {

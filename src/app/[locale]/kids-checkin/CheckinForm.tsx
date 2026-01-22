@@ -10,6 +10,8 @@ interface Child {
   id: string;
   name: string;
   date_of_birth: string;
+  parent_name?: string;
+  parent_phone?: string;
 }
 
 interface VisitorChild {
@@ -25,6 +27,29 @@ interface VisitorChild {
   emergency_contact_phone?: string;
 }
 
+interface CombinedChild {
+  id: string;
+  name: string;
+  date_of_birth: string;
+  parent_name: string;
+  parent_phone: string;
+  type: 'member' | 'visitor';
+}
+
+// Helper function to calculate age from date string
+function calculateAge(dateStr: string): number {
+  if (!dateStr) return -1;
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const dob = new Date(year, (month || 1) - 1, day || 1);
+  const today = new Date();
+  let age = today.getFullYear() - dob.getFullYear();
+  const monthDiff = today.getMonth() - dob.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+    age -= 1;
+  }
+  return age;
+}
+
 interface CheckinFormProps {
   teacherName: string;
   onCheckInSuccess: () => void;
@@ -35,7 +60,6 @@ export default function CheckinForm({
   onCheckInSuccess,
 }: CheckinFormProps) {
   const t = useTranslations();
-  const [childType, setChildType] = useState<'member' | 'visitor'>('member');
   const [memberChildren, setMemberChildren] = useState<Child[]>([]);
   const [visitorChildren, setVisitorChildren] = useState<VisitorChild[]>([]);
   const [loadingChildren, setLoadingChildren] = useState(false);
@@ -45,30 +69,21 @@ export default function CheckinForm({
   const [authToken, setAuthToken] = useState<string | null>(null);
 
   const [selectedChildId, setSelectedChildId] = useState('');
+  const [selectedChildType, setSelectedChildType] = useState<'member' | 'visitor' | null>(null);
   const [notes, setNotes] = useState('');
 
-  const [memberSearchTerm, setMemberSearchTerm] = useState('');
-  const [visitorSearchTerm, setVisitorSearchTerm] = useState('');
-  const [showMemberDropdown, setShowMemberDropdown] = useState(false);
-  const [showVisitorDropdown, setShowVisitorDropdown] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showDropdown, setShowDropdown] = useState(false);
 
-  const memberDropdownRef = useRef<HTMLDivElement>(null);
-  const visitorDropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        memberDropdownRef.current &&
-        !memberDropdownRef.current.contains(event.target as Node)
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
       ) {
-        setShowMemberDropdown(false);
-      }
-
-      if (
-        visitorDropdownRef.current &&
-        !visitorDropdownRef.current.contains(event.target as Node)
-      ) {
-        setShowVisitorDropdown(false);
+        setShowDropdown(false);
       }
     };
 
@@ -133,30 +148,50 @@ export default function CheckinForm({
   }, [t]);
 
   const memberOptions = useMemo(() => {
-    const term = memberSearchTerm.toLowerCase();
+    const term = searchTerm.toLowerCase();
     return memberChildren.filter((child) =>
       child.name.toLowerCase().includes(term)
     );
-  }, [memberChildren, memberSearchTerm]);
+  }, [memberChildren, searchTerm]);
 
   const visitorOptions = useMemo(() => {
-    const term = visitorSearchTerm.toLowerCase();
+    const term = searchTerm.toLowerCase();
     return visitorChildren.filter((child) =>
       child.name.toLowerCase().includes(term) ||
-      (child.parent_name || '').toLowerCase().includes(term) ||
-      (child.parent_phone || '').toLowerCase().includes(term)
+      (child.parent_name || '').toLowerCase().includes(term)
     );
-  }, [visitorChildren, visitorSearchTerm]);
+  }, [visitorChildren, searchTerm]);
 
-  const selectedMemberChild = useMemo(
-    () => memberChildren.find((child) => child.id === selectedChildId),
-    [memberChildren, selectedChildId]
-  );
+  const combinedOptions = useMemo(() => {
+    const combined: CombinedChild[] = [
+      ...memberOptions.map(child => ({
+        id: child.id,
+        name: child.name,
+        date_of_birth: child.date_of_birth,
+        parent_name: child.parent_name || '',
+        parent_phone: child.parent_phone || '',
+        type: 'member' as const
+      })),
+      ...visitorOptions.map(child => ({
+        id: child.id,
+        name: child.name,
+        date_of_birth: child.date_of_birth,
+        parent_name: child.parent_name,
+        parent_phone: child.parent_phone,
+        type: 'visitor' as const
+      }))
+    ];
+    return combined;
+  }, [memberOptions, visitorOptions]);
 
-  const selectedVisitorChild = useMemo(
-    () => visitorChildren.find((child) => child.id === selectedChildId),
-    [visitorChildren, selectedChildId]
-  );
+  const selectedChild = useMemo(() => {
+    if (!selectedChildId || !selectedChildType) return null;
+    if (selectedChildType === 'member') {
+      return memberChildren.find((child) => child.id === selectedChildId);
+    } else {
+      return visitorChildren.find((child) => child.id === selectedChildId);
+    }
+  }, [memberChildren, visitorChildren, selectedChildId, selectedChildType]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -176,7 +211,7 @@ export default function CheckinForm({
       }
 
       const checkInData = {
-        ...(childType === 'member'
+        ...(selectedChildType === 'member'
           ? { member_child_id: selectedChildId }
           : { visitor_child_id: selectedChildId }),
         checked_in_by_name: teacherName,
@@ -199,6 +234,8 @@ export default function CheckinForm({
 
       setSuccess(t('kidsCheckin.success.checkedIn'));
       setSelectedChildId('');
+      setSelectedChildType(null);
+      setSearchTerm('');
       setNotes('');
 
       setTimeout(() => {
@@ -249,171 +286,107 @@ export default function CheckinForm({
         )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label className="text-base font-medium text-gray-900">
-            {t('kidsCheckin.form.childType')}
+        <div className="relative" ref={dropdownRef}>
+          <label htmlFor="childSearch" className="block text-sm font-medium text-gray-700">
+            {t('kidsCheckin.form.selectChild')}
           </label>
-          <div className="mt-4 space-y-4">
-            <label className="flex items-center">
-              <input
-                type="radio"
-                name="childType"
-                value="member"
-                checked={childType === 'member'}
-                onChange={() => {
-                  setChildType('member');
-                  setSelectedChildId('');
-                }}
-                className="h-4 w-4 text-primary-600"
-              />
-              <span className="ml-3 text-gray-700">
-                {t('kidsCheckin.form.memberChild')}
-              </span>
-            </label>
-            <label className="flex items-center">
-              <input
-                type="radio"
-                name="childType"
-                value="visitor"
-                checked={childType === 'visitor'}
-                onChange={() => {
-                  setChildType('visitor');
-                  setSelectedChildId('');
-                }}
-                className="h-4 w-4 text-primary-600"
-              />
-              <span className="ml-3 text-gray-700">
-                {t('kidsCheckin.form.visitorChild')}
-              </span>
-            </label>
-          </div>
-        </div>
-
-        {childType === 'member' && (
-          <div className="relative" ref={memberDropdownRef}>
-            <label htmlFor="memberChild" className="block text-sm font-medium text-gray-700">
-              {t('kidsCheckin.form.selectChild')}
-            </label>
-            <div className="mt-1 relative">
-              <input
-                type="text"
-                id="memberChild"
-                value={selectedMemberChild ? `${selectedMemberChild.name} (${formatLocalDate(selectedMemberChild.date_of_birth)})` : memberSearchTerm}
-                onChange={(e) => {
-                  setMemberSearchTerm(e.target.value);
-                  setSelectedChildId('');
-                  setShowMemberDropdown(true);
-                }}
-                onFocus={() => setShowMemberDropdown(true)}
-                disabled={loadingChildren}
-                placeholder={t('kidsCheckin.form.searchChildPlaceholder')}
-                className="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:border-primary-500 focus:ring-primary-500 disabled:bg-gray-100"
-              />
-              {showMemberDropdown && (
-                <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
-                  {memberOptions.length > 0 ? (
-                    memberOptions.map((child) => (
+          <div className="mt-1 relative">
+            <input
+              type="text"
+              id="childSearch"
+              value={selectedChild ? `${selectedChild.name}` : searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setSelectedChildId('');
+                setSelectedChildType(null);
+                setShowDropdown(true);
+              }}
+              onFocus={() => setShowDropdown(true)}
+              disabled={loadingChildren}
+              placeholder={t('kidsCheckin.form.searchChildPlaceholder')}
+              className="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:border-primary-500 focus:ring-primary-500 disabled:bg-gray-100"
+            />
+            {showDropdown && (
+              <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                {combinedOptions.length > 0 ? (
+                  combinedOptions.map((child) => {
+                    const age = calculateAge(child.date_of_birth);
+                    const typeLabel = child.type === 'member'
+                      ? t('kidsCheckin.form.memberChild')
+                      : t('kidsCheckin.form.visitorChild');
+                    return (
                       <button
-                        key={child.id}
+                        key={`${child.type}-${child.id}`}
                         type="button"
                         onClick={() => {
                           setSelectedChildId(child.id);
-                          setMemberSearchTerm('');
-                          setShowMemberDropdown(false);
+                          setSelectedChildType(child.type);
+                          setSearchTerm('');
+                          setShowDropdown(false);
                         }}
-                        className="w-full text-left px-4 py-2 hover:bg-primary-50 focus:bg-primary-50 focus:outline-none"
+                        className="w-full text-left px-4 py-4 hover:bg-blue-50 focus:bg-blue-50 focus:outline-none border-b last:border-b-0 transition-colors duration-150"
                       >
-                        <div className="font-medium text-gray-900">{child.name}</div>
-                        <div className="text-sm text-gray-500">{formatLocalDate(child.date_of_birth)}</div>
-                      </button>
-                    ))
-                  ) : (
-                    <div className="px-4 py-2 text-sm text-gray-500">
-                      {t('kidsCheckin.form.noChildrenFound')}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-            {selectedMemberChild && (
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedChildId('');
-                  setMemberSearchTerm('');
-                  setShowMemberDropdown(false);
-                }}
-                className="mt-2 text-sm text-primary-600 hover:text-primary-700"
-              >
-                {t('kidsCheckin.form.clearSelection')}
-              </button>
-            )}
-          </div>
-        )}
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-2">
+                              <div className="font-semibold text-gray-900 text-base">{child.name}</div>
+                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold flex-shrink-0 ${
+                                child.type === 'member'
+                                  ? 'bg-blue-100 text-blue-700'
+                                  : 'bg-amber-100 text-amber-700'
+                              }`}>
+                                {child.type === 'member' ? '👤' : '👥'} {child.type === 'member' ? 'Member' : 'Visitor'}
+                              </span>
+                            </div>
 
-        {childType === 'visitor' && (
-          <div className="relative" ref={visitorDropdownRef}>
-            <label htmlFor="visitorChild" className="block text-sm font-medium text-gray-700">
-              {t('kidsCheckin.form.selectVisitorChild')}
-            </label>
-            <div className="mt-1 relative">
-              <input
-                type="text"
-                id="visitorChild"
-                value={selectedVisitorChild ? `${selectedVisitorChild.name} (${selectedVisitorChild.parent_name})` : visitorSearchTerm}
-                onChange={(e) => {
-                  setVisitorSearchTerm(e.target.value);
-                  setSelectedChildId('');
-                  setShowVisitorDropdown(true);
-                }}
-                onFocus={() => setShowVisitorDropdown(true)}
-                disabled={loadingChildren}
-                placeholder={t('kidsCheckin.form.searchChildPlaceholder')}
-                className="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:border-primary-500 focus:ring-primary-500 disabled:bg-gray-100"
-              />
-              {showVisitorDropdown && (
-                <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
-                  {visitorOptions.length > 0 ? (
-                    visitorOptions.map((child) => (
-                      <button
-                        key={child.id}
-                        type="button"
-                        onClick={() => {
-                          setSelectedChildId(child.id);
-                          setVisitorSearchTerm('');
-                          setShowVisitorDropdown(false);
-                        }}
-                        className="w-full text-left px-4 py-2 hover:bg-primary-50 focus:bg-primary-50 focus:outline-none"
-                      >
-                        <div className="font-medium text-gray-900">{child.name}</div>
-                        <div className="text-sm text-gray-500">
-                          {t('kidsCheckin.form.parent')}: {child.parent_name}
+                            <div className="space-y-1.5">
+                              {age >= 0 && (
+                                <div className="flex items-center gap-2 text-sm text-gray-600">
+                                  <span className="text-lg">🎂</span>
+                                  <span>{age} {t('kidsCheckin.form.yearsOld')}</span>
+                                </div>
+                              )}
+                              {child.parent_name && (
+                                <div className="flex items-center gap-2 text-sm text-gray-600">
+                                  <span className="text-lg">👨‍👩‍👧</span>
+                                  <span className="font-medium">{child.parent_name}</span>
+                                </div>
+                              )}
+                              {child.parent_phone && (
+                                <div className="flex items-center gap-2 text-sm text-gray-500">
+                                  <span className="text-lg">📱</span>
+                                  <span className="font-mono">{child.parent_phone}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </button>
-                    ))
-                  ) : (
-                    <div className="px-4 py-2 text-sm text-gray-500">
-                      {t('kidsCheckin.form.noChildrenFound')}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-            {selectedVisitorChild && (
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedChildId('');
-                  setVisitorSearchTerm('');
-                  setShowVisitorDropdown(false);
-                }}
-                className="mt-2 text-sm text-primary-600 hover:text-primary-700"
-              >
-                {t('kidsCheckin.form.clearSelection')}
-              </button>
+                    );
+                  })
+                ) : (
+                  <div className="px-4 py-2 text-sm text-gray-500">
+                    {t('kidsCheckin.form.noChildrenFound')}
+                  </div>
+                )}
+              </div>
             )}
           </div>
-        )}
+          {selectedChild && (
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedChildId('');
+                setSelectedChildType(null);
+                setSearchTerm('');
+                setShowDropdown(false);
+              }}
+              className="mt-2 text-sm text-primary-600 hover:text-primary-700"
+            >
+              {t('kidsCheckin.form.clearSelection')}
+            </button>
+          )}
+        </div>
 
         <div>
           <label htmlFor="notes" className="block text-sm font-medium text-gray-700">

@@ -646,6 +646,7 @@
       "searchChildPlaceholder": "Type child's name to search...",
       "clearSelection": "Clear selection",
       "noChildrenFound": "No children found",
+      "yearsOld": "years old",
       "fromDate": "From",
       "toDate": "To",
       "status": "Status"

@@ -4,6 +4,16 @@ import Image from 'next/image';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { createClient } from '@supabase/supabase-js';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faCakeCandles,
+  faUser,
+  faUsers,
+  faUserGroup,
+  faPhone,
+  faCheckCircle,
+  faCircleXmark
+} from '@fortawesome/free-solid-svg-icons';
 import { formatLocalDate, getLocalISODate } from '@/lib/utils';
 
 interface Child {
@@ -286,7 +296,7 @@ export default function CheckinForm({
         {error && (
           <div className="mb-6 rounded-xl bg-red-50 p-4 border-l-4 border-red-500 shadow-sm animate-in fade-in slide-in-from-top-2">
             <div className="flex items-start gap-3">
-              <span className="text-2xl">❌</span>
+              <FontAwesomeIcon icon={faCircleXmark} className="text-red-600 h-5 w-5" />
               <p className="text-sm font-medium text-red-700">{error}</p>
             </div>
           </div>
@@ -295,7 +305,7 @@ export default function CheckinForm({
         {success && (
           <div className="mb-6 rounded-xl bg-green-50 p-4 border-l-4 border-green-500 shadow-sm animate-in fade-in slide-in-from-top-2">
             <div className="flex items-start gap-3">
-              <span className="text-2xl">✅</span>
+              <FontAwesomeIcon icon={faCheckCircle} className="text-green-600 h-5 w-5" />
               <p className="text-sm font-medium text-green-700">{success}</p>
             </div>
           </div>
@@ -351,26 +361,27 @@ export default function CheckinForm({
                                   ? 'bg-blue-100 text-blue-700'
                                   : 'bg-amber-100 text-amber-700'
                               }`}>
-                                {child.type === 'member' ? '👤' : '👥'} {child.type === 'member' ? 'Member' : 'Visitor'}
+                                <FontAwesomeIcon icon={child.type === 'member' ? faUser : faUsers} className="h-3.5 w-3.5 mr-1" />
+                                {child.type === 'member' ? 'Member' : 'Visitor'}
                               </span>
                             </div>
 
                             <div className="space-y-1.5">
                               {age >= 0 && (
                                 <div className="flex items-center gap-2 text-sm text-gray-600">
-                                  <span className="text-lg">🎂</span>
+                                  <FontAwesomeIcon icon={faCakeCandles} className="h-4 w-4 text-gray-500" />
                                   <span>{age} {t('kidsCheckin.form.yearsOld')}</span>
                                 </div>
                               )}
                               {child.parent_name && (
                                 <div className="flex items-center gap-2 text-sm text-gray-600">
-                                  <span className="text-lg">👨‍👩‍👧</span>
+                                  <FontAwesomeIcon icon={faUserGroup} className="h-4 w-4 text-gray-500" />
                                   <span className="font-medium">{child.parent_name}</span>
                                 </div>
                               )}
                               {child.parent_phone && (
                                 <div className="flex items-center gap-2 text-sm text-gray-500">
-                                  <span className="text-lg">📱</span>
+                                  <FontAwesomeIcon icon={faPhone} className="h-4 w-4 text-gray-500" />
                                   <span className="font-mono">{child.parent_phone}</span>
                                 </div>
                               )}

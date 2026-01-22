@@ -7,7 +7,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { createClient } from '@supabase/supabase-js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faClipboardCheck, faUsers, faHistory, faChild } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faClipboardCheck, faUsers, faHistory, faHandSparkles } from '@fortawesome/free-solid-svg-icons';
 import CheckinForm from './CheckinForm';
 import CurrentCheckins from './CurrentCheckins';
 import CheckinHistory from './CheckinHistory';
@@ -129,7 +129,10 @@ export default function KidsCheckinClient({ locale }: KidsCheckinClientProps) {
                   {t('kidsCheckin.title')}
                 </h1>
                 <p className="text-blue-100 text-sm mt-1">
-                  Welcome, {userName} 👋
+                  <span className="inline-flex items-center gap-1">
+                    <FontAwesomeIcon icon={faHandSparkles} className="h-4 w-4" />
+                    <span>Welcome, {userName}</span>
+                  </span>
                 </p>
               </div>
             </div>

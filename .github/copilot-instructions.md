@@ -21,6 +21,7 @@ This is a bilingual (Portuguese/English) church website built with Next.js for V
 - Client components can extract locale from pathname using `usePathname()`
 - **Always check for and reuse existing utility functions** in `src/lib/` before creating new ones
 - **Never duplicate code** - if functionality exists, import and use it
+- **Icons**: use Font Awesome icons (via our existing setup) instead of emojis throughout the project
 
 ## Database & Backend
 - **Supabase**: Backend-as-a-Service for database, authentication, and file storage

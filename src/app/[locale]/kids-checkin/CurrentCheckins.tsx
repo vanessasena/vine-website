@@ -3,6 +3,22 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { createClient } from '@supabase/supabase-js';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faCakeCandles,
+  faUserGroup,
+  faClock,
+  faUser,
+  faUsers,
+  faTriangleExclamation,
+  faCircleInfo,
+  faNoteSticky,
+  faRotateRight,
+  faCheck,
+  faSpinner,
+  faPhone,
+  faCircleExclamation
+} from '@fortawesome/free-solid-svg-icons';
 import { formatLocalDate } from '@/lib/utils';
 
 // Helper function to calculate age from date string
@@ -197,9 +213,7 @@ export default function CurrentCheckins({
           onClick={fetchCurrentCheckins}
           className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
+          <FontAwesomeIcon icon={faRotateRight} className="w-4 h-4" />
           {t('kidsCheckin.buttons.refresh')}
         </button>
       </div>
@@ -230,22 +244,23 @@ export default function CurrentCheckins({
                         ? 'bg-blue-100 text-blue-700'
                         : 'bg-amber-100 text-amber-700'
                     }`}>
-                      {child.is_member ? '👤 Membro' : '👥 Visitante'}
+                      <FontAwesomeIcon icon={child.is_member ? faUser : faUsers} className="h-3.5 w-3.5 mr-1" />
+                      {child.is_member ? 'Membro' : 'Visitante'}
                     </span>
                   </div>
                   <div className="flex items-center gap-4 text-sm text-gray-600">
                     {age >= 0 && (
                       <div className="flex items-center gap-1.5">
-                        <span>🎂</span>
+                        <FontAwesomeIcon icon={faCakeCandles} className="h-4 w-4 text-gray-500" />
                         <span>{age} {age === 1 ? 'ano' : 'anos'}</span>
                       </div>
                     )}
                     <div className="flex items-center gap-1.5">
-                      <span>👨‍👩‍👧</span>
+                      <FontAwesomeIcon icon={faUserGroup} className="h-4 w-4 text-gray-500" />
                       <span>{child.parent_name}</span>
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <span>🕐</span>
+                      <FontAwesomeIcon icon={faClock} className="h-4 w-4 text-gray-500" />
                       <span>{new Date(child.checked_in_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                     </div>
                   </div>
@@ -253,12 +268,12 @@ export default function CurrentCheckins({
                     <div className="flex items-center gap-2 mt-2">
                       {child.allergies && (
                         <span className="inline-flex items-center gap-1 px-2 py-1 bg-yellow-100 text-yellow-800 rounded-md text-xs font-medium">
-                          ⚠️ Alergia
+                          <FontAwesomeIcon icon={faTriangleExclamation} className="h-3.5 w-3.5" /> Alergia
                         </span>
                       )}
                       {child.special_needs && (
                         <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-xs font-medium">
-                          ℹ️ Nec. Especiais
+                          <FontAwesomeIcon icon={faCircleInfo} className="h-3.5 w-3.5" /> Nec. Especiais
                         </span>
                       )}
                     </div>
@@ -298,7 +313,7 @@ export default function CurrentCheckins({
                     {child.parent_phone && (
                       <div className="bg-white p-3 rounded-lg border border-gray-200">
                         <p className="text-xs font-semibold text-gray-500 uppercase mb-1">
-                          📱 {t('kidsCheckin.form.parentPhone')}
+                          <FontAwesomeIcon icon={faPhone} className="h-3.5 w-3.5 mr-1" /> {t('kidsCheckin.form.parentPhone')}
                         </p>
                         <p className="text-sm text-gray-900 font-medium font-mono">
                           {child.parent_phone}
@@ -310,7 +325,7 @@ export default function CurrentCheckins({
                   {child.allergies && (
                     <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg">
                       <p className="text-xs font-bold text-yellow-800 uppercase mb-1 flex items-center gap-2">
-                        ⚠️ {t('kidsCheckin.form.allergies')}
+                        <FontAwesomeIcon icon={faTriangleExclamation} className="h-4 w-4" /> {t('kidsCheckin.form.allergies')}
                       </p>
                       <p className="text-sm text-yellow-900 font-medium">
                         {child.allergies}
@@ -321,7 +336,7 @@ export default function CurrentCheckins({
                   {child.special_needs && (
                     <div className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-lg">
                       <p className="text-xs font-bold text-blue-800 uppercase mb-1 flex items-center gap-2">
-                        ℹ️ {t('kidsCheckin.form.specialNeeds')}
+                        <FontAwesomeIcon icon={faCircleInfo} className="h-4 w-4" /> {t('kidsCheckin.form.specialNeeds')}
                       </p>
                       <p className="text-sm text-blue-900 font-medium">
                         {child.special_needs}
@@ -332,7 +347,7 @@ export default function CurrentCheckins({
                   {child.emergency_contact_name && (
                     <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded-lg">
                       <p className="text-xs font-bold text-red-800 uppercase mb-1 flex items-center gap-2">
-                        🚨 {t('kidsCheckin.form.emergencyContact')}
+                        <FontAwesomeIcon icon={faCircleExclamation} className="h-4 w-4" /> {t('kidsCheckin.form.emergencyContact')}
                       </p>
                       <p className="text-sm text-red-900 font-medium">
                         {child.emergency_contact_name}
@@ -348,7 +363,7 @@ export default function CurrentCheckins({
                   {child.notes && (
                     <div className="bg-purple-50 border-l-4 border-purple-400 p-4 rounded-lg">
                       <p className="text-xs font-bold text-purple-800 uppercase mb-1 flex items-center gap-2">
-                        📝 {t('kidsCheckin.form.notes')}
+                        <FontAwesomeIcon icon={faNoteSticky} className="h-4 w-4" /> {t('kidsCheckin.form.notes')}
                       </p>
                       <p className="text-sm text-purple-900">
                         {child.notes}
@@ -364,15 +379,12 @@ export default function CurrentCheckins({
                     >
                       {checkingOutId === child.checked_in_id ? (
                         <>
-                          <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                          </svg>
+                          <FontAwesomeIcon icon={faSpinner} className="animate-spin h-5 w-5" />
                           {t('kidsCheckin.buttons.checkingOut')}
                         </>
                       ) : (
                         <>
-                          <span>✅</span>
+                          <FontAwesomeIcon icon={faCheck} className="h-4 w-4" />
                           {t('kidsCheckin.buttons.checkout')}
                         </>
                       )}

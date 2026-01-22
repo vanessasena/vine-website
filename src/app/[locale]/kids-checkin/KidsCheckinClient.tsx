@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { createClient } from '@supabase/supabase-js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faClipboardCheck, faUsers, faHistory, faChild } from '@fortawesome/free-solid-svg-icons';
@@ -110,31 +111,38 @@ export default function KidsCheckinClient({ locale }: KidsCheckinClientProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Header with gradient */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Link
-                href={`/${locale}/admin`}
-                className="flex items-center space-x-2 text-white hover:text-blue-100 transition-colors bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg backdrop-blur-sm"
-              >
-                <FontAwesomeIcon icon={faArrowLeft} className="w-4 h-4" />
-                <span className="hidden sm:inline">{t('admin.backToAdmin')}</span>
-              </Link>
-              <div className="hidden sm:block w-px h-8 bg-white/30"></div>
-              <FontAwesomeIcon icon={faChild} className="w-8 h-8" />
+      <header className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white shadow-2xl">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="flex-shrink-0 bg-white rounded-2xl p-3 shadow-lg">
+                <Image
+                  src="https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/Vine-CHURCH-logo-transparent-2.png"
+                  alt="Vine Church KWC Logo"
+                  width={64}
+                  height={64}
+                  className="h-10 w-auto"
+                />
+              </div>
               <div>
-                <h1 className="text-2xl sm:text-3xl font-bold">
+                <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
                   {t('kidsCheckin.title')}
                 </h1>
                 <p className="text-blue-100 text-sm mt-1">
-                  {t('kidsCheckin.welcome')} {userName}
+                  Welcome, {userName} 👋
                 </p>
               </div>
             </div>
+            <Link
+              href={`/${locale}/admin`}
+              className="flex items-center gap-2 text-white hover:text-blue-100 transition-all bg-white/15 hover:bg-white/25 px-4 py-2 rounded-xl backdrop-blur-sm border border-white/20"
+            >
+              <FontAwesomeIcon icon={faArrowLeft} className="w-4 h-4" />
+              <span className="hidden sm:inline font-medium">{t('admin.backToAdmin')}</span>
+            </Link>
           </div>
         </div>
-      </div>
+      </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Tab Navigation with modern design */}

@@ -252,42 +252,29 @@ export default function CheckinForm({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-gradient-to-r from-primary-600 via-secondary-600 to-accent-600 text-white py-8">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-4">
-            <Image
-              src="https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/Vine-CHURCH-logo-transparent-2.png"
-              alt="Vine Church KWC Logo"
-              width={64}
-              height={64}
-              className="h-16 w-auto"
-            />
-            <div>
-              <h1 className="text-2xl font-bold">{t('kidsCheckin.title')}</h1>
-              <p className="text-white text-opacity-90">{t('kidsCheckin.form.sessionDescription')}</p>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {error && (
-          <div className="rounded-md bg-red-50 p-4">
-            <p className="text-sm text-red-700">{error}</p>
+          <div className="mb-6 rounded-xl bg-red-50 p-4 border-l-4 border-red-500 shadow-sm animate-in fade-in slide-in-from-top-2">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">❌</span>
+              <p className="text-sm font-medium text-red-700">{error}</p>
+            </div>
           </div>
         )}
 
         {success && (
-          <div className="rounded-md bg-green-50 p-4">
-            <p className="text-sm text-green-700">{success}</p>
+          <div className="mb-6 rounded-xl bg-green-50 p-4 border-l-4 border-green-500 shadow-sm animate-in fade-in slide-in-from-top-2">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">✅</span>
+              <p className="text-sm font-medium text-green-700">{success}</p>
+            </div>
           </div>
         )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-xl p-8 space-y-8">
         <div className="relative" ref={dropdownRef}>
-          <label htmlFor="childSearch" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="childSearch" className="block text-sm font-semibold text-gray-900 mb-2">
             {t('kidsCheckin.form.selectChild')}
           </label>
           <div className="mt-1 relative">
@@ -304,10 +291,10 @@ export default function CheckinForm({
               onFocus={() => setShowDropdown(true)}
               disabled={loadingChildren}
               placeholder={t('kidsCheckin.form.searchChildPlaceholder')}
-              className="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:border-primary-500 focus:ring-primary-500 disabled:bg-gray-100"
+              className="block w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-all duration-200 disabled:bg-gray-100"
             />
             {showDropdown && (
-              <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+              <div className="absolute z-10 mt-2 w-full bg-white border-2 border-gray-200 rounded-xl shadow-2xl max-h-60 overflow-auto">
                 {combinedOptions.length > 0 ? (
                   combinedOptions.map((child) => {
                     const age = calculateAge(child.date_of_birth);
@@ -324,7 +311,7 @@ export default function CheckinForm({
                           setSearchTerm('');
                           setShowDropdown(false);
                         }}
-                        className="w-full text-left px-4 py-4 hover:bg-blue-50 focus:bg-blue-50 focus:outline-none border-b last:border-b-0 transition-colors duration-150"
+                        className="w-full text-left px-5 py-4 hover:bg-blue-50 focus:bg-blue-50 focus:outline-none border-b last:border-b-0 transition-colors duration-150 hover:shadow-md"
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex-1 min-w-0">
@@ -389,7 +376,7 @@ export default function CheckinForm({
         </div>
 
         <div>
-          <label htmlFor="notes" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="notes" className="block text-sm font-semibold text-gray-900 mb-2">
             {t('kidsCheckin.form.notes')}
           </label>
           <textarea
@@ -397,16 +384,16 @@ export default function CheckinForm({
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={3}
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:border-primary-500 focus:ring-primary-500"
+            className="mt-1 block w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-all duration-200 resize-none"
             placeholder={t('kidsCheckin.form.notesPlaceholder')}
           />
         </div>
 
-        <div className="flex justify-end pt-6 border-t">
+        <div className="flex justify-end pt-6 border-t-2 border-gray-100">
           <button
             type="submit"
             disabled={submitting}
-            className="inline-flex items-center px-6 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center px-8 py-3 border border-transparent text-base font-semibold rounded-xl shadow-lg text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:shadow-xl"
           >
             {submitting ? t('kidsCheckin.buttons.submitting') : t('kidsCheckin.buttons.checkin')}
           </button>

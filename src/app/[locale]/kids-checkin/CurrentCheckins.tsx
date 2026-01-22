@@ -19,8 +19,6 @@ interface CheckedInChild {
   emergency_contact_phone?: string;
   checked_in_at: string;
   checked_in_by_name: string;
-  service_date: string;
-  service_time: string;
   notes?: string;
 }
 

@@ -44,8 +44,6 @@ export default function CheckinForm({
   const [success, setSuccess] = useState<string | null>(null);
   const [authToken, setAuthToken] = useState<string | null>(null);
 
-  const [serviceDate, setServiceDate] = useState(getLocalISODate());
-  const [serviceTime, setServiceTime] = useState('10:00');
   const [selectedChildId, setSelectedChildId] = useState('');
   const [notes, setNotes] = useState('');
 
@@ -178,8 +176,6 @@ export default function CheckinForm({
       }
 
       const checkInData = {
-        service_date: serviceDate,
-        service_time: serviceTime,
         ...(childType === 'member'
           ? { member_child_id: selectedChildId }
           : { visitor_child_id: selectedChildId }),
@@ -251,43 +247,6 @@ export default function CheckinForm({
             <p className="text-sm text-green-700">{success}</p>
           </div>
         )}
-
-        <div className="bg-primary-50 border border-primary-200 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-primary-900 mb-4">
-          {t('kidsCheckin.form.sessionInfo')}
-        </h3>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label htmlFor="sessionDate" className="block text-sm font-medium text-primary-900">
-              {t('kidsCheckin.form.serviceDate')}
-            </label>
-            <input
-              type="date"
-              id="sessionDate"
-              value={serviceDate}
-              onChange={(e) => setServiceDate(e.target.value)}
-              required
-              className="mt-1 block w-full rounded-md border border-primary-300 px-3 py-2 text-gray-900 focus:border-primary-500 focus:ring-primary-500"
-            />
-          </div>
-          <div>
-            <label htmlFor="sessionTime" className="block text-sm font-medium text-primary-900">
-              {t('kidsCheckin.form.serviceTime')}
-            </label>
-            <input
-              type="time"
-              id="sessionTime"
-              value={serviceTime}
-              onChange={(e) => setServiceTime(e.target.value)}
-              required
-              className="mt-1 block w-full rounded-md border border-primary-300 px-3 py-2 text-gray-900 focus:border-primary-500 focus:ring-primary-500"
-            />
-          </div>
-        </div>
-        <p className="mt-3 text-sm text-primary-700">
-          {t('kidsCheckin.form.sessionDescription')}
-        </p>
-      </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>

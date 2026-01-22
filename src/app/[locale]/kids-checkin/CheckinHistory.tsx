@@ -11,8 +11,6 @@ interface CheckInRecord {
   child_dob: string;
   is_member: boolean;
   parent_name: string;
-  service_date: string;
-  service_time: string;
   checked_in_at: string;
   checked_in_by_name: string;
   checked_out_at?: string;
@@ -228,8 +226,7 @@ export default function CheckinHistory() {
                       {getStatusBadge(record.status)}
                     </div>
                     <p className="text-sm text-gray-600 mt-1">
-                      {formatLocalDate(record.service_date)} at{' '}
-                      {record.service_time}
+                      {new Date(record.checked_in_at).toLocaleString()}
                     </p>
                   </div>
                   <svg

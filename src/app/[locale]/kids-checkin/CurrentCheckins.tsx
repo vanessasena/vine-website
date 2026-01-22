@@ -5,6 +5,20 @@ import { useTranslations } from 'next-intl';
 import { createClient } from '@supabase/supabase-js';
 import { formatLocalDate } from '@/lib/utils';
 
+// Helper function to calculate age from date string
+function calculateAge(dateStr: string): number {
+  if (!dateStr) return -1;
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const dob = new Date(year, (month || 1) - 1, day || 1);
+  const today = new Date();
+  let age = today.getFullYear() - dob.getFullYear();
+  const monthDiff = today.getMonth() - dob.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+    age -= 1;
+  }
+  return age;
+}
+
 interface CheckedInChild {
   id: string;
   checked_in_id: string;
@@ -169,163 +183,206 @@ export default function CurrentCheckins({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-gray-900">
-          {t('kidsCheckin.currentCheckins')} ({children.length})
-        </h2>
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">
+            {t('kidsCheckin.currentCheckins')}
+          </h2>
+          <p className="text-sm text-gray-600 mt-1">
+            {children.length} {children.length === 1 ? 'criança' : 'crianças'} no check-in
+          </p>
+        </div>
         <button
           onClick={fetchCurrentCheckins}
-          className="text-sm text-blue-600 hover:text-blue-700"
+          className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
         >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
           {t('kidsCheckin.buttons.refresh')}
         </button>
       </div>
 
       <div className="grid gap-4">
-        {children.map((child) => (
-          <div
-            key={child.checked_in_id}
-            className="border rounded-lg shadow-sm hover:shadow-md transition-shadow"
-          >
-            <button
-              onClick={() =>
-                setExpandedId(
-                  expandedId === child.checked_in_id ? null : child.checked_in_id
-                )
-              }
-              className="w-full px-6 py-4 flex items-center justify-between text-left"
+        {children.map((child) => {
+          const age = calculateAge(child.child_dob);
+          return (
+            <div
+              key={child.checked_in_id}
+              className="bg-white border-2 border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200"
             >
-              <div className="flex-1">
-                <h3 className="text-lg font-medium text-gray-900">
-                  {child.child_name}
-                </h3>
-                <p className="text-sm text-gray-600">
-                  {t('kidsCheckin.checkedInBy')}: {child.checked_in_by_name}
-                </p>
-                <p className="text-xs text-gray-500 mt-1">
-                  {new Date(child.checked_in_at).toLocaleTimeString()}
-                </p>
-              </div>
-              <svg
-                className={`w-5 h-5 text-gray-400 transition-transform ${
-                  expandedId === child.checked_in_id ? 'rotate-180' : ''
-                }`}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+              <button
+                onClick={() =>
+                  setExpandedId(
+                    expandedId === child.checked_in_id ? null : child.checked_in_id
+                  )
+                }
+                className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-gray-50 rounded-t-xl transition-colors"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 14l-7 7m0 0l-7-7m7 7V3"
-                />
-              </svg>
-            </button>
-
-            {expandedId === child.checked_in_id && (
-              <div className="border-t px-6 py-4 bg-gray-50 space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-xs text-gray-500 uppercase">
-                      {t('kidsCheckin.form.dateOfBirth')}
-                    </p>
-                    <p className="text-sm text-gray-900">
-                      {formatLocalDate(child.child_dob)}
-                    </p>
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <h3 className="text-xl font-semibold text-gray-900">
+                      {child.child_name}
+                    </h3>
+                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                      child.is_member
+                        ? 'bg-blue-100 text-blue-700'
+                        : 'bg-amber-100 text-amber-700'
+                    }`}>
+                      {child.is_member ? '👤 Membro' : '👥 Visitante'}
+                    </span>
                   </div>
-                  <div>
-                    <p className="text-xs text-gray-500 uppercase">
-                      {t('kidsCheckin.form.childType')}
-                    </p>
-                    <p className="text-sm text-gray-900">
-                      {child.is_member
-                        ? t('kidsCheckin.form.memberChild')
-                        : t('kidsCheckin.form.visitorChild')}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-xs text-gray-500 uppercase">
-                      {t('kidsCheckin.form.parent')}
-                    </p>
-                    <p className="text-sm text-gray-900">{child.parent_name}</p>
-                  </div>
-                  {child.parent_phone && (
-                    <div>
-                      <p className="text-xs text-gray-500 uppercase">
-                        {t('kidsCheckin.form.parentPhone')}
-                      </p>
-                      <p className="text-sm text-gray-900">{child.parent_phone}</p>
+                  <div className="flex items-center gap-4 text-sm text-gray-600">
+                    {age >= 0 && (
+                      <div className="flex items-center gap-1.5">
+                        <span>🎂</span>
+                        <span>{age} {age === 1 ? 'ano' : 'anos'}</span>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-1.5">
+                      <span>👨‍👩‍👧</span>
+                      <span>{child.parent_name}</span>
                     </div>
-                  )}
-                </div>
-
-                {child.allergies && (
-                  <div>
-                    <p className="text-xs text-gray-500 uppercase font-medium">
-                      {t('kidsCheckin.form.allergies')}
-                    </p>
-                    <p className="text-sm text-gray-900 bg-yellow-50 p-2 rounded mt-1">
-                      {child.allergies}
-                    </p>
+                    <div className="flex items-center gap-1.5">
+                      <span>🕐</span>
+                      <span>{new Date(child.checked_in_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                    </div>
                   </div>
-                )}
-
-                {child.special_needs && (
-                  <div>
-                    <p className="text-xs text-gray-500 uppercase font-medium">
-                      {t('kidsCheckin.form.specialNeeds')}
-                    </p>
-                    <p className="text-sm text-gray-900 bg-blue-50 p-2 rounded mt-1">
-                      {child.special_needs}
-                    </p>
-                  </div>
-                )}
-
-                {child.emergency_contact_name && (
-                  <div>
-                    <p className="text-xs text-gray-500 uppercase font-medium">
-                      {t('kidsCheckin.form.emergencyContact')}
-                    </p>
-                    <p className="text-sm text-gray-900">
-                      {child.emergency_contact_name}
-                      {child.emergency_contact_phone && (
-                        <span className="ml-2 text-gray-600">
-                          ({child.emergency_contact_phone})
+                  {(child.allergies || child.special_needs) && (
+                    <div className="flex items-center gap-2 mt-2">
+                      {child.allergies && (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-yellow-100 text-yellow-800 rounded-md text-xs font-medium">
+                          ⚠️ Alergia
                         </span>
                       )}
-                    </p>
-                  </div>
-                )}
-
-                {child.notes && (
-                  <div>
-                    <p className="text-xs text-gray-500 uppercase">
-                      {t('kidsCheckin.form.notes')}
-                    </p>
-                    <p className="text-sm text-gray-900">{child.notes}</p>
-                  </div>
-                )}
-
-                <div className="flex gap-3 pt-4 border-t">
-                  <button
-                    onClick={() => handleCheckOut(child.checked_in_id, child.child_name)}
-                    disabled={checkingOutId === child.checked_in_id}
-                    className="flex-1 inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {checkingOutId === child.checked_in_id
-                      ? t('kidsCheckin.buttons.checkingOut')
-                      : t('kidsCheckin.buttons.checkout')}
-                  </button>
+                      {child.special_needs && (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-xs font-medium">
+                          ℹ️ Nec. Especiais
+                        </span>
+                      )}
+                    </div>
+                  )}
+                  <p className="text-xs text-gray-500 mt-2">
+                    Check-in por: {child.checked_in_by_name}
+                  </p>
                 </div>
-              </div>
-            )}
-          </div>
-        ))}
+                <svg
+                  className={`w-6 h-6 text-gray-400 transition-transform flex-shrink-0 ml-4 ${
+                    expandedId === child.checked_in_id ? 'rotate-180' : ''
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+
+              {expandedId === child.checked_in_id && (
+                <div className="border-t-2 border-gray-100 px-6 py-5 bg-gradient-to-br from-gray-50 to-white space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="bg-white p-3 rounded-lg border border-gray-200">
+                      <p className="text-xs font-semibold text-gray-500 uppercase mb-1">
+                        {t('kidsCheckin.form.dateOfBirth')}
+                      </p>
+                      <p className="text-sm text-gray-900 font-medium">
+                        {formatLocalDate(child.child_dob)}
+                      </p>
+                    </div>
+                    {child.parent_phone && (
+                      <div className="bg-white p-3 rounded-lg border border-gray-200">
+                        <p className="text-xs font-semibold text-gray-500 uppercase mb-1">
+                          📱 {t('kidsCheckin.form.parentPhone')}
+                        </p>
+                        <p className="text-sm text-gray-900 font-medium font-mono">
+                          {child.parent_phone}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {child.allergies && (
+                    <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg">
+                      <p className="text-xs font-bold text-yellow-800 uppercase mb-1 flex items-center gap-2">
+                        ⚠️ {t('kidsCheckin.form.allergies')}
+                      </p>
+                      <p className="text-sm text-yellow-900 font-medium">
+                        {child.allergies}
+                      </p>
+                    </div>
+                  )}
+
+                  {child.special_needs && (
+                    <div className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-lg">
+                      <p className="text-xs font-bold text-blue-800 uppercase mb-1 flex items-center gap-2">
+                        ℹ️ {t('kidsCheckin.form.specialNeeds')}
+                      </p>
+                      <p className="text-sm text-blue-900 font-medium">
+                        {child.special_needs}
+                      </p>
+                    </div>
+                  )}
+
+                  {child.emergency_contact_name && (
+                    <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded-lg">
+                      <p className="text-xs font-bold text-red-800 uppercase mb-1 flex items-center gap-2">
+                        🚨 {t('kidsCheckin.form.emergencyContact')}
+                      </p>
+                      <p className="text-sm text-red-900 font-medium">
+                        {child.emergency_contact_name}
+                        {child.emergency_contact_phone && (
+                          <span className="ml-2 font-mono">
+                            ({child.emergency_contact_phone})
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                  )}
+
+                  {child.notes && (
+                    <div className="bg-purple-50 border-l-4 border-purple-400 p-4 rounded-lg">
+                      <p className="text-xs font-bold text-purple-800 uppercase mb-1 flex items-center gap-2">
+                        📝 {t('kidsCheckin.form.notes')}
+                      </p>
+                      <p className="text-sm text-purple-900">
+                        {child.notes}
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="flex gap-3 pt-4 border-t-2 border-gray-200">
+                    <button
+                      onClick={() => handleCheckOut(child.checked_in_id, child.child_name)}
+                      disabled={checkingOutId === child.checked_in_id}
+                      className="flex-1 inline-flex justify-center items-center gap-2 px-6 py-3 border border-transparent text-base font-semibold rounded-xl text-white bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transition-all duration-200"
+                    >
+                      {checkingOutId === child.checked_in_id ? (
+                        <>
+                          <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          {t('kidsCheckin.buttons.checkingOut')}
+                        </>
+                      ) : (
+                        <>
+                          <span>✅</span>
+                          {t('kidsCheckin.buttons.checkout')}
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

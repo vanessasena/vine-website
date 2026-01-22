@@ -668,7 +668,8 @@
       "requiredFields": "Please fill in all required fields",
       "selectChild": "Please select a child",
       "creationFailed": "Failed to create visitor",
-      "checkInFailed": "Error during check-in"
+      "checkInFailed": "Error during check-in",
+      "alreadyCheckedIn": "This child is already checked in"
     },
     "success": {
       "checkedIn": "Check-in successful!",

@@ -669,7 +669,8 @@
       "requiredFields": "Por favor, preencha todos os campos obrigatórios",
       "selectChild": "Por favor, selecione uma criança",
       "creationFailed": "Falha ao criar visitante",
-      "checkInFailed": "Erro ao fazer check-in"
+      "checkInFailed": "Erro ao fazer check-in",
+      "alreadyCheckedIn": "Esta criança já está no check-in"
     },
     "success": {
       "checkedIn": "Check-in realizado com sucesso!",

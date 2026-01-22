@@ -210,6 +210,35 @@ export default function CheckinForm({
         throw new Error(t('kidsCheckin.errors.authenticationFailed'));
       }
 
+      // Check if child is already checked in
+      const checkParams = new URLSearchParams({
+        status: 'checked_in',
+        use_view: 'true'
+      });
+
+      const checkResponse = await fetch(`/api/check-ins?${checkParams.toString()}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      if (checkResponse.ok) {
+        const existingCheckins = await checkResponse.json();
+        const isAlreadyCheckedIn = existingCheckins.some((checkin: any) => {
+          if (selectedChildType === 'member') {
+            return checkin.member_child_id === selectedChildId;
+          } else {
+            return checkin.visitor_child_id === selectedChildId;
+          }
+        });
+
+        if (isAlreadyCheckedIn) {
+          setError(t('kidsCheckin.errors.alreadyCheckedIn'));
+          setSubmitting(false);
+          return;
+        }
+      }
+
       const checkInData = {
         ...(selectedChildType === 'member'
           ? { member_child_id: selectedChildId }

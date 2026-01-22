@@ -68,7 +68,7 @@ export default function RegisterVisitorClient() {
 		special_needs: '',
 		emergency_contact_name: '',
 		emergency_contact_phone: '',
-		photo_permission: false,
+		photo_permission: true,
 	});
 	const [children, setChildren] = useState<ChildForm[]>([]);
 	const [visitorErrors, setVisitorErrors] = useState<VisitorErrors>({});
@@ -209,7 +209,7 @@ export default function RegisterVisitorClient() {
 			special_needs: '',
 			emergency_contact_name: '',
 			emergency_contact_phone: '',
-			photo_permission: false,
+			photo_permission: true,
 		});
 		setChildError(null);
 	};
@@ -279,7 +279,7 @@ export default function RegisterVisitorClient() {
 				special_needs: '',
 				emergency_contact_name: '',
 				emergency_contact_phone: '',
-				photo_permission: false,
+				photo_permission: true,
 			});
 			setHasChildren(null);
 			setStep(1);

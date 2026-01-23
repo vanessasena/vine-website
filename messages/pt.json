@@ -261,7 +261,7 @@
     "subtitle": "Visualize e analise os visitantes da igreja",
     "loading": "Carregando visitantes...",
     "fetchError": "Erro ao carregar visitantes",
-    "backToAdmin": "Voltar ao Admin",    "backToPortal": "← Voltar ao Portal",    "filters": "Filtros",
+    "backToAdmin": "Voltar ao Admin",    "backToPortal": "Voltar ao Portal",    "filters": "Filtros",
     "filterType": "Tipo de Filtro",
     "filterAll": "Todos os Visitantes",
     "filterByDay": "Por Dia",
@@ -490,8 +490,8 @@
       "myProfile": "Meu Perfil",
       "logout": "Sair"
     },
-    "backToPortal": "← Voltar ao Portal",
-    "backToWebsite": "← Voltar ao Website"
+    "backToPortal": "Voltar ao Portal",
+    "backToWebsite": "Voltar ao Website"
   },
   "breadcrumb": {
     "portal": "Portal",
@@ -670,7 +670,7 @@
       "selectChildPlaceholder": "Escolha uma criança membro",
       "selectVisitorChild": "Selecionar Criança Visitante",
       "addNewVisitor": "+ Adicionar Novo Visitante",
-      "backToList": "← Voltar à Lista",
+      "backToList": "Voltar à Lista",
       "childName": "Nome da Criança",
       "childNamePlaceholder": "Nome completo",
       "dateOfBirth": "Data de Nascimento",

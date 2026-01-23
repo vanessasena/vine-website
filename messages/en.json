@@ -261,7 +261,7 @@
     "loading": "Loading visitors...",
     "fetchError": "Error loading visitors",
     "backToAdmin": "Back to Admin",
-    "backToPortal": "← Back to Portal",
+    "backToPortal": "Back to Portal",
     "filters": "Filters",
     "filterType": "Filter Type",
     "filterAll": "All Visitors",
@@ -493,8 +493,8 @@
       "myProfile": "My Profile",
       "logout": "Sign Out"
     },
-    "backToPortal": "← Back to Portal",
-    "backToWebsite": "← Back to Website"
+    "backToPortal": "Back to Portal",
+    "backToWebsite": "Back to Website"
   },
   "breadcrumb": {
     "portal": "Portal",
@@ -673,7 +673,7 @@
       "selectChildPlaceholder": "Choose a member child",
       "selectVisitorChild": "Select Visitor Child",
       "addNewVisitor": "+ Add New Visitor",
-      "backToList": "← Back to List",
+      "backToList": "Back to List",
       "childName": "Child Name",
       "childNamePlaceholder": "Full name",
       "dateOfBirth": "Date of Birth",

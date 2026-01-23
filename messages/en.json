@@ -394,14 +394,14 @@
   },
   "visitorRegistration": {
     "title": "Visitor Registration",
-    "subtitle": "Welcome to Vine Church KWC!",
+    "subtitle": "Welcome to Vine Church Waterloo Region!",
     "description": "We're glad you visited us! Please fill out the form below so we can get to know you better.",
     "hasChildrenQuestion": "Do you have a child to check in for Vine Kids?",
     "hasChildrenDescription": "If your child is up to 12 years old and would like to participate in our Vine Kids ministry, click Yes. Otherwise, click No.",
     "yesHasChildren": "Yes, I have a child",
     "noChildren": "No, just adult",
     "backButton": "Back",
-    "visitorInformation": "Visitor Information",
+    "visitorInformation": "Guardian Information",
     "childrenInformation": "Children Information",
     "selectOption": "Select an option",
     "visitDate": "Date of Visit",
@@ -460,7 +460,9 @@
     "errorTitle": "Error Submitting",
     "errorMessage": "An error occurred while submitting your registration. Please try again.",
     "requiredField": "This field is required",
-    "invalidPhone": "Invalid phone number. Please use a valid format like (519) 123-4567"
+    "invalidPhone": "Invalid phone number. Please use a valid format like (519) 123-4567",
+    "yesButton": "Yes",
+    "noButton": "No"
   },
   "memberPortal": {
     "title": "Member Portal",

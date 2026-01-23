@@ -100,28 +100,23 @@ export default function MembersAdminClient({ locale }: MembersAdminClientProps) 
         return;
       }
 
-      // Verify leader or admin role
-      const { data: userData } = await supabase
-        .from('users')
-        .select('role')
-        .eq('id', session.user.id)
-        .single();
+      // Fetch members via API (uses service role key for full access)
+      const response = await fetch('/api/members', {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+      });
 
-      if (userData?.role !== 'admin' && userData?.role !== 'leader') {
-        setError('Unauthorized');
+      if (!response.ok) {
+        if (response.status === 403) {
+          setError('Unauthorized: Only admins and leaders can view all members');
+        } else {
+          setError('Failed to load member profiles');
+        }
         return;
       }
 
-      // Fetch all member profiles
-      const { data: profiles, error: profilesError } = await supabase
-        .from('member_profiles')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (profilesError) {
-        throw profilesError;
-      }
-
+      const profiles = await response.json();
       setMembers(profiles || []);
 
       // Fetch children for all members

@@ -391,14 +391,14 @@
   },
   "visitorRegistration": {
     "title": "Registro de Visitantes",
-    "subtitle": "Bem-vindo à Vine Church KWC!",
+    "subtitle": "Bem-vindo à Vine Church Waterloo Region!",
     "description": "É uma honra tê-lo conosco! Por favor, preencha o formulário abaixo para que possamos conhecê-lo melhor.",
     "hasChildrenQuestion": "Você tem criança para fazer check-in no Vine Kids?",
     "hasChildrenDescription": "Se sua criança tem até 12 anos e gostaria de participar do nosso ministério Vine Kids, clique em Sim. Caso contrário, clique em Não.",
     "yesHasChildren": "Sim, tenho criança",
     "noChildren": "Não, apenas adulto",
     "backButton": "Voltar",
-    "visitorInformation": "Informações do Visitante",
+    "visitorInformation": "Informações do Responsável",
     "childrenInformation": "Informações das Crianças",
     "selectOption": "Selecione uma opção",
     "visitDate": "Data da Visita",
@@ -457,7 +457,9 @@
     "errorTitle": "Erro ao Enviar",
     "errorMessage": "Ocorreu um erro ao enviar seu registro. Por favor, tente novamente.",
     "requiredField": "Este campo é obrigatório",
-    "invalidPhone": "Número de telefone inválido. Use um formato válido como (519) 123-4567"
+    "invalidPhone": "Número de telefone inválido. Use um formato válido como (519) 123-4567",
+    "yesButton": "Sim",
+    "noButton": "Não"
   },
   "memberPortal": {
     "title": "Portal do Membro",

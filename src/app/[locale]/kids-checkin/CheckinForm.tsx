@@ -116,7 +116,7 @@ export default function CheckinForm({
     }
   };
 
-  const fetchVisitorChildren = async (token: string) => {
+  const fetchVisitorChildren: (token: string) => Promise<void> = async (token) => {
     try {
       const response = await fetch('/api/visitor-children', {
         headers: { Authorization: `Bearer ${token}` },
@@ -203,6 +203,27 @@ export default function CheckinForm({
       return visitorChildren.find((child) => child.id === selectedChildId);
     }
   }, [memberChildren, visitorChildren, selectedChildId, selectedChildType]);
+
+  const handleRefreshChildren = async () => {
+    if (!authToken) {
+      setError(t('kidsCheckin.errors.authenticationFailed'));
+      return;
+    }
+
+    try {
+      setError(null);
+      setLoadingChildren(true);
+      await Promise.all([
+        fetchMemberChildren(authToken),
+        fetchVisitorChildren(authToken),
+      ]);
+    } catch (err) {
+      console.error('Error refreshing children:', err);
+      setError(t('kidsCheckin.errors.fetchFailed'));
+    } finally {
+      setLoadingChildren(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -314,9 +335,20 @@ export default function CheckinForm({
 
       <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-xl p-8 space-y-8">
         <div className="relative" ref={dropdownRef}>
-          <div className="mb-3 inline-flex items-start gap-2 rounded-lg bg-blue-50 text-blue-800 text-sm px-3 py-2 border border-blue-100">
-            <FontAwesomeIcon icon={faCircleInfo} className="h-4 w-4 mt-0.5 text-blue-500" />
-            <span>{t('kidsCheckin.form.phoneReminder')}</span>
+          <div className="flex items-start justify-between gap-3 mb-3">
+            <div className="inline-flex items-start gap-2 rounded-lg bg-blue-50 text-blue-800 text-sm px-3 py-2 border border-blue-100">
+              <FontAwesomeIcon icon={faCircleInfo} className="h-4 w-4 mt-0.5 text-blue-500" />
+              <span>{t('kidsCheckin.form.phoneReminder')}</span>
+            </div>
+            <button
+              type="button"
+              onClick={handleRefreshChildren}
+              disabled={loadingChildren}
+              className="inline-flex items-center gap-2 px-3 py-2 text-sm font-semibold rounded-lg border border-gray-200 text-gray-700 hover:text-primary-700 hover:border-primary-200 bg-white shadow-sm transition disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              <FontAwesomeIcon icon={faCircleInfo} className="h-4 w-4 text-gray-500" />
+              {loadingChildren ? t('kidsCheckin.form.refreshing') : t('kidsCheckin.form.refreshChildren')}
+            </button>
           </div>
           <label htmlFor="childSearch" className="block text-sm font-semibold text-gray-900 mb-2">
             {t('kidsCheckin.form.selectChild')}

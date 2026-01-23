@@ -18,7 +18,9 @@ interface VisitorForm {
 interface ChildForm {
 	name: string;
 	date_of_birth: string;
+	has_allergies: boolean | null;
 	allergies: string;
+	has_special_needs: boolean | null;
 	special_needs: string;
 	emergency_contact_name: string;
 	emergency_contact_phone: string;
@@ -64,7 +66,9 @@ export default function RegisterVisitorClient() {
 	const [childForm, setChildForm] = useState<ChildForm>({
 		name: '',
 		date_of_birth: '',
+		has_allergies: null,
 		allergies: '',
+		has_special_needs: null,
 		special_needs: '',
 		emergency_contact_name: '',
 		emergency_contact_phone: '',
@@ -184,6 +188,18 @@ export default function RegisterVisitorClient() {
 		if (age < 0) return t('childValidation.futureDob');
 		if (age > 12) return t('childValidation.maxAgeExceeded');
 
+		if (data.has_allergies === null || data.has_special_needs === null) {
+			return t('childValidation.allergySpecialNeedsRequired');
+		}
+
+		if (data.has_allergies === true && !data.allergies.trim()) {
+			return t('childValidation.allergyDetailsRequired');
+		}
+
+		if (data.has_special_needs === true && !data.special_needs.trim()) {
+			return t('childValidation.specialNeedsDetailsRequired');
+		}
+
 		if (
 			data.emergency_contact_phone &&
 			!phoneRegex.test(data.emergency_contact_phone.trim())
@@ -205,7 +221,9 @@ export default function RegisterVisitorClient() {
 		setChildForm({
 			name: '',
 			date_of_birth: '',
+			has_allergies: null,
 			allergies: '',
+			has_special_needs: null,
 			special_needs: '',
 			emergency_contact_name: '',
 			emergency_contact_phone: '',
@@ -236,8 +254,30 @@ export default function RegisterVisitorClient() {
 			return;
 		}
 
-		if (hasChildren && children.length === 0) {
-			setFormError(t('childValidation.nameRequired'));
+
+		if (hasChildren) {
+			if (children.length === 0) {
+				setFormError(t('childValidation.nameRequired'));
+				return;
+			}
+
+			for (const child of children) {
+				const childValidationError = validateChild(child);
+				if (childValidationError) {
+					setFormError(childValidationError);
+					return;
+				}
+			}
+		}
+
+		const phoneToConfirm = visitor.phone.trim();
+		const confirmed = window.confirm(t('confirmPhonePrompt', { phone: phoneToConfirm }));
+		if (!confirmed) {
+			setFormError(t('confirmPhoneEdit'));
+			if (phoneInputRef.current) {
+				phoneInputRef.current.focus();
+				phoneInputRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+			}
 			return;
 		}
 
@@ -275,7 +315,9 @@ export default function RegisterVisitorClient() {
 			setChildForm({
 				name: '',
 				date_of_birth: '',
+				has_allergies: null,
 				allergies: '',
+				has_special_needs: null,
 				special_needs: '',
 				emergency_contact_name: '',
 				emergency_contact_phone: '',
@@ -512,27 +554,99 @@ export default function RegisterVisitorClient() {
 											</div>
 											<div>
 												<label className="block text-sm font-medium text-gray-700">
-													{t('allergies')}
+													{t('childHasAllergies')}
 												</label>
-												<input
-													type="text"
-													value={childForm.allergies}
-													onChange={(e) => handleChildChange('allergies', e.target.value)}
-													placeholder={t('allergiesPlaceholder')}
-													className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-												/>
+												<div className="mt-1 space-y-2">
+													<label className="flex items-center">
+														<input
+															type="radio"
+															name="has_allergies"
+															value="no"
+															checked={childForm.has_allergies === false}
+															onChange={(e) => {
+																if (e.target.checked) {
+																	setChildForm(prev => ({ ...prev, has_allergies: false, allergies: '' }));
+																	setChildError(null);
+																}
+															}}
+															className="mr-2"
+														/>
+														<span className="text-sm text-gray-700">{t('childNoAllergies')}</span>
+													</label>
+													<label className="flex items-center">
+														<input
+															type="radio"
+															name="has_allergies"
+															value="yes"
+															checked={childForm.has_allergies === true}
+															onChange={(e) => {
+																if (e.target.checked) {
+																	setChildForm(prev => ({ ...prev, has_allergies: true, allergies: '' }));
+																	setChildError(null);
+																}
+															}}
+															className="mr-2"
+														/>
+														<span className="text-sm text-gray-700">{t('childHasAllergiesYes')}</span>
+													</label>
+												</div>
+												{childForm.has_allergies === true && (
+													<input
+														type="text"
+														value={childForm.allergies}
+														onChange={(e) => handleChildChange('allergies', e.target.value)}
+														placeholder={t('allergiesPlaceholder')}
+														className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+													/>
+												)}
 											</div>
 											<div>
 												<label className="block text-sm font-medium text-gray-700">
-													{t('specialNeeds')}
+													{t('childHasSpecialNeeds')}
 												</label>
-												<input
-													type="text"
-													value={childForm.special_needs}
-													onChange={(e) => handleChildChange('special_needs', e.target.value)}
-													placeholder={t('specialNeedsPlaceholder')}
-													className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-												/>
+												<div className="mt-1 space-y-2">
+													<label className="flex items-center">
+														<input
+															type="radio"
+															name="has_special_needs"
+															value="no"
+															checked={childForm.has_special_needs === false}
+															onChange={(e) => {
+																if (e.target.checked) {
+																	setChildForm(prev => ({ ...prev, has_special_needs: false, special_needs: '' }));
+																	setChildError(null);
+																}
+															}}
+															className="mr-2"
+														/>
+														<span className="text-sm text-gray-700">{t('childNoSpecialNeeds')}</span>
+													</label>
+													<label className="flex items-center">
+														<input
+															type="radio"
+															name="has_special_needs"
+															value="yes"
+															checked={childForm.has_special_needs === true}
+															onChange={(e) => {
+																if (e.target.checked) {
+																	setChildForm(prev => ({ ...prev, has_special_needs: true, special_needs: '' }));
+																	setChildError(null);
+																}
+															}}
+															className="mr-2"
+														/>
+														<span className="text-sm text-gray-700">{t('childHasSpecialNeedsYes')}</span>
+													</label>
+												</div>
+												{childForm.has_special_needs === true && (
+													<input
+														type="text"
+														value={childForm.special_needs}
+														onChange={(e) => handleChildChange('special_needs', e.target.value)}
+														placeholder={t('specialNeedsPlaceholder')}
+														className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+													/>
+												)}
 											</div>
 											<div>
 												<label className="block text-sm font-medium text-gray-700">

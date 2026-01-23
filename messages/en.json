@@ -8,7 +8,8 @@
     "words": "Sermons",
     "cells": "Life Groups",
     "contact": "Contact",
-    "kidsCheckin": "Kids Check-in"
+    "kidsCheckin": "Kids Check-in",
+    "portal": "Portal"
   },
   "hero": {
     "title": "Vine Church KWC",
@@ -260,6 +261,7 @@
     "loading": "Loading visitors...",
     "fetchError": "Error loading visitors",
     "backToAdmin": "Back to Admin",
+    "backToPortal": "← Back to Portal",
     "filters": "Filters",
     "filterType": "Filter Type",
     "filterAll": "All Visitors",
@@ -459,6 +461,52 @@
     "errorMessage": "An error occurred while submitting your registration. Please try again.",
     "requiredField": "This field is required",
     "invalidPhone": "Invalid phone number. Please use a valid format like (519) 123-4567"
+  },
+  "memberPortal": {
+    "title": "Member Portal",
+    "subtitle": "Welcome to your member portal",
+    "welcome": "Welcome",
+    "quickAccess": "Quick Access",
+    "cards": {
+      "profile": {
+        "title": "My Profile",
+        "description": "View and edit your personal information, family details, and volunteer preferences"
+      },
+      "kidsCheckin": {
+        "title": "Kids Check-in",
+        "description": "Check in and manage children for Vine Kids ministry"
+      },
+      "members": {
+        "title": "Manage Members",
+        "description": "View and manage all church member profiles"
+      },
+      "visitors": {
+        "title": "Manage Visitors",
+        "description": "View and manage visitor registrations"
+      },
+      "admin": {
+        "title": "Admin Panel",
+        "description": "Access full administrative tools and settings"
+      }
+    },
+    "dropdown": {
+      "myProfile": "My Profile",
+      "logout": "Sign Out"
+    },
+    "backToPortal": "← Back to Portal",
+    "backToWebsite": "← Back to Website"
+  },
+  "breadcrumb": {
+    "portal": "Portal",
+    "myProfile": "My Profile",
+    "manageMembers": "Manage Members",
+    "manageVisitors": "Manage Visitors",
+    "kidsCheckin": "Kids Check-in",
+    "admin": "Admin"
+  },
+  "portalFooter": {
+    "rights": "All rights reserved",
+    "backToWebsite": "Back to Website"
   },
   "member": {
     "title": "Member Area",

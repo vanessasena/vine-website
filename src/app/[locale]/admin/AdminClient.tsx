@@ -322,38 +322,13 @@ export default function AdminClient({ locale }: { locale: string }) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="bg-gray-50">
       {/* Header */}
       <header className="bg-gradient-to-r from-primary-600 via-secondary-600 to-accent-600 text-white py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold">{t('title')}</h1>
-              <p className="mt-2 text-white text-opacity-90">{t('subtitle')}</p>
-            </div>
-            <div className="flex gap-3">
-              <Link
-                href={`/${locale}/member`}
-                className="inline-flex items-center bg-white bg-opacity-20 hover:bg-opacity-30 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
-              >
-                <FontAwesomeIcon icon={faUser} className="mr-2" />
-                {locale === 'pt' ? 'Meu Perfil' : 'My Profile'}
-              </Link>
-              <button
-                onClick={handleSignOut}
-                className="inline-flex items-center bg-white bg-opacity-20 hover:bg-opacity-30 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
-              >
-                <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
-                {t('signOut')}
-              </button>
-              <Link
-                href={`/${locale}`}
-                className="inline-flex items-center bg-white bg-opacity-20 hover:bg-opacity-30 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
-              >
-                <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
-                {t('backToSite')}
-              </Link>
-            </div>
+          <div className="text-center">
+            <h1 className="text-3xl font-bold">{t('title')}</h1>
+            <p className="mt-2 text-white text-opacity-90">{t('subtitle')}</p>
           </div>
         </div>
       </header>

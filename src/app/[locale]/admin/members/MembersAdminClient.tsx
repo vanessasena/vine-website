@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { VOLUNTEER_AREA_OPTIONS, GENDER_OPTIONS, SPIRITUAL_COURSE_OPTIONS } from '@/lib/constants';
 import {
@@ -19,6 +20,7 @@ import {
   faSearch,
   faHome,
   faCross,
+  faArrowLeft,
 } from '@fortawesome/free-solid-svg-icons';
 
 interface Child {
@@ -98,14 +100,14 @@ export default function MembersAdminClient({ locale }: MembersAdminClientProps) 
         return;
       }
 
-      // Verify admin role
+      // Verify leader or admin role
       const { data: userData } = await supabase
         .from('users')
         .select('role')
         .eq('id', session.user.id)
         .single();
 
-      if (userData?.role !== 'admin') {
+      if (userData?.role !== 'admin' && userData?.role !== 'leader') {
         setError('Unauthorized');
         return;
       }
@@ -308,7 +310,7 @@ export default function MembersAdminClient({ locale }: MembersAdminClientProps) 
   }
 
   return (
-    <div className="py-8 space-y-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       {/* Header */}
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">

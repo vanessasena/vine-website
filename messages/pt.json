@@ -8,7 +8,8 @@
     "words": "Palavras",
     "cells": "Células",
     "contact": "Contato",
-    "kidsCheckin": "Check-in Vine Kids"
+    "kidsCheckin": "Kids Check-in",
+    "portal": "Portal"
   },
   "hero": {
     "title": "Vine Church KWC",
@@ -260,8 +261,7 @@
     "subtitle": "Visualize e analise os visitantes da igreja",
     "loading": "Carregando visitantes...",
     "fetchError": "Erro ao carregar visitantes",
-    "backToAdmin": "Voltar ao Admin",
-    "filters": "Filtros",
+    "backToAdmin": "Voltar ao Admin",    "backToPortal": "← Voltar ao Portal",    "filters": "Filtros",
     "filterType": "Tipo de Filtro",
     "filterAll": "Todos os Visitantes",
     "filterByDay": "Por Dia",
@@ -458,6 +458,52 @@
     "errorMessage": "Ocorreu um erro ao enviar seu registro. Por favor, tente novamente.",
     "requiredField": "Este campo é obrigatório",
     "invalidPhone": "Número de telefone inválido. Use um formato válido como (519) 123-4567"
+  },
+  "memberPortal": {
+    "title": "Portal do Membro",
+    "subtitle": "Bem-vindo ao seu portal",
+    "welcome": "Bem-vindo",
+    "quickAccess": "Acesso Rápido",
+    "cards": {
+      "profile": {
+        "title": "Meu Perfil",
+        "description": "Visualize e edite suas informações pessoais, dados familiares e preferências de voluntariado"
+      },
+      "kidsCheckin": {
+        "title": "Check-in de Crianças",
+        "description": "Faça check-in e gerencie crianças do ministério Vine Kids"
+      },
+      "members": {
+        "title": "Gerenciar Membros",
+        "description": "Visualize e gerencie todos os perfis de membros da igreja"
+      },
+      "visitors": {
+        "title": "Gerenciar Visitantes",
+        "description": "Visualize e gerencie registros de visitantes"
+      },
+      "admin": {
+        "title": "Painel Admin",
+        "description": "Acesse todas as ferramentas administrativas e configurações"
+      }
+    },
+    "dropdown": {
+      "myProfile": "Meu Perfil",
+      "logout": "Sair"
+    },
+    "backToPortal": "← Voltar ao Portal",
+    "backToWebsite": "← Voltar ao Website"
+  },
+  "breadcrumb": {
+    "portal": "Portal",
+    "myProfile": "Meu Perfil",
+    "manageMembers": "Gerenciar Membros",
+    "manageVisitors": "Gerenciar Visitantes",
+    "kidsCheckin": "Kids Check-in",
+    "admin": "Admin"
+  },
+  "portalFooter": {
+    "rights": "Todos os direitos reservados",
+    "backToWebsite": "Voltar ao Website"
   },
   "member": {
     "title": "Área do Membro",

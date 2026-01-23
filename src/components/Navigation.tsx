@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faTimes, faSignOutAlt, faUser, faUserShield } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faTimes, faSignOutAlt, faUser, faUserShield, faGauge } from '@fortawesome/free-solid-svg-icons';
 
 interface NavigationProps {
   locale: string;
@@ -139,18 +139,10 @@ export default function Navigation({ locale }: NavigationProps) {
             {/* User Menu */}
             {isAuthenticated ? (
               <>
-                {userRole === 'admin' && (
-                  <Link href={`/${locale}/admin`} className={getLinkClasses(`/${locale}/admin`)}>
-                    <FontAwesomeIcon icon={faUserShield} className="mr-1" />
-                    Admin
-                  </Link>
-                )}
-                {userRole === 'member' && (
-                  <Link href={`/${locale}/member`} className={getLinkClasses(`/${locale}/member`)}>
-                    <FontAwesomeIcon icon={faUser} className="mr-1" />
-                    {locale === 'pt' ? 'Membro' : 'Member'}
-                  </Link>
-                )}
+                <Link href={`/${locale}/member`} className={getLinkClasses(`/${locale}/member`)}>
+                  <FontAwesomeIcon icon={faGauge} className="mr-1" />
+                  {t('portal')}
+                </Link>
                 <button
                   onClick={handleLogout}
                   className="px-3 py-2 rounded-md text-gray-700 hover:text-primary-600 hover:bg-primary-50 transition-colors duration-200"
@@ -162,7 +154,7 @@ export default function Navigation({ locale }: NavigationProps) {
             ) : (
               <Link href={`/${locale}/login`} className={getLinkClasses(`/${locale}/login`)}>
                 <FontAwesomeIcon icon={faUser} className="mr-1" />
-                Login
+                Portal
               </Link>
             )}
 
@@ -226,18 +218,10 @@ export default function Navigation({ locale }: NavigationProps) {
               {/* User Menu Mobile */}
               {isAuthenticated ? (
                 <>
-                  {userRole === 'admin' && (
-                    <Link href={`/${locale}/admin`} className={getLinkClasses(`/${locale}/admin`, true)}>
-                      <FontAwesomeIcon icon={faUserShield} className="mr-2" />
-                      Admin
-                    </Link>
-                  )}
-                  {userRole === 'member' && (
-                    <Link href={`/${locale}/member`} className={getLinkClasses(`/${locale}/member`, true)}>
-                      <FontAwesomeIcon icon={faUser} className="mr-2" />
-                      {locale === 'pt' ? 'Membro' : 'Member'}
-                    </Link>
-                  )}
+                  <Link href={`/${locale}/member`} className={getLinkClasses(`/${locale}/member`, true)}>
+                    <FontAwesomeIcon icon={faGauge} className="mr-2" />
+                    {t('portal')}
+                  </Link>
                   <button
                     onClick={handleLogout}
                     className="py-2 px-3 rounded-md text-left text-gray-700 hover:text-primary-600 hover:bg-primary-50 transition-colors duration-200 w-full"
@@ -249,7 +233,7 @@ export default function Navigation({ locale }: NavigationProps) {
               ) : (
                 <Link href={`/${locale}/login`} className={getLinkClasses(`/${locale}/login`, true)}>
                   <FontAwesomeIcon icon={faUser} className="mr-2" />
-                  Login
+                  Portal
                 </Link>
               )}
 

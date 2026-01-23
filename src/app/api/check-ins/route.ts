@@ -167,15 +167,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Verify user has teacher or admin role
+    // Verify user has teacher, leader, or admin role
     const { data: userData, error: userError } = await supabase
       .from('users')
       .select('role')
       .eq('id', user.id)
       .single();
 
-    if (userError || !userData || (userData.role !== 'teacher' && userData.role !== 'admin')) {
-      return NextResponse.json({ error: 'Forbidden: Teacher or admin role required' }, { status: 403 });
+    if (
+      userError ||
+      !userData ||
+      (userData.role !== 'teacher' && userData.role !== 'leader' && userData.role !== 'admin')
+    ) {
+      return NextResponse.json({ error: 'Forbidden: Teacher, leader, or admin role required' }, { status: 403 });
     }
 
     const body = await request.json();
@@ -238,15 +242,19 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Verify user has teacher or admin role
+    // Verify user has teacher, leader, or admin role
     const { data: userData, error: userError } = await supabase
       .from('users')
       .select('role')
       .eq('id', user.id)
       .single();
 
-    if (userError || !userData || (userData.role !== 'teacher' && userData.role !== 'admin')) {
-      return NextResponse.json({ error: 'Forbidden: Teacher or admin role required' }, { status: 403 });
+    if (
+      userError ||
+      !userData ||
+      (userData.role !== 'teacher' && userData.role !== 'leader' && userData.role !== 'admin')
+    ) {
+      return NextResponse.json({ error: 'Forbidden: Teacher, leader, or admin role required' }, { status: 403 });
     }
 
     const body = await request.json();

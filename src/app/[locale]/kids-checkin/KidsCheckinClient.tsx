@@ -50,7 +50,7 @@ export default function KidsCheckinClient({ locale }: KidsCheckinClientProps) {
           .eq('id', session.user.id)
           .single();
 
-        if (userData?.role !== 'teacher' && userData?.role !== 'admin') {
+        if (userData?.role !== 'teacher' && userData?.role !== 'leader' && userData?.role !== 'admin') {
           router.push(`/${locale}`);
           return;
         }
@@ -113,36 +113,27 @@ export default function KidsCheckinClient({ locale }: KidsCheckinClientProps) {
       {/* Header with gradient */}
       <header className="bg-gradient-to-r from-primary-600 via-secondary-600 to-accent-600 text-white shadow-2xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-4">
-              <div className="flex-shrink-0 bg-white rounded-2xl p-3 shadow-lg">
-                <Image
-                  src="https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/Vine-CHURCH-logo-transparent-2.png"
-                  alt="Vine Church KWC Logo"
-                  width={64}
-                  height={64}
-                  className="h-10 w-auto"
-                />
-              </div>
-              <div>
-                <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
-                  {t('kidsCheckin.title')}
-                </h1>
-                <p className="text-blue-100 text-sm mt-1">
-                  <span className="inline-flex items-center gap-1">
-                    <FontAwesomeIcon icon={faHandSparkles} className="h-4 w-4" />
-                    <span>Welcome, {userName}</span>
-                  </span>
-                </p>
-              </div>
+          <div className="flex items-center justify-center sm:justify-start gap-4">
+            <div className="flex-shrink-0 bg-white rounded-2xl p-3 shadow-lg">
+              <Image
+                src="https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/Vine-CHURCH-logo-transparent-2.png"
+                alt="Vine Church KWC Logo"
+                width={64}
+                height={64}
+                className="h-10 w-auto"
+              />
             </div>
-            <Link
-              href={`/${locale}/admin`}
-              className="flex items-center gap-2 text-white hover:text-blue-100 transition-all bg-white/15 hover:bg-white/25 px-4 py-2 rounded-xl backdrop-blur-sm border border-white/20"
-            >
-              <FontAwesomeIcon icon={faArrowLeft} className="w-4 h-4" />
-              <span className="hidden sm:inline font-medium">{t('admin.backToAdmin')}</span>
-            </Link>
+            <div>
+              <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
+                {t('kidsCheckin.title')}
+              </h1>
+              <p className="text-blue-100 text-sm mt-1">
+                <span className="inline-flex items-center gap-1">
+                  <FontAwesomeIcon icon={faHandSparkles} className="h-4 w-4" />
+                  <span>Welcome, {userName}</span>
+                </span>
+              </p>
+            </div>
           </div>
         </div>
       </header>

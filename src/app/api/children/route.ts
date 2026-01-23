@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
     const parent_id = searchParams.get('parent_id');
     const fetch_all = searchParams.get('all'); // For teachers/admins to fetch all children
 
-    // Check if user is teacher or admin (for fetching all children)
+    // Check if user is teacher, leader, or admin (for fetching all children)
     if (fetch_all === 'true') {
       const { data: userData } = await supabase
         .from('users')
@@ -35,8 +35,8 @@ export async function GET(request: NextRequest) {
         .eq('id', user.id)
         .single();
 
-      if (userData?.role !== 'teacher' && userData?.role !== 'admin') {
-        return NextResponse.json({ error: 'Forbidden - requires teacher or admin role' }, { status: 403 });
+      if (userData?.role !== 'teacher' && userData?.role !== 'leader' && userData?.role !== 'admin') {
+        return NextResponse.json({ error: 'Forbidden - requires teacher, leader, or admin role' }, { status: 403 });
       }
 
       // Fetch all children for teachers/admins

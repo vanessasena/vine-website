@@ -347,8 +347,8 @@ export default function RegisterVisitorClient() {
 				<Image
 					src="https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/Vine-CHURCH-logo-transparent-2.png"
 					alt="Vine Church KWC Logo"
-					width={64}
-					height={64}
+				width={180}
+				height={60}
 					className="h-20 w-auto"
 				/>
 			</div>

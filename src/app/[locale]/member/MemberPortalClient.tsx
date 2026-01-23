@@ -138,8 +138,8 @@ export default function MemberPortalClient({ locale }: MemberPortalClientProps) 
               <Image
                 src="https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/Vine-CHURCH-logo-transparent-2.png"
                 alt="Vine Church KWC"
-                width={60}
-                height={60}
+                width={120}
+                height={40}
                 className="h-14 w-auto"
               />
               <div>

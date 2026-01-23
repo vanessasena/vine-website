@@ -118,8 +118,8 @@ export default function KidsCheckinClient({ locale }: KidsCheckinClientProps) {
               <Image
                 src="https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/Vine-CHURCH-logo-transparent-2.png"
                 alt="Vine Church KWC Logo"
-                width={64}
-                height={64}
+                width={120}
+                height={40}
                 className="h-10 w-auto"
               />
             </div>

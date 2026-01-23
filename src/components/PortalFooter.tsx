@@ -22,7 +22,7 @@ export default function PortalFooter({ locale }: PortalFooterProps) {
               <Image
                 src="https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/Vine-CHURCH-logo-transparent-2.png"
                 alt="Vine Church KWC Logo"
-                width={40}
+                width={120}
                 height={40}
                 className="h-10 w-auto"
               />

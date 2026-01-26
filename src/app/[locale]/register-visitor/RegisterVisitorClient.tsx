@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useMemo, useState, useRef, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { getLocalISODate } from '@/lib/utils';
+import { useApiCall } from '@/lib/hooks/useApiCall';
 
 type HowFoundOption = 'friend' | 'google' | 'social' | 'passing' | 'other' | '';
 
@@ -277,6 +278,8 @@ export default function RegisterVisitorClient() {
 		setShowPhoneConfirmModal(true);
 	};
 
+	const { call: apiCall } = useApiCall();
+
 	const handlePhoneConfirmation = async (confirmed: boolean) => {
 		setShowPhoneConfirmModal(false);
 
@@ -297,7 +300,7 @@ export default function RegisterVisitorClient() {
 				children: hasChildren ? children : [],
 			};
 
-			const response = await fetch('/api/visitors', {
+			const { data, error } = await apiCall('/api/visitors', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -305,8 +308,23 @@ export default function RegisterVisitorClient() {
 				body: JSON.stringify(payload),
 			});
 
-			if (!response.ok) {
-				throw new Error(t('errorMessage'));
+			if (error) {
+				// Handle different error types with specific messages
+				if (error.type === 'partial_failure') {
+					const childrenCount = error.details?.childrenCount || 0;
+					setFormError(
+						`Visitante registrado com sucesso, mas ${childrenCount} criança(s) não foi/foram salva(s). Por favor, tente novamente ou entre em contato com o administrador. (ID: ${error.requestId})`
+					);
+				} else if (error.type === 'network') {
+					setFormError('Erro de rede. Por favor, verifique sua conexão.');
+				} else if (error.type === 'timeout') {
+					setFormError('A requisição demorou muito tempo. Por favor, tente novamente.');
+				} else if (error.type === 'validation') {
+					setFormError(`Erro de validação: ${error.message} (ID: ${error.requestId})`);
+				} else {
+					setFormError(`${error.message} (Tipo: ${error.type}${error.requestId ? `, ID: ${error.requestId}` : ''})`);
+				}
+				return;
 			}
 
 			setFormSuccess(t('successMessage'));
@@ -333,9 +351,6 @@ export default function RegisterVisitorClient() {
 			});
 			setHasChildren(null);
 			setStep(1);
-		} catch (error) {
-			console.error('Error submitting visitor registration:', error);
-			setFormError(t('errorMessage'));
 		} finally {
 			setSubmitting(false);
 		}

@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { createErrorResponse, generateRequestId } from '@/lib/utils';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 export async function POST(request: NextRequest) {
+  const requestId = generateRequestId();
+
   try {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     const body = await request.json();
@@ -14,7 +17,15 @@ export async function POST(request: NextRequest) {
     // Validate required fields
     if (!visit_date || !name || !phone || !how_found) {
       return NextResponse.json(
-        { error: 'All fields are required' },
+        createErrorResponse(
+          'validation',
+          'All fields are required',
+          'MISSING_FIELDS',
+          { missingFields: ['visit_date', 'name', 'phone', 'how_found'].filter(
+            f => !body[f]
+          )},
+          requestId
+        ),
         { status: 400 }
       );
     }
@@ -37,7 +48,13 @@ export async function POST(request: NextRequest) {
     if (visitorError) {
       console.error('Error inserting visitor:', visitorError);
       return NextResponse.json(
-        { error: 'Failed to register visitor' },
+        createErrorResponse(
+          'server_error',
+          'Failed to register visitor',
+          'VISITOR_INSERT_FAILED',
+          { supabaseError: visitorError.message },
+          requestId
+        ),
         { status: 500 }
       );
     }
@@ -64,32 +81,52 @@ export async function POST(request: NextRequest) {
 
       if (childrenError) {
         console.error('Error inserting visitor children:', childrenError);
-        // Still return success for visitor, but log the error
+        // This is now a PARTIAL FAILURE - visitor was saved but children weren't
         return NextResponse.json(
-          {
-            success: true,
-            data: visitorData,
-            warning: 'Visitor registered but some children could not be registered',
-          },
-          { status: 201 }
+          createErrorResponse(
+            'partial_failure',
+            'Visitor was registered, but children information could not be saved',
+            'CHILDREN_INSERT_FAILED',
+            {
+              visitorSaved: true,
+              visitorId: visitorData.id,
+              childrenFailed: true,
+              supabaseError: childrenError.message,
+              childrenCount: childrenWithVisitorId.length,
+            },
+            requestId
+          ),
+          { status: 207 } // 207 Multi-Status
         );
       }
     }
 
     return NextResponse.json(
-      { success: true, data: visitorData },
+      {
+        success: true,
+        data: visitorData,
+        requestId,
+      },
       { status: 201 }
     );
   } catch (error) {
     console.error('Error in POST /api/visitors:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      createErrorResponse(
+        'server_error',
+        'An unexpected error occurred',
+        'INTERNAL_ERROR',
+        { errorMessage: error instanceof Error ? error.message : 'Unknown error' },
+        requestId
+      ),
       { status: 500 }
     );
   }
 }
 
 export async function GET(request: NextRequest) {
+  const requestId = generateRequestId();
+
   try {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
@@ -97,7 +134,13 @@ export async function GET(request: NextRequest) {
     const authHeader = request.headers.get('authorization');
     if (!authHeader) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
+        createErrorResponse(
+          'unauthorized',
+          'Authorization header is required',
+          'MISSING_AUTH',
+          undefined,
+          requestId
+        ),
         { status: 401 }
       );
     }
@@ -108,7 +151,13 @@ export async function GET(request: NextRequest) {
 
     if (authError || !user) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
+        createErrorResponse(
+          'unauthorized',
+          'Invalid or expired token',
+          'INVALID_TOKEN',
+          { authError: authError?.message },
+          requestId
+        ),
         { status: 401 }
       );
     }
@@ -122,7 +171,13 @@ export async function GET(request: NextRequest) {
 
     if (userData?.role !== 'admin' && userData?.role !== 'leader') {
       return NextResponse.json(
-        { error: 'Forbidden - Requires leader or admin role' },
+        createErrorResponse(
+          'forbidden',
+          'Requires leader or admin role',
+          'INSUFFICIENT_PERMISSIONS',
+          { userRole: userData?.role },
+          requestId
+        ),
         { status: 403 }
       );
     }
@@ -136,16 +191,32 @@ export async function GET(request: NextRequest) {
     if (error) {
       console.error('Error fetching visitors:', error);
       return NextResponse.json(
-        { error: 'Failed to fetch visitors' },
+        createErrorResponse(
+          'server_error',
+          'Failed to fetch visitors',
+          'FETCH_FAILED',
+          { supabaseError: error.message },
+          requestId
+        ),
         { status: 500 }
       );
     }
 
-    return NextResponse.json(data);
+    return NextResponse.json({
+      success: true,
+      data,
+      requestId,
+    });
   } catch (error) {
     console.error('Error in GET /api/visitors:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      createErrorResponse(
+        'server_error',
+        'An unexpected error occurred',
+        'INTERNAL_ERROR',
+        { errorMessage: error instanceof Error ? error.message : 'Unknown error' },
+        requestId
+      ),
       { status: 500 }
     );
   }

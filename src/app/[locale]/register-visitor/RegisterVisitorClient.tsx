@@ -57,6 +57,7 @@ export default function RegisterVisitorClient() {
 
 	const [step, setStep] = useState<1 | 2>(1);
 	const [hasChildren, setHasChildren] = useState<boolean | null>(null);
+	const [showChildForm, setShowChildForm] = useState(false);
 	const [visitor, setVisitor] = useState<VisitorForm>({
 		visit_date: getLocalISODate(),
 		name: '',
@@ -233,6 +234,7 @@ export default function RegisterVisitorClient() {
 			photo_permission: true,
 		});
 		setChildError(null);
+		setShowChildForm(false);
 	};
 
 	const removeChild = (index: number) => {
@@ -350,6 +352,7 @@ export default function RegisterVisitorClient() {
 				photo_permission: true,
 			});
 			setHasChildren(null);
+			setShowChildForm(false);
 			setStep(1);
 		} finally {
 			setSubmitting(false);
@@ -542,173 +545,199 @@ export default function RegisterVisitorClient() {
 											<span className="text-sm text-gray-600">{t('maxAge12')}</span>
 										</div>
 
-										{childError && (
-											<div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-												{childError}
-											</div>
+										{!showChildForm && (
+											<button
+												type="button"
+												onClick={() => setShowChildForm(true)}
+												className="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+											>
+												+ {t('addChildButton')}
+											</button>
 										)}
 
-										<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-											<div>
-												<label className="block text-sm font-medium text-gray-700">
-													{t('childName')}
-												</label>
-												<input												ref={childNameRef}													type="text"
-													value={childForm.name}
-													onChange={(e) => handleChildChange('name', e.target.value)}
-													className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-												/>
-											</div>
-											<div>
-												<label className="block text-sm font-medium text-gray-700">
-													{t('childDateOfBirth')}
-												</label>
-												<input
-													type="date"
-													value={childForm.date_of_birth}
-													onChange={(e) => handleChildChange('date_of_birth', e.target.value)}
-													className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-												/>
-											</div>
-											<div>
-												<label className="block text-sm font-medium text-gray-700">
-													{t('childHasAllergies')}
-												</label>
-												<div className="mt-1 space-y-2">
-													<label className="flex items-center">
-														<input
-															type="radio"
-															name="has_allergies"
-															value="no"
-															checked={childForm.has_allergies === false}
-															onChange={(e) => {
-																if (e.target.checked) {
-																	setChildForm(prev => ({ ...prev, has_allergies: false, allergies: '' }));
-																	setChildError(null);
-																}
-															}}
-															className="mr-2"
-														/>
-														<span className="text-sm text-gray-700">{t('childNoAllergies')}</span>
-													</label>
-													<label className="flex items-center">
-														<input
-															type="radio"
-															name="has_allergies"
-															value="yes"
-															checked={childForm.has_allergies === true}
-															onChange={(e) => {
-																if (e.target.checked) {
-																	setChildForm(prev => ({ ...prev, has_allergies: true, allergies: '' }));
-																	setChildError(null);
-																}
-															}}
-															className="mr-2"
-														/>
-														<span className="text-sm text-gray-700">{t('childHasAllergiesYes')}</span>
-													</label>
-												</div>
-												{childForm.has_allergies === true && (
-													<input
-														type="text"
-														value={childForm.allergies}
-														onChange={(e) => handleChildChange('allergies', e.target.value)}
-														placeholder={t('allergiesPlaceholder')}
-														className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-													/>
+										{showChildForm && (
+											<div className="space-y-4 border border-gray-200 rounded-lg p-4 bg-gray-50">
+												{childError && (
+													<div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+														{childError}
+													</div>
 												)}
-											</div>
-											<div>
-												<label className="block text-sm font-medium text-gray-700">
-													{t('childHasSpecialNeeds')}
-												</label>
-												<div className="mt-1 space-y-2">
-													<label className="flex items-center">
-														<input
-															type="radio"
-															name="has_special_needs"
-															value="no"
-															checked={childForm.has_special_needs === false}
-															onChange={(e) => {
-																if (e.target.checked) {
-																	setChildForm(prev => ({ ...prev, has_special_needs: false, special_needs: '' }));
-																	setChildError(null);
-																}
-															}}
-															className="mr-2"
-														/>
-														<span className="text-sm text-gray-700">{t('childNoSpecialNeeds')}</span>
-													</label>
-													<label className="flex items-center">
-														<input
-															type="radio"
-															name="has_special_needs"
-															value="yes"
-															checked={childForm.has_special_needs === true}
-															onChange={(e) => {
-																if (e.target.checked) {
-																	setChildForm(prev => ({ ...prev, has_special_needs: true, special_needs: '' }));
-																	setChildError(null);
-																}
-															}}
-															className="mr-2"
-														/>
-														<span className="text-sm text-gray-700">{t('childHasSpecialNeedsYes')}</span>
-													</label>
-												</div>
-												{childForm.has_special_needs === true && (
-													<input
-														type="text"
-														value={childForm.special_needs}
-														onChange={(e) => handleChildChange('special_needs', e.target.value)}
-														placeholder={t('specialNeedsPlaceholder')}
-														className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-													/>
-												)}
-											</div>
-											<div>
-												<label className="block text-sm font-medium text-gray-700">
-													{t('emergencyContactName')}
-												</label>
-												<input
-													type="text"
-													value={childForm.emergency_contact_name}
-													onChange={(e) => handleChildChange('emergency_contact_name', e.target.value)}
-													className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-												/>
-											</div>
-											<div>
-												<label className="block text-sm font-medium text-gray-700">
-													{t('emergencyContactPhone')}
-												</label>
-												<input
-													type="tel"
-													value={childForm.emergency_contact_phone}
-													onChange={(e) => handleChildChange('emergency_contact_phone', e.target.value)}
-													className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-												/>
-											</div>
-											<div className="sm:col-span-2 flex items-center space-x-2">
-												<input
-													id="photo-permission"
-													type="checkbox"
-													checked={childForm.photo_permission}
-													onChange={(e) => handleChildChange('photo_permission', e.target.checked)}
-													className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-												/>
-												<label htmlFor="photo-permission" className="text-sm text-gray-700">
-													{t('photoPermission')}
-												</label>
-											</div>
-										</div>
 
-										<button
-											type="button"
-											onClick={addChild}
-											className="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-										>
-											{t('addChildButton')}
-										</button>
+												<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+													<div>
+														<label className="block text-sm font-medium text-gray-700">
+															{t('childName')}
+														</label>
+														<input												ref={childNameRef}													type="text"
+															value={childForm.name}
+															onChange={(e) => handleChildChange('name', e.target.value)}
+															className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+														/>
+													</div>
+													<div>
+														<label className="block text-sm font-medium text-gray-700">
+															{t('childDateOfBirth')}
+														</label>
+														<input
+															type="date"
+															value={childForm.date_of_birth}
+															onChange={(e) => handleChildChange('date_of_birth', e.target.value)}
+															className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+														/>
+													</div>
+													<div>
+														<label className="block text-sm font-medium text-gray-700">
+															{t('childHasAllergies')}
+														</label>
+														<div className="mt-1 space-y-2">
+															<label className="flex items-center">
+																<input
+																	type="radio"
+																	name="has_allergies"
+																	value="no"
+																	checked={childForm.has_allergies === false}
+																	onChange={(e) => {
+																		if (e.target.checked) {
+																			setChildForm(prev => ({ ...prev, has_allergies: false, allergies: '' }));
+																			setChildError(null);
+																		}
+																	}}
+																	className="mr-2"
+																/>
+																<span className="text-sm text-gray-700">{t('childNoAllergies')}</span>
+															</label>
+															<label className="flex items-center">
+																<input
+																	type="radio"
+																	name="has_allergies"
+																	value="yes"
+																	checked={childForm.has_allergies === true}
+																	onChange={(e) => {
+																		if (e.target.checked) {
+																			setChildForm(prev => ({ ...prev, has_allergies: true, allergies: '' }));
+																			setChildError(null);
+																		}
+																	}}
+																	className="mr-2"
+																/>
+																<span className="text-sm text-gray-700">{t('childHasAllergiesYes')}</span>
+															</label>
+														</div>
+														{childForm.has_allergies === true && (
+															<input
+																type="text"
+																value={childForm.allergies}
+																onChange={(e) => handleChildChange('allergies', e.target.value)}
+																placeholder={t('allergiesPlaceholder')}
+																className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+															/>
+														)}
+													</div>
+													<div>
+														<label className="block text-sm font-medium text-gray-700">
+															{t('childHasSpecialNeeds')}
+														</label>
+														<div className="mt-1 space-y-2">
+															<label className="flex items-center">
+																<input
+																	type="radio"
+																	name="has_special_needs"
+																	value="no"
+																	checked={childForm.has_special_needs === false}
+																	onChange={(e) => {
+																		if (e.target.checked) {
+																			setChildForm(prev => ({ ...prev, has_special_needs: false, special_needs: '' }));
+																			setChildError(null);
+																		}
+																	}}
+																	className="mr-2"
+																/>
+																<span className="text-sm text-gray-700">{t('childNoSpecialNeeds')}</span>
+															</label>
+															<label className="flex items-center">
+																<input
+																	type="radio"
+																	name="has_special_needs"
+																	value="yes"
+																	checked={childForm.has_special_needs === true}
+																	onChange={(e) => {
+																		if (e.target.checked) {
+																			setChildForm(prev => ({ ...prev, has_special_needs: true, special_needs: '' }));
+																			setChildError(null);
+																		}
+																	}}
+																	className="mr-2"
+																/>
+																<span className="text-sm text-gray-700">{t('childHasSpecialNeedsYes')}</span>
+															</label>
+														</div>
+														{childForm.has_special_needs === true && (
+															<input
+																type="text"
+																value={childForm.special_needs}
+																onChange={(e) => handleChildChange('special_needs', e.target.value)}
+																placeholder={t('specialNeedsPlaceholder')}
+																className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+															/>
+														)}
+													</div>
+													<div>
+														<label className="block text-sm font-medium text-gray-700">
+															{t('emergencyContactName')}
+														</label>
+														<input
+															type="text"
+															value={childForm.emergency_contact_name}
+															onChange={(e) => handleChildChange('emergency_contact_name', e.target.value)}
+															className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+														/>
+													</div>
+													<div>
+														<label className="block text-sm font-medium text-gray-700">
+															{t('emergencyContactPhone')}
+														</label>
+														<input
+															type="tel"
+															value={childForm.emergency_contact_phone}
+															onChange={(e) => handleChildChange('emergency_contact_phone', e.target.value)}
+															className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+														/>
+													</div>
+													<div className="sm:col-span-2 flex items-center space-x-2">
+														<input
+															id="photo-permission"
+															type="checkbox"
+															checked={childForm.photo_permission}
+															onChange={(e) => handleChildChange('photo_permission', e.target.checked)}
+															className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+														/>
+														<label htmlFor="photo-permission" className="text-sm text-gray-700">
+															{t('photoPermission')}
+														</label>
+													</div>
+												</div>
+
+												<div className="flex gap-2">
+													<button
+														type="button"
+														onClick={addChild}
+														className="inline-flex items-center rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+													>
+														{t('saveChildButton')}
+													</button>
+													<button
+														type="button"
+														onClick={() => {
+															setShowChildForm(false);
+															setChildError(null);
+														}}
+														className="inline-flex items-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+													>
+														{t('cancelButton')}
+													</button>
+												</div>
+											</div>
+										)}
 
 										{children.length > 0 && (
 											<div className="border border-gray-200 rounded-lg divide-y divide-gray-200">

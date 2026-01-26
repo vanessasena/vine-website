@@ -45,10 +45,17 @@ export async function POST(request: NextRequest) {
     // If children are provided, insert them with visitor_id reference
     if (Array.isArray(children) && children.length > 0) {
       const childrenWithVisitorId = children.map(child => ({
-        ...child,
+        name: child.name,
+        date_of_birth: child.date_of_birth,
+        parent_name: name,
+        parent_phone: phone,
+        parent_email: null,
+        allergies: child.has_allergies ? child.allergies : null,
+        special_needs: child.has_special_needs ? child.special_needs : null,
+        emergency_contact_name: child.emergency_contact_name || null,
+        emergency_contact_phone: child.emergency_contact_phone || null,
+        photo_permission: child.photo_permission || false,
         visitor_id: visitorData.id,
-        parent_name: name, // Use parent visitor name
-        parent_phone: phone, // Use parent visitor phone
       }));
 
       const { error: childrenError } = await supabase

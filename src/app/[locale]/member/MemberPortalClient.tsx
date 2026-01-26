@@ -29,6 +29,7 @@ export default function MemberPortalClient({ locale }: MemberPortalClientProps) 
   const t = useTranslations('memberPortal');
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<UserRole | null>(null);
   const [userName, setUserName] = useState<string>('');
   const [showDropdown, setShowDropdown] = useState(false);
@@ -85,6 +86,8 @@ export default function MemberPortalClient({ locale }: MemberPortalClientProps) 
         setLoading(false);
       } catch (err) {
         console.error('Error checking auth:', err);
+        const errorMessage = err instanceof Error ? err.message : 'Falha ao verificar autenticação';
+        setError(errorMessage);
         router.push(`/${locale}/login?redirect=/${locale}/member`);
       }
     }

@@ -90,6 +90,149 @@ import { formatLocalDate } from '@/lib/utils';
 ## Utility Functions
 - **`formatLocalDate(dateString)`**: Formats ISO date strings as local dates, avoiding timezone offset issues. Located in `src/lib/utils.ts`
 
+## Structured Error Handling & API Calls
+
+### Error System Overview
+The application uses a **structured error handling system** to ensure no errors are silent and users always receive clear feedback. All errors follow a unified format with tracking IDs for debugging.
+
+### Error Types
+When making API calls, errors are categorized as:
+- `validation`: Input validation failed (HTTP 400)
+- `not_found`: Resource not found (HTTP 404)
+- `unauthorized`: Authentication required/failed (HTTP 401)
+- `forbidden`: Insufficient permissions (HTTP 403)
+- `conflict`: Resource conflict (HTTP 409)
+- `server_error`: Server-side error (HTTP 5xx)
+- `network`: Network connectivity issue
+- `timeout`: Request timeout (> 30 seconds)
+- `partial_failure`: Partial operation success (HTTP 207) - e.g., visitor saved but children failed
+
+### Error Response Format
+All API errors return structured responses:
+```typescript
+{
+  success: false,
+  error: {
+    code: 'ERROR_CODE',           // Machine-readable error code
+    type: 'error_type',           // One of the error types above
+    message: 'User-friendly message',
+    details: {...},               // Additional error context
+    requestId: 'req_xxx_yyy',     // Unique ID for support/debugging
+    timestamp: '2026-01-25T...'   // ISO timestamp
+  }
+}
+```
+
+### Using useApiCall Hook
+For making API calls in client components, **always use the `useApiCall` hook** instead of raw `fetch()`. It handles errors, retries, and timeouts automatically.
+
+**Example:**
+```typescript
+'use client';
+import { useApiCall } from '@/lib/hooks/useApiCall';
+
+export function MyComponent() {
+  const { call: apiCall } = useApiCall();
+
+  const handleSubmit = async () => {
+    const { data, error } = await apiCall('/api/endpoint', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (error) {
+      // Handle specific error types
+      if (error.type === 'partial_failure') {
+        setError(`Operation partially failed. ${error.details.failureReason}`);
+      } else if (error.type === 'network') {
+        setError('Network error. Please check your connection.');
+      } else if (error.type === 'timeout') {
+        setError('Request timed out. Please try again.');
+      } else {
+        setError(`${error.message} (ID: ${error.requestId})`);
+      }
+      return;
+    }
+
+    // Process successful response
+    console.log('Success:', data);
+  };
+}
+```
+
+### Hook Options
+Customize the hook with options:
+```typescript
+const { call: apiCall } = useApiCall({
+  maxRetries: 3,        // Default: 3 (retries on transient errors)
+  retryDelay: 1000,     // Default: 1000ms (exponential backoff)
+  timeoutMs: 30000,     // Default: 30000ms (30 seconds)
+});
+```
+
+### Creating Error Responses in API Routes
+In `src/app/api/` routes, use `createErrorResponse()` to return structured errors:
+
+```typescript
+import { createErrorResponse, generateRequestId } from '@/lib/utils';
+
+export async function POST(request: NextRequest) {
+  const requestId = generateRequestId();
+
+  // Validation error
+  if (!required_field) {
+    return NextResponse.json(
+      createErrorResponse(
+        'validation',
+        'Field is required',
+        'FIELD_MISSING',
+        { missingFields: ['field1', 'field2'] },
+        requestId
+      ),
+      { status: 400 }
+    );
+  }
+
+  // Partial failure example
+  if (primaryOperation.ok && secondaryOperation.failed) {
+    return NextResponse.json(
+      createErrorResponse(
+        'partial_failure',
+        'Primary saved but secondary failed',
+        'PARTIAL_FAILURE',
+        { primaryId: result.id, secondaryError: ... },
+        requestId
+      ),
+      { status: 207 } // HTTP 207 Multi-Status
+    );
+  }
+
+  // Success
+  return NextResponse.json(
+    { success: true, data: result, requestId },
+    { status: 201 }
+  );
+}
+```
+
+### Key Rules
+1. **Never silently fail** - Always return errors to the client
+2. **Use request IDs** - Every error includes a unique `requestId` for debugging
+3. **Distinguish error types** - Show different UX based on error type (network vs validation vs server)
+4. **Detect partial failures** - Use HTTP 207 when some operations succeed and others fail
+5. **Include details** - In `details` field, provide context to help users understand what happened
+6. **Retry transient errors** - Hook automatically retries on 429 (rate limit) and 503 (service unavailable)
+
+### Extracting Errors from API Responses
+Use `extractErrorMessage()` to normalize errors from any API:
+```typescript
+import { extractErrorMessage } from '@/lib/utils';
+
+const errorInfo = await extractErrorMessage(response);
+// Returns: { message, type, requestId, details }
+```
+
 ## Church Information
 - Location: Kitchener, Ontario
 - Address: 417 King St W, Kitchener, ON N2G 1C2

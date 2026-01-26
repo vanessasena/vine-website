@@ -16,6 +16,7 @@ import {
   faCircleInfo
 } from '@fortawesome/free-solid-svg-icons';
 import { formatLocalDate, getLocalISODate } from '@/lib/utils';
+import { useApiCall } from '@/lib/hooks/useApiCall';
 
 interface Child {
   id: string;
@@ -71,6 +72,7 @@ export default function CheckinForm({
   onCheckInSuccess,
 }: CheckinFormProps) {
   const t = useTranslations();
+  const { call: apiCall } = useApiCall();
   const [memberChildren, setMemberChildren] = useState<Child[]>([]);
   const [visitorChildren, setVisitorChildren] = useState<VisitorChild[]>([]);
   const [loadingChildren, setLoadingChildren] = useState(false);
@@ -103,31 +105,25 @@ export default function CheckinForm({
   }, []);
 
   const fetchMemberChildren = async (token: string) => {
-    try {
-      const response = await fetch('/api/children?all=true', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!response.ok) throw new Error('failed');
-      const children = await response.json();
-      setMemberChildren(Array.isArray(children) ? children : []);
-    } catch (err) {
-      console.error('Error fetching member children:', err);
-      setMemberChildren([]);
+    const { data, error: apiError } = await apiCall('/api/children?all=true', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (apiError) {
+      console.error('Error fetching member children:', apiError);
+      return;
     }
+    setMemberChildren(Array.isArray(data) ? data : []);
   };
 
-  const fetchVisitorChildren: (token: string) => Promise<void> = async (token) => {
-    try {
-      const response = await fetch('/api/visitor-children', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!response.ok) throw new Error('failed');
-      const children = await response.json();
-      setVisitorChildren(Array.isArray(children) ? children : []);
-    } catch (err) {
-      console.error('Error fetching visitor children:', err);
-      setVisitorChildren([]);
+  const fetchVisitorChildren = async (token: string) => {
+    const { data, error: apiError } = await apiCall('/api/visitor-children', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (apiError) {
+      console.error('Error fetching visitor children:', apiError);
+      return;
     }
+    setVisitorChildren(Array.isArray(data) ? data : []);
   };
 
   useEffect(() => {
@@ -143,6 +139,7 @@ export default function CheckinForm({
 
         setAuthToken(session.access_token);
         setLoadingChildren(true);
+        setError(null);
         await Promise.all([
           fetchMemberChildren(session.access_token),
           fetchVisitorChildren(session.access_token),
@@ -156,7 +153,7 @@ export default function CheckinForm({
     };
 
     load();
-  }, [t]);
+  }, [t, apiCall]);
 
   const memberOptions = useMemo(() => {
     const term = searchTerm.toLowerCase();
@@ -248,14 +245,19 @@ export default function CheckinForm({
         use_view: 'true'
       });
 
-      const checkResponse = await fetch(`/api/check-ins?${checkParams.toString()}`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
+      const { data: existingCheckins, error: checkError } = await apiCall(
+        `/api/check-ins?${checkParams.toString()}`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
 
-      if (checkResponse.ok) {
-        const existingCheckins = await checkResponse.json();
+      if (checkError) {
+        console.error('Error checking existing check-ins:', checkError);
+        // Continue anyway, user might still want to check in
+      } else if (existingCheckins) {
         const isAlreadyCheckedIn = existingCheckins.some((checkin: any) => {
           if (selectedChildType === 'member') {
             return checkin.member_child_id === selectedChildId;
@@ -279,7 +281,7 @@ export default function CheckinForm({
         checkin_notes: notes || null,
       };
 
-      const response = await fetch('/api/check-ins', {
+      const { data, error: submitError } = await apiCall('/api/check-ins', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -288,9 +290,17 @@ export default function CheckinForm({
         body: JSON.stringify(checkInData),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || t('kidsCheckin.errors.checkInFailed'));
+      if (submitError) {
+        if (submitError.type === 'partial_failure') {
+          setError(`${t('kidsCheckin.errors.checkInFailed')} (ID: ${submitError.requestId})`);
+        } else if (submitError.type === 'network') {
+          setError(t('kidsCheckin.errors.networkError') || submitError.message);
+        } else if (submitError.type === 'timeout') {
+          setError(t('kidsCheckin.errors.timeoutError') || submitError.message);
+        } else {
+          setError(`${submitError.message} (ID: ${submitError.requestId})`);
+        }
+        return;
       }
 
       setSuccess(t('kidsCheckin.success.checkedIn'));

@@ -104,8 +104,10 @@ export default function VisitorsAdminClient() {
         throw new Error('Failed to fetch visitors');
       }
 
-      const data = await response.json();
-      setVisitors(data);
+      const responseData = await response.json();
+      // Extract array from structured response format
+      const visitorsArray = Array.isArray(responseData) ? responseData : (responseData.data || []);
+      setVisitors(visitorsArray);
       setLoading(false);
     } catch (err) {
       console.error('Error fetching visitors:', err);

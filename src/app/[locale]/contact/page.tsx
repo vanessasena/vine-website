@@ -54,6 +54,30 @@ export default function ContactPage({ params: { locale } }: PageProps) {
         </div>
       </section>
 
+      {/* Google Map Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-8">
+            {t('visitUs')}
+          </h2>
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+            <GoogleMapEmbed className="w-full h-80" />
+            <div className="p-4">
+              <p className="text-sm text-gray-500 mb-4">
+                417 King St W, Kitchener, ON N2G 1C2
+              </p>
+              <Link
+                href="https://maps.app.goo.gl/hHUA4zo7fRg8vHJj6"
+                target="_blank"
+                className="inline-block bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition duration-300"
+              >
+                {locale === 'pt' ? 'Abrir no Google Maps' : 'Open in Google Maps'}
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* First Visit Info */}
       <section className="py-16 bg-secondary-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -109,30 +133,6 @@ export default function ContactPage({ params: { locale } }: PageProps) {
               >
                 <FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2" />
                 {locale === 'pt' ? 'Ver mapa de estacionamento' : 'View parking map'}
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Google Map Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8">
-            {t('visitUs')}
-          </h2>
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-            <GoogleMapEmbed className="w-full h-80" />
-            <div className="p-4">
-              <p className="text-sm text-gray-500 mb-4">
-                417 King St W, Kitchener, ON N2G 1C2
-              </p>
-              <Link
-                href="https://maps.app.goo.gl/hHUA4zo7fRg8vHJj6"
-                target="_blank"
-                className="inline-block bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition duration-300"
-              >
-                {locale === 'pt' ? 'Abrir no Google Maps' : 'Open in Google Maps'}
               </Link>
             </div>
           </div>

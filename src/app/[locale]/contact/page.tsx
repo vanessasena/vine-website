@@ -225,18 +225,55 @@ export default function ContactPage({ params: { locale } }: PageProps) {
                   <FontAwesomeIcon icon={faHandshake} className="mr-2" />
                   {locale === 'pt' ? 'Primeira Visita?' : 'First Visit?'}
                 </h3>
-                <p className="text-gray-700 mb-4">
+                <p className="text-gray-700 mb-6">
                   {locale === 'pt'
                     ? 'Não se preocupe! Nossa equipe está pronta para te receber e ajudar. Venha como você está!'
                     : "Don't worry! Our team is ready to welcome you and help. Come as you are!"
                   }
                 </p>
-                <ul className="text-gray-600 space-y-2">
-                  <li>• {locale === 'pt' ? 'Estacionamento gratuito de fácil acesso' : 'Free parking with easy access'}</li>
-                  <li>• {locale === 'pt' ? 'Recepção calorosa' : 'Warm welcome'}</li>
-                  <li>• {locale === 'pt' ? 'Ambiente familiar' : 'Family-friendly environment'}</li>
-                  <li>• {locale === 'pt' ? 'Tradução disponível' : 'Translation available'}</li>
-                </ul>
+
+                {/* What to Expect */}
+                <div className="space-y-3 mb-6">
+                  <div className="flex items-start space-x-3">
+                    <span className="text-primary-600 font-bold flex-shrink-0">✓</span>
+                    <span className="text-gray-700">
+                      {locale === 'pt' ? 'Recepção calorosa e acolhedora' : 'Warm and welcoming reception'}
+                    </span>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <span className="text-primary-600 font-bold flex-shrink-0">✓</span>
+                    <span className="text-gray-700">
+                      {locale === 'pt' ? 'Ambiente familiar e seguro para crianças' : 'Family-friendly and safe environment'}
+                    </span>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <span className="text-primary-600 font-bold flex-shrink-0">✓</span>
+                    <span className="text-gray-700">
+                      {locale === 'pt' ? 'Culto em português com tradução para inglês disponível' : 'Service in Portuguese with English translation available'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Parking Information Link */}
+                <div className="bg-white rounded-lg p-4 border-l-4 border-primary-600">
+                  <p className="text-sm text-gray-600 mb-2 font-semibold">
+                    {locale === 'pt' ? 'ESTACIONAMENTO' : 'PARKING'}
+                  </p>
+                  <p className="text-gray-700 mb-3">
+                    {locale === 'pt'
+                      ? 'Contamos com estacionamento privado e público gratuito nos finais de semana.'
+                      : 'We offer private parking and free public parking on weekends.'
+                    }
+                  </p>
+                  <Link
+                    href="https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/parking.png"
+                    target="_blank"
+                    className="inline-flex items-center text-primary-600 hover:text-primary-800 font-semibold text-sm"
+                  >
+                    <FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2" />
+                    {locale === 'pt' ? 'Ver mapa de estacionamento' : 'View parking map'}
+                  </Link>
+                </div>
               </div>
 
             </div>

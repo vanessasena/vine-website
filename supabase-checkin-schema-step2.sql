@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS public.visitor_children (
   emergency_contact_name TEXT,
   emergency_contact_phone TEXT,
   photo_permission BOOLEAN DEFAULT false,
+  visitor_id UUID REFERENCES public.visitors(id) ON DELETE CASCADE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -26,31 +27,32 @@ CREATE TABLE IF NOT EXISTS public.check_ins (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   service_date DATE NOT NULL,
   service_time TIME NOT NULL,
-  
+
   -- Child reference (either member child or visitor child)
   member_child_id UUID REFERENCES public.children(id) ON DELETE CASCADE,
   visitor_child_id UUID REFERENCES public.visitor_children(id) ON DELETE CASCADE,
-  
+
+
   -- Check-in details
   checked_in_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   checked_in_by UUID REFERENCES public.users(id) ON DELETE SET NULL,
   checked_in_by_name TEXT NOT NULL,
-  
+
   -- Check-out details
   checked_out_at TIMESTAMP WITH TIME ZONE,
   checked_out_by UUID REFERENCES public.users(id) ON DELETE SET NULL,
   checked_out_by_name TEXT,
-  
+
   -- Current status
   status checkin_status NOT NULL DEFAULT 'checked_in',
-  
+
   -- Notes
   checkin_notes TEXT,
   checkout_notes TEXT,
-  
+
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  
+
   -- Ensure child is either member or visitor, but not both
   CONSTRAINT check_child_type CHECK (
     (member_child_id IS NOT NULL AND visitor_child_id IS NULL) OR
@@ -66,6 +68,10 @@ CREATE INDEX IF NOT EXISTS idx_check_ins_status ON public.check_ins(status);
 CREATE INDEX IF NOT EXISTS idx_check_ins_member_child_id ON public.check_ins(member_child_id);
 CREATE INDEX IF NOT EXISTS idx_check_ins_visitor_child_id ON public.check_ins(visitor_child_id);
 CREATE INDEX IF NOT EXISTS idx_check_ins_service_date_status ON public.check_ins(service_date, status);
+
+CREATE INDEX IF NOT EXISTS idx_visitor_children_visitor_id ON public.visitor_children(visitor_id);
+CREATE INDEX IF NOT EXISTS idx_visitor_children_dob ON public.visitor_children(date_of_birth);
+CREATE INDEX IF NOT EXISTS idx_visitor_children_parent_phone ON public.visitor_children(parent_phone);
 
 -- Enable Row Level Security
 ALTER TABLE public.visitor_children ENABLE ROW LEVEL SECURITY;
@@ -197,7 +203,7 @@ COMMENT ON COLUMN public.check_ins.status IS 'Current status: checked_in or chec
 
 -- View to get current checked-in children with full details
 CREATE OR REPLACE VIEW public.current_checked_in_children AS
-SELECT 
+SELECT
   ci.id as checkin_id,
   ci.service_date,
   ci.service_time,
@@ -227,7 +233,7 @@ WHERE ci.member_child_id IS NOT NULL AND ci.status = 'checked_in'
 
 UNION ALL
 
-SELECT 
+SELECT
   ci.id as checkin_id,
   ci.service_date,
   ci.service_time,

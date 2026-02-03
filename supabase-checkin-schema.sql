@@ -24,33 +24,31 @@ CREATE TABLE IF NOT EXISTS public.visitor_children (
 -- Create check_ins table to track all check-ins/check-outs
 CREATE TABLE IF NOT EXISTS public.check_ins (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  service_date DATE NOT NULL,
-  service_time TIME NOT NULL,
-  
+
   -- Child reference (either member child or visitor child)
   member_child_id UUID REFERENCES public.children(id) ON DELETE CASCADE,
   visitor_child_id UUID REFERENCES public.visitor_children(id) ON DELETE CASCADE,
-  
+
   -- Check-in details
   checked_in_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   checked_in_by UUID REFERENCES public.users(id) ON DELETE SET NULL,
   checked_in_by_name TEXT NOT NULL,
-  
+
   -- Check-out details
   checked_out_at TIMESTAMP WITH TIME ZONE,
   checked_out_by UUID REFERENCES public.users(id) ON DELETE SET NULL,
   checked_out_by_name TEXT,
-  
+
   -- Current status
   status checkin_status NOT NULL DEFAULT 'checked_in',
-  
+
   -- Notes
   checkin_notes TEXT,
   checkout_notes TEXT,
-  
+
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  
+
   -- Ensure child is either member or visitor, but not both
   CONSTRAINT check_child_type CHECK (
     (member_child_id IS NOT NULL AND visitor_child_id IS NULL) OR
@@ -74,7 +72,7 @@ ALTER TABLE public.check_ins ENABLE ROW LEVEL SECURITY;
 -- Create teacher role enum (add to existing user_role if it exists)
 -- If user_role already exists, use: ALTER TYPE user_role ADD VALUE IF NOT EXISTS 'teacher';
 -- For new installations:
-DO $$ 
+DO $$
 BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_role') THEN
     CREATE TYPE user_role AS ENUM ('member', 'admin', 'teacher');
@@ -209,63 +207,35 @@ COMMENT ON COLUMN public.check_ins.checked_out_by_name IS 'Name of the teacher w
 COMMENT ON COLUMN public.check_ins.status IS 'Current status: checked_in or checked_out';
 
 -- View to get current checked-in children with full details
+
 CREATE OR REPLACE VIEW public.current_checked_in_children AS
-SELECT 
-  ci.id as checkin_id,
-  ci.service_date,
-  ci.service_time,
-  ci.checked_in_at,
-  ci.checked_in_by_name,
-  ci.status,
-  ci.checkin_notes,
-  -- Member child details
-  c.id as child_id,
-  c.name as child_name,
-  c.date_of_birth,
-  c.allergies,
-  c.special_needs,
-  c.photo_permission,
-  'member' as child_type,
-  mp1.name as parent1_name,
-  mp1.phone as parent1_phone,
-  mp2.name as parent2_name,
-  mp2.phone as parent2_phone,
-  NULL as emergency_contact_name,
-  NULL as emergency_contact_phone
-FROM public.check_ins ci
-LEFT JOIN public.children c ON ci.member_child_id = c.id
-LEFT JOIN public.member_profiles mp1 ON c.parent1_id = mp1.id
-LEFT JOIN public.member_profiles mp2 ON c.parent2_id = mp2.id
-WHERE ci.member_child_id IS NOT NULL AND ci.status = 'checked_in'
-
-UNION ALL
-
-SELECT 
-  ci.id as checkin_id,
-  ci.service_date,
-  ci.service_time,
-  ci.checked_in_at,
-  ci.checked_in_by_name,
-  ci.status,
-  ci.checkin_notes,
-  -- Visitor child details
-  vc.id as child_id,
-  vc.name as child_name,
-  vc.date_of_birth,
-  vc.allergies,
-  vc.special_needs,
-  vc.photo_permission,
-  'visitor' as child_type,
-  vc.parent_name as parent1_name,
-  vc.parent_phone as parent1_phone,
-  NULL as parent2_name,
-  NULL as parent2_phone,
+SELECT
+  ci.id,
+  ci.member_child_id,
+  ci.visitor_child_id,
+  COALESCE(mc.name, vc.name) AS child_name,
+  COALESCE(mc.date_of_birth, vc.date_of_birth) AS child_dob,
+  CASE WHEN ci.member_child_id IS NOT NULL THEN true ELSE false END AS is_member,
+  COALESCE(
+    (SELECT mp.name FROM public.member_profiles mp WHERE mp.id = mc.parent1_id),
+    vc.parent_name
+  ) AS parent_name,
+  COALESCE(
+    (SELECT mp.phone FROM public.member_profiles mp WHERE mp.id = mc.parent1_id),
+    vc.parent_phone
+  ) AS parent_phone,
+  COALESCE(mc.allergies, vc.allergies) AS allergies,
+  COALESCE(mc.special_needs, vc.special_needs) AS special_needs,
   vc.emergency_contact_name,
-  vc.emergency_contact_phone
+  vc.emergency_contact_phone,
+  ci.checked_in_at,
+  ci.checked_in_by_name,
+  ci.checkin_notes AS notes,
+  ci.status
 FROM public.check_ins ci
+LEFT JOIN public.children mc ON ci.member_child_id = mc.id
 LEFT JOIN public.visitor_children vc ON ci.visitor_child_id = vc.id
-WHERE ci.visitor_child_id IS NOT NULL AND ci.status = 'checked_in';
-
+WHERE ci.status = 'checked_in';
 -- Grant access to the view
 GRANT SELECT ON public.current_checked_in_children TO authenticated;
 

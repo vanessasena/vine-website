@@ -2,7 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import Link from 'next/link';
 import { useTranslations } from 'next-intl';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { getSession } from '@/lib/auth';
 
 interface Visitor {
@@ -64,14 +67,47 @@ export default function VisitorsAdminClient() {
 
   const fetchVisitors = async () => {
     try {
-      const response = await fetch('/api/visitors');
+      const { createClient } = await import('@supabase/supabase-js');
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+      );
+
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!session) {
+        setError('Unauthorized');
+        setLoading(false);
+        return;
+      }
+
+      // Check if user is leader or admin
+      const { data: userData } = await supabase
+        .from('users')
+        .select('role')
+        .eq('id', session.user.id)
+        .single();
+
+      if (userData?.role !== 'admin' && userData?.role !== 'leader') {
+        setError('Forbidden - Requires leader or admin role');
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetch('/api/visitors', {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+      });
 
       if (!response.ok) {
         throw new Error('Failed to fetch visitors');
       }
 
-      const data = await response.json();
-      setVisitors(data);
+      const responseData = await response.json();
+      // Extract array from structured response format
+      const visitorsArray = Array.isArray(responseData) ? responseData : (responseData.data || []);
+      setVisitors(visitorsArray);
       setLoading(false);
     } catch (err) {
       console.error('Error fetching visitors:', err);
@@ -188,19 +224,11 @@ export default function VisitorsAdminClient() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-3xl font-bold text-gray-900">{t('title')}</h1>
-            <button
-              onClick={() => router.push(`/${locale}/admin`)}
-              className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
-            >
-              {t('backToAdmin')}
-            </button>
-          </div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">{t('title')}</h1>
           <p className="text-gray-600">{t('subtitle')}</p>
         </div>
 

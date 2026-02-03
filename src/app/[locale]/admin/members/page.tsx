@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import Breadcrumb from '@/components/Breadcrumb';
+import PortalFooter from '@/components/PortalFooter';
 import MembersAdminClient from './MembersAdminClient';
 
 export const metadata: Metadata = {
@@ -17,31 +16,20 @@ interface PageProps {
 
 export default function MembersAdminPage({ params: { locale } }: PageProps) {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-6">
-          <Link
-            href={`/${locale}/admin`}
-            className="inline-flex items-center text-primary-600 hover:text-primary-700 font-semibold"
-          >
-            <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
-            {locale === 'pt' ? 'Voltar ao Admin' : 'Back to Admin'}
-          </Link>
-        </div>
+    <main className="min-h-screen bg-gray-50 flex flex-col">
+      <Breadcrumb
+        locale={locale}
+        items={[
+          { label: locale === 'pt' ? 'Portal' : 'Portal', href: `/${locale}/member` },
+          { label: locale === 'pt' ? 'Gerenciar Membros' : 'Manage Members' }
+        ]}
+      />
 
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {locale === 'pt' ? 'Perfis de Membros' : 'Member Profiles'}
-          </h1>
-          <p className="text-gray-600 mb-6">
-            {locale === 'pt'
-              ? 'Visualize todos os perfis de membros cadastrados no sistema.'
-              : 'View all member profiles registered in the system.'}
-          </p>
-
-          <MembersAdminClient locale={locale} />
-        </div>
+      <div className="flex-grow">
+        <MembersAdminClient locale={locale} />
       </div>
-    </div>
+
+      <PortalFooter locale={locale} />
+    </main>
   );
 }

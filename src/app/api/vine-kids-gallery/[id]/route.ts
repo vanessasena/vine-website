@@ -19,7 +19,7 @@ export async function DELETE(
     const token = authHeader.replace('Bearer ', '');
 
     // Verify user is authenticated
-    const anonClient = createSupabaseServerClient();
+    const anonClient = await createSupabaseServerClient();
     if (!anonClient) {
       return NextResponse.json(
         { error: 'Database connection not available' },
@@ -121,7 +121,7 @@ export async function PATCH(
     const token = authHeader.replace('Bearer ', '');
 
     // Verify user is authenticated
-    const anonClient = createSupabaseServerClient();
+    const anonClient = await createSupabaseServerClient();
     if (!anonClient) {
       return NextResponse.json(
         { error: 'Database connection not available' },

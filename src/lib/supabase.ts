@@ -23,19 +23,12 @@ export function getSupabaseClient(): SupabaseClient<Database> | null {
   return supabase;
 }
 
-// Server-side client cache (singleton pattern)
-let serverClientCache: SupabaseClient<Database> | null = null;
+// Admin client cache (singleton pattern)
 let adminClientCache: SupabaseClient<Database> | null = null;
 
 // Create a Supabase client for server-side operations (for API routes)
-// This uses environment variables directly from process.env which are only available server-side
-// Returns cached instance to avoid multiple client creation
-export function createSupabaseServerClient(): SupabaseClient<Database> | null {
-  // Return cached client if available
-  if (serverClientCache) {
-    return serverClientCache;
-  }
-
+// This creates a new client per request and reads cookies for authentication
+export async function createSupabaseServerClient(): Promise<SupabaseClient<Database> | null> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
@@ -43,9 +36,49 @@ export function createSupabaseServerClient(): SupabaseClient<Database> | null {
     return null;
   }
 
-  // Create and cache the client
-  serverClientCache = createClient<Database>(url, key);
-  return serverClientCache;
+  // Create a basic client
+  const client = createClient<Database>(url, key, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+      detectSessionInUrl: false,
+    },
+  });
+
+  // Try to read the access token from cookies and set it manually
+  try {
+    const { cookies } = await import('next/headers');
+    const cookieStore = cookies();
+
+    // Supabase stores the access token in a cookie named like: sb-<project-ref>-auth-token
+    // We need to find it by looking for cookies that match the pattern
+    const allCookies = cookieStore.getAll();
+    const authTokenCookie = allCookies.find(c =>
+      c.name.startsWith('sb-') && c.name.endsWith('-auth-token')
+    );
+
+    if (authTokenCookie && authTokenCookie.value) {
+      // Parse the token from the cookie value (it's JSON stringified)
+      try {
+        const authData = JSON.parse(authTokenCookie.value);
+        if (authData.access_token) {
+          // Set the session manually
+          await client.auth.setSession({
+            access_token: authData.access_token,
+            refresh_token: authData.refresh_token,
+          });
+        }
+      } catch (e) {
+        // If parsing fails, cookie might not be in expected format
+        console.error('Failed to parse auth cookie:', e);
+      }
+    }
+  } catch (error) {
+    // If we can't read cookies, just return the basic client
+    console.error('Failed to read cookies:', error);
+  }
+
+  return client;
 }
 
 // Create admin client with service role key (bypasses RLS)

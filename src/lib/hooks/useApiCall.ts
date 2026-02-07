@@ -32,6 +32,7 @@ export function useApiCall<T = any>(options: UseApiCallOptions = {}) {
       try {
         const response = await fetch(url, {
           ...init,
+          credentials: 'include', // Include cookies for authentication
           signal: controller.signal,
         });
         clearTimeout(timeoutId);

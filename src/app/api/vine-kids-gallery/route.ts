@@ -4,7 +4,7 @@ import { createSupabaseServerClient, createSupabaseAdminClient } from '@/lib/sup
 // GET - Fetch all Vine Kids gallery images
 export async function GET() {
   try {
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
 
     if (!supabase) {
       return NextResponse.json(
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     const token = authHeader.replace('Bearer ', '');
 
     // First verify the user is authenticated using anon client
-    const anonClient = createSupabaseServerClient();
+    const anonClient = await createSupabaseServerClient();
     if (!anonClient) {
       return NextResponse.json(
         { error: 'Database connection not available' },

@@ -80,6 +80,7 @@ export default function ScheduleAdminClient({ locale }: Props) {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isDatabaseSetup, setIsDatabaseSetup] = useState(true);
+  const [accessToken, setAccessToken] = useState<string>('');
   const { call: apiCall } = useApiCall();
 
   // Form state
@@ -152,6 +153,8 @@ export default function ScheduleAdminClient({ locale }: Props) {
         return;
       }
 
+      // Store access token for API calls
+      setAccessToken(session.access_token || '');
       setLoading(false);
       fetchEvents();
     }
@@ -179,7 +182,10 @@ export default function ScheduleAdminClient({ locale }: Props) {
 
     const { data, error } = await apiCall(url, {
       method,
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+      },
       body: JSON.stringify(formData),
     });
 
@@ -201,6 +207,9 @@ export default function ScheduleAdminClient({ locale }: Props) {
 
     const { error } = await apiCall(`/api/schedule-events/${id}`, {
       method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
     });
 
     if (error) {

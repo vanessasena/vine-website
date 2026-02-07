@@ -36,7 +36,7 @@ interface RouteParams {
 // GET - Fetch a single sermon by ID
 export async function GET(request: NextRequest, { params }: RouteParams) {
   const { id } = params;
-  const supabase = createSupabaseServerClient();
+  const supabase = await createSupabaseServerClient();
 
   // If supabase client is not available, return server error
   if (!supabase) {

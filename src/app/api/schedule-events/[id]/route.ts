@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient, createSupabaseAdminClient } from '@/lib/supabase';
 import { createErrorResponse, generateRequestId } from '@/lib/utils';
-import { isAdminOrTrainee } from '@/lib/roles';
 
 // GET /api/schedule-events/[id] - Fetch single schedule event
 export async function GET(
@@ -12,7 +11,7 @@ export async function GET(
   const { id } = params;
 
   try {
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     if (!supabase) {
       return NextResponse.json(
         createErrorResponse(
@@ -78,9 +77,26 @@ export async function PUT(
   const { id } = params;
 
   try {
-    // Check authentication and authorization
-    const supabase = createSupabaseServerClient();
-    if (!supabase) {
+    // Check authentication
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader) {
+      return NextResponse.json(
+        createErrorResponse(
+          'unauthorized',
+          'No authorization token provided',
+          'NO_TOKEN',
+          {},
+          requestId
+        ),
+        { status: 401 }
+      );
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+
+    // Verify user is authenticated
+    const anonClient = await createSupabaseServerClient();
+    if (!anonClient) {
       return NextResponse.json(
         createErrorResponse(
           'server_error',
@@ -93,33 +109,18 @@ export async function PUT(
       );
     }
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const { data: { user }, error: authError } = await anonClient.auth.getUser(token);
 
     if (authError || !user) {
       return NextResponse.json(
         createErrorResponse(
           'unauthorized',
-          'Authentication required',
-          'UNAUTHORIZED',
+          'Invalid or expired token',
+          'INVALID_TOKEN',
           {},
           requestId
         ),
         { status: 401 }
-      );
-    }
-
-    // Check if user is admin or trainee
-    const hasPermission = await isAdminOrTrainee(user.id);
-    if (!hasPermission) {
-      return NextResponse.json(
-        createErrorResponse(
-          'forbidden',
-          'Insufficient permissions. Admin or trainee role required.',
-          'FORBIDDEN',
-          {},
-          requestId
-        ),
-        { status: 403 }
       );
     }
 
@@ -208,9 +209,26 @@ export async function DELETE(
   const { id } = params;
 
   try {
-    // Check authentication and authorization
-    const supabase = createSupabaseServerClient();
-    if (!supabase) {
+    // Check authentication
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader) {
+      return NextResponse.json(
+        createErrorResponse(
+          'unauthorized',
+          'No authorization token provided',
+          'NO_TOKEN',
+          {},
+          requestId
+        ),
+        { status: 401 }
+      );
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+
+    // Verify user is authenticated
+    const anonClient = await createSupabaseServerClient();
+    if (!anonClient) {
       return NextResponse.json(
         createErrorResponse(
           'server_error',
@@ -223,33 +241,18 @@ export async function DELETE(
       );
     }
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const { data: { user }, error: authError } = await anonClient.auth.getUser(token);
 
     if (authError || !user) {
       return NextResponse.json(
         createErrorResponse(
           'unauthorized',
-          'Authentication required',
-          'UNAUTHORIZED',
+          'Invalid or expired token',
+          'INVALID_TOKEN',
           {},
           requestId
         ),
         { status: 401 }
-      );
-    }
-
-    // Check if user is admin or trainee
-    const hasPermission = await isAdminOrTrainee(user.id);
-    if (!hasPermission) {
-      return NextResponse.json(
-        createErrorResponse(
-          'forbidden',
-          'Insufficient permissions. Admin or trainee role required.',
-          'FORBIDDEN',
-          {},
-          requestId
-        ),
-        { status: 403 }
       );
     }
 

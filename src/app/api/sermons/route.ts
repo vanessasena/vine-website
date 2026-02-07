@@ -27,7 +27,7 @@ function transformDbSermon(dbSermon: any): Sermon {
 
 // GET - Fetch all sermons
 export async function GET() {
-  const supabase = createSupabaseServerClient();
+  const supabase = await createSupabaseServerClient();
 
   // If supabase client is not available, return server error
   if (!supabase) {

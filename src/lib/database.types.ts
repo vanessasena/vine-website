@@ -88,6 +88,63 @@ export interface Database {
         }
         Relationships: []
       }
+      schedule_events: {
+        Row: {
+          id: string
+          title_pt: string
+          title_en: string
+          description_pt: string | null
+          description_en: string | null
+          event_type: 'weekly_recurring' | 'special'
+          day_of_week: number | null
+          time: string
+          icon_name: string
+          display_order: number
+          special_date: string | null
+          frequency_pt: string | null
+          frequency_en: string | null
+          is_active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          title_pt: string
+          title_en: string
+          description_pt?: string | null
+          description_en?: string | null
+          event_type: 'weekly_recurring' | 'special'
+          day_of_week?: number | null
+          time: string
+          icon_name: string
+          display_order?: number
+          special_date?: string | null
+          frequency_pt?: string | null
+          frequency_en?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          title_pt?: string
+          title_en?: string
+          description_pt?: string | null
+          description_en?: string | null
+          event_type?: 'weekly_recurring' | 'special'
+          day_of_week?: number | null
+          time?: string
+          icon_name?: string
+          display_order?: number
+          special_date?: string | null
+          frequency_pt?: string | null
+          frequency_en?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: Record<string, never>
     Functions: Record<string, never>

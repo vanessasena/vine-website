@@ -4,19 +4,11 @@ import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faBook,
-  faHome,
-  faChurch,
-  faUsers,
-  faTint,
-  faMapMarkerAlt,
-  faMap,
   faPhone,
   faHandshake,
-  faMusic,
-  faGuitar
 } from '@fortawesome/free-solid-svg-icons';
 import type { Metadata } from 'next';
+import ScheduleClient from './ScheduleClient';
 
 interface PageProps {
   params: {
@@ -58,192 +50,12 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
         </div>
       </section>
 
-      {/* Schedule Content */}
+      {/* Dynamic Schedule Events from Database */}
+      <ScheduleClient locale={locale} />
+
+      {/* Additional Info - Hardcoded */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-
-          {/* Weekly Schedule */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-            {/* Tuesday */}
-            <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-              <div className="text-4xl mb-4 text-primary-600">
-                <FontAwesomeIcon icon={faBook} />
-              </div>
-              <h3 className="text-2xl font-bold text-primary-700 mb-4">
-                {t('tuesday')}
-              </h3>
-              <div className="text-3xl font-bold text-secondary-600 mb-2">
-                {t('tuesdayTime')}
-              </div>
-              <p className="text-lg text-gray-700 font-semibold">
-                {t('tuesdayEvent')}
-              </p>
-            </div>
-
-            {/* Thursday */}
-            {/* <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-              <div className="text-4xl mb-4 text-primary-600">
-                <FontAwesomeIcon icon={faBook} />
-              </div>
-              <h3 className="text-2xl font-bold text-primary-700 mb-4">
-                {t('thursday')}
-              </h3>
-              <div className="text-3xl font-bold text-secondary-600 mb-2">
-                {t('thursdayTime')}
-              </div>
-              <p className="text-lg text-gray-700 font-semibold">
-                {t('thursdayEvent')}
-              </p>
-            </div> */}
-
-            {/* Friday */}
-            <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-              <div className="text-4xl mb-4 text-primary-600">
-                <FontAwesomeIcon icon={faHome} />
-              </div>
-              <h3 className="text-2xl font-bold text-primary-700 mb-4">
-                {t('friday')}
-              </h3>
-              <div className="text-3xl font-bold text-secondary-600 mb-2">
-                {t('fridayTime')}
-              </div>
-              <p className="text-lg text-gray-700 font-semibold">
-                {t('fridayEvent')}
-              </p>
-            </div>
-
-            {/* Saturday - Music Classes */}
-            {/* <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-              <div className="text-4xl mb-4 text-primary-600">
-                <FontAwesomeIcon icon={faMusic} />
-              </div>
-              <h3 className="text-2xl font-bold text-primary-700 mb-4">
-                {t('saturday')}
-              </h3>
-              <div className="text-3xl font-bold text-secondary-600 mb-2">
-                {t('saturdayMusicTime')}
-              </div>
-              <p className="text-lg text-gray-700 font-semibold">
-                {t('saturdayMusicEvent')}
-              </p>
-            </div> */}
-
-            {/* Saturday - Jiu-Jitsu */}
-            {/* <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-              <div className="text-4xl mb-4 text-primary-600">
-                <FontAwesomeIcon icon={faHandshake} />
-              </div>
-              <h3 className="text-2xl font-bold text-primary-700 mb-4">
-                {t('saturday')}
-              </h3>
-              <div className="text-3xl font-bold text-secondary-600 mb-2">
-                {t('saturdayTime')}
-              </div>
-              <p className="text-lg text-gray-700 font-semibold">
-                {t('saturdayEvent')}
-              </p>
-            </div> */}
-
-            {/* Saturday - Teens Service */}
-            {/* <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-              <div className="text-4xl mb-4 text-primary-600">
-                <FontAwesomeIcon icon={faUsers} />
-              </div>
-              <h3 className="text-2xl font-bold text-primary-700 mb-4">
-                {t('saturday')}
-              </h3>
-              <div className="text-3xl font-bold text-secondary-600 mb-2">
-                {t('saturdayTeensTime')}
-              </div>
-              <p className="text-lg text-gray-700 font-semibold">
-                {t('saturdayTeensEvent')}
-              </p>
-              <p className="text-sm text-gray-500 mt-2">
-                ({t('saturdayTeensFrequency')})
-              </p>
-            </div> */}
-
-            {/* Sunday */}
-            <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-              <div className="text-4xl mb-4 text-primary-600">
-                <FontAwesomeIcon icon={faChurch} />
-              </div>
-              <h3 className="text-2xl font-bold text-primary-700 mb-4">
-                {t('sunday')}
-              </h3>
-              <div className="text-3xl font-bold text-secondary-600 mb-2">
-                {t('sundayTime')}
-              </div>
-              <p className="text-lg text-gray-700 font-semibold">
-                {t('sundayEvent')}
-              </p>
-            </div>
-
-          </div>
-
-          {/* Special Events */}
-          <div className="mt-16">
-            <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
-              {t('specialEvents')}
-            </h2>
-            <div className="grid md:grid-cols-2 gap-8">
-
-              {/* Monthly Family Service */}
-              <div className="bg-gradient-to-br from-secondary-100 to-secondary-200 rounded-lg shadow-lg p-8 text-center">
-                <div className="text-4xl mb-4 text-primary-600">
-                  <FontAwesomeIcon icon={faUsers} />
-                </div>
-                <h3 className="text-2xl font-bold text-primary-700 mb-4">
-                  {t('familyService')}
-                </h3>
-                <div className="text-xl font-bold text-secondary-700 mb-2">
-                  {t('familyServiceDesc')}
-                </div>
-                <div className="text-lg text-gray-700">
-                  {t('sundayTime')}
-                </div>
-              </div>
-
-              {/* Baptism */}
-              {/* <div className="bg-gradient-to-br from-secondary-100 to-secondary-200 rounded-lg shadow-lg p-8 text-center">
-                <div className="text-4xl mb-4 text-blue-600">
-                  <FontAwesomeIcon icon={faTint} />
-                </div>
-                <h3 className="text-2xl font-bold text-primary-700 mb-4">
-                  {t('baptism')}
-                </h3>
-                <div className="text-xl font-bold text-blue-700 mb-2">
-                  {t('baptismDate')}
-                </div>
-                <div className="text-lg text-gray-700">
-                  {t('baptismTime')}
-                </div>
-              </div> */}
-
-              {/* Grand Opening */}
-              <div className="bg-gradient-to-br from-accent-100 to-accent-200 rounded-lg shadow-lg p-8 text-center">
-                <div className="text-4xl mb-4 text-accent-600">
-                  <FontAwesomeIcon icon={faChurch} />
-                </div>
-                <h3 className="text-2xl font-bold text-primary-700 mb-4">
-                  {t('grandOpening')}
-                </h3>
-                <div className="text-xl font-bold text-accent-700 mb-2">
-                  {t('grandOpeningDate')}
-                </div>
-                <div className="text-lg text-gray-700 mb-2">
-                  {t('grandOpeningTime')}
-                </div>
-                <p className="text-sm text-gray-600 italic">
-                  {t('grandOpeningDesc')}
-                </p>
-              </div>
-
-            </div>
-          </div>
-
-          {/* Additional Info */}
           <div className="mt-12 grid md:grid-cols-3 gap-8">
 
             <div className="bg-primary-50 rounded-lg p-6">

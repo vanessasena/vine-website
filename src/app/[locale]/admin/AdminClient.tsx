@@ -17,7 +17,8 @@ import {
   faSignOutAlt,
   faUser,
   faCheck,
-  faImages
+  faImages,
+  faCalendar
 } from '@fortawesome/free-solid-svg-icons';
 import { getSession, signOut } from '@/lib/auth';
 import { Sermon } from '@/lib/sermons';
@@ -333,7 +334,7 @@ export default function AdminClient({ locale }: { locale: string }) {
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Quick Links Section */}
-        <div className="mb-8 max-w-md">
+        <div className="mb-8 grid md:grid-cols-2 gap-4 max-w-4xl">
           <Link
             href={`/${locale}/admin/vine-kids-gallery`}
             className="block bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200 border-l-4 border-accent-600"
@@ -346,6 +347,21 @@ export default function AdminClient({ locale }: { locale: string }) {
             </div>
             <p className="text-gray-600 text-sm">
               {locale === 'pt' ? 'Gerenciar imagens da galeria Vine Kids' : 'Manage Vine Kids gallery images'}
+            </p>
+          </Link>
+
+          <Link
+            href={`/${locale}/admin/schedule`}
+            className="block bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200 border-l-4 border-primary-600"
+          >
+            <div className="flex items-center gap-3 mb-2 text-primary-700">
+              <FontAwesomeIcon icon={faCalendar} className="h-5 w-5" />
+              <h3 className="text-lg font-semibold text-gray-900">
+                {locale === 'pt' ? 'Gerenciar Agenda' : 'Manage Schedule'}
+              </h3>
+            </div>
+            <p className="text-gray-600 text-sm">
+              {locale === 'pt' ? 'Gerenciar eventos da agenda da igreja' : 'Manage church schedule events'}
             </p>
           </Link>
         </div>

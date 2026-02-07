@@ -138,7 +138,7 @@ export async function POST(request: NextRequest) {
     } = body;
 
     // Validate required fields
-    if (!title_pt || !title_en || !event_type || !time || !icon_name) {
+    if (!title_pt || !title_en || !event_type || !icon_name) {
       return NextResponse.json(
         createErrorResponse(
           'validation',
@@ -149,7 +149,6 @@ export async function POST(request: NextRequest) {
               !title_pt && 'title_pt',
               !title_en && 'title_en',
               !event_type && 'event_type',
-              !time && 'time',
               !icon_name && 'icon_name',
             ].filter(Boolean),
           },
@@ -180,6 +179,20 @@ export async function POST(request: NextRequest) {
           'validation',
           'day_of_week is required for weekly recurring events',
           'MISSING_DAY_OF_WEEK',
+          {},
+          requestId
+        ),
+        { status: 400 }
+      );
+    }
+
+    // Validate time for weekly events (optional for special events)
+    if (event_type === 'weekly_recurring' && !time) {
+      return NextResponse.json(
+        createErrorResponse(
+          'validation',
+          'time is required for weekly recurring events',
+          'MISSING_TIME',
           {},
           requestId
         ),

@@ -166,7 +166,13 @@ export default function ScheduleAdminClient({ locale }: Props) {
     e.preventDefault();
 
     // Validation
-    if (!formData.title_pt || !formData.title_en || !formData.time || !formData.icon_name) {
+    if (!formData.title_pt || !formData.title_en || !formData.icon_name) {
+      setErrorMessage(t('messages.validationError'));
+      return;
+    }
+
+    // Time is required only for weekly events
+    if (formData.event_type === 'weekly_recurring' && !formData.time) {
       setErrorMessage(t('messages.validationError'));
       return;
     }
@@ -474,6 +480,9 @@ export default function ScheduleAdminClient({ locale }: Props) {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       {t('form.specialDate')}
+                      <span className="ml-1 text-xs text-gray-500">
+                        ({locale === 'pt' ? 'Opcional - deixe em branco se a definir' : 'Optional - leave blank if to be decided'})
+                      </span>
                     </label>
                     <input
                       type="date"
@@ -484,18 +493,19 @@ export default function ScheduleAdminClient({ locale }: Props) {
                   </div>
                 )}
 
+
                 {/* Time */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {t('form.time')} *
+                    {t('form.time')} {formData.event_type === 'weekly_recurring' && '*'}
                   </label>
                   <input
                     type="text"
                     value={formData.time || ''}
                     onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                    placeholder="19:30"
+                    placeholder={formData.event_type === 'special' ? (locale === 'pt' ? 'A definir' : 'To be decided') : '19:30'}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500"
-                    required
+                    required={formData.event_type === 'weekly_recurring'}
                   />
                 </div>
 
@@ -655,7 +665,7 @@ export default function ScheduleAdminClient({ locale }: Props) {
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {event.time}
+                    {event.time || (locale === 'pt' ? 'A definir' : 'TBD')}
                   </td>
                   {activeTab === 'weekly' && (
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -664,7 +674,7 @@ export default function ScheduleAdminClient({ locale }: Props) {
                   )}
                   {activeTab === 'special' && (
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {event.special_date || event.frequency_pt}
+                      {event.special_date || (locale === 'pt' ? event.frequency_pt : event.frequency_en) || (locale === 'pt' ? 'A definir' : 'TBD')}
                     </td>
                   )}
                   <td className="px-6 py-4 whitespace-nowrap">

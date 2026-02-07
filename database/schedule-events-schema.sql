@@ -9,15 +9,19 @@ CREATE TABLE IF NOT EXISTS public.schedule_events (
     description_en TEXT,
     event_type TEXT NOT NULL CHECK (event_type IN ('weekly_recurring', 'special')),
     day_of_week INTEGER CHECK (day_of_week BETWEEN 0 AND 6), -- 0=Sunday, 1=Monday, ..., 6=Saturday (NULL for special events)
-    time TEXT NOT NULL, -- Format: "19:30" or "10:00"
+    time TEXT, -- Format: "19:30" or "10:00" (required for weekly events, optional for special events)
     icon_name TEXT NOT NULL, -- FontAwesome icon name: "faBook", "faChurch", etc.
     display_order INTEGER NOT NULL DEFAULT 0,
-    special_date DATE, -- For special events only (format: YYYY-MM-DD)
+    special_date DATE, -- For special events only (format: YYYY-MM-DD, can be NULL if TBD)
     frequency_pt TEXT, -- e.g., "Primeiro domingo de cada mês"
     frequency_en TEXT, -- e.g., "First Sunday of each month"
     is_active BOOLEAN DEFAULT true, -- Toggle events on/off without deleting
     created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
+    CONSTRAINT time_required_for_weekly CHECK (
+        (event_type = 'weekly_recurring' AND time IS NOT NULL) OR
+        (event_type = 'special')
+    )
 );
 
 -- Indexes for performance

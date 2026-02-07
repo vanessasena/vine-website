@@ -120,7 +120,7 @@ export default function ScheduleClient({ locale }: Props) {
                       {locale === 'pt' ? event.title_pt : event.title_en}
                     </h3>
                     <div className="text-3xl font-bold text-secondary-600 mb-2">
-                      {event.time}
+                      {event.time || (locale === 'pt' ? 'A definir' : 'TBD')}
                     </div>
                     {event.description_pt && (
                       <p className="text-lg text-gray-700 font-semibold">
@@ -162,14 +162,24 @@ export default function ScheduleClient({ locale }: Props) {
                         {locale === 'pt' ? event.frequency_pt : event.frequency_en}
                       </div>
                     )}
-                    {event.special_date && (
+                    {event.special_date ? (
                       <div className="text-xl font-bold text-secondary-700 mb-2">
                         {formatLocalDate(event.special_date)}
                       </div>
+                    ) : !event.frequency_pt && (
+                      <div className="text-xl font-bold text-secondary-700 mb-2">
+                        {locale === 'pt' ? 'Data a definir' : 'Date TBD'}
+                      </div>
                     )}
-                    <div className="text-lg text-gray-700">
-                      {event.time}
-                    </div>
+                    {event.time ? (
+                      <div className="text-lg text-gray-700">
+                        {event.time}
+                      </div>
+                    ) : (
+                      <div className="text-lg text-gray-500 italic">
+                        {locale === 'pt' ? 'Horário a definir' : 'Time TBD'}
+                      </div>
+                    )}
                     {event.description_pt && (
                       <p className="text-sm text-gray-600 italic mt-2">
                         {locale === 'pt' ? event.description_pt : event.description_en}

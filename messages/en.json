@@ -203,7 +203,9 @@
     "noSearchResults": "No results found for '{query}'",
     "noSermonsDesc": "New messages will be added soon.",
     "previous": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "page": "Page",
+    "of": "of"
   },
   "footer": {
     "copyright": "© 2026 Vine Church KWC. All rights reserved.",

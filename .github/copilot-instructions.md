@@ -43,6 +43,23 @@ This is a bilingual (Portuguese/English) church website built with Next.js for V
 - **Authentication**: Uses Supabase Auth with session management
 - **Data Source Indicator**: Shows whether data is from database or static fallback
 
+## User Roles & Permissions
+The application uses a role-based access control system with the following roles:
+- **admin**: Full access to all features (profile, kids check-in, member management, visitor management, admin panel)
+- **trainee**: Access to member profile and admin panel (for training purposes)
+- **leader**: Access to profile, kids check-in, member management, and visitor management
+- **teacher**: Access to profile and kids check-in
+- **member**: Access only to their own profile
+
+Role permissions are defined in `src/lib/roles.ts`:
+- `getRolePermissions(role)`: Returns permission object for a role
+- `getRoleLabel(role, locale)`: Returns localized role name
+- `isAdmin(userId)`: Check if user is admin
+- `isAdminOrTrainee(userId)`: Check if user is admin or trainee
+- `isTeacherOrAdmin(userId)`: Check if user is teacher or admin
+- `isLeaderOrAdmin(userId)`: Check if user is leader or admin
+- `isMemberOrAdmin(userId)`: Check if user has any role
+
 ## Kids Check-in System
 - **Access**: `/${locale}/kids-checkin` (requires authentication as teacher or admin)
 - **Features**:

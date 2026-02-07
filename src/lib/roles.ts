@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-export type UserRole = 'member' | 'teacher' | 'leader' | 'admin';
+export type UserRole = 'member' | 'teacher' | 'leader' | 'admin' | 'trainee';
 
 export interface UserWithRole {
   id: string;
@@ -40,6 +40,11 @@ export function getRolePermissions(role: UserRole): RolePermissions {
       permissions.canManageVisitors = true;
       permissions.canAccessAdmin = true;
       break;
+    case 'trainee':
+      // Trainee has access to profile and admin panel
+      permissions.canAccessProfile = true;
+      permissions.canAccessAdmin = true;
+      break;
     case 'leader':
       // Leader has access to profile, member management, and visitor management
       permissions.canAccessProfile = true;
@@ -67,6 +72,7 @@ export function getRolePermissions(role: UserRole): RolePermissions {
 export function getRoleLabel(role: UserRole, locale: string): string {
   const labels: Record<UserRole, { pt: string; en: string }> = {
     admin: { pt: 'Administrador', en: 'Administrator' },
+    trainee: { pt: 'Estagiário', en: 'Trainee' },
     leader: { pt: 'Líder', en: 'Leader' },
     teacher: { pt: 'Professor', en: 'Teacher' },
     member: { pt: 'Membro', en: 'Member' },
@@ -118,6 +124,14 @@ export async function isAdmin(userId: string): Promise<boolean> {
 }
 
 /**
+ * Check if user has admin or trainee role
+ */
+export async function isAdminOrTrainee(userId: string): Promise<boolean> {
+  const role = await getUserRole(userId);
+  return role === 'admin' || role === 'trainee';
+}
+
+/**
  * Check if user has teacher role or higher
  */
 export async function isTeacherOrAdmin(userId: string): Promise<boolean> {
@@ -138,7 +152,7 @@ export async function isLeaderOrAdmin(userId: string): Promise<boolean> {
  */
 export async function isMemberOrAdmin(userId: string): Promise<boolean> {
   const role = await getUserRole(userId);
-  return role === 'member' || role === 'teacher' || role === 'leader' || role === 'admin';
+  return role === 'member' || role === 'teacher' || role === 'leader' || role === 'admin' || role === 'trainee';
 }
 
 /**

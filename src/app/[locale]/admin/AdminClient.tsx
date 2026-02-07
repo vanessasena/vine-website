@@ -17,10 +17,7 @@ import {
   faSignOutAlt,
   faUser,
   faCheck,
-  faImages,
-  faUsers,
-  faChild,
-  faClipboardList
+  faImages
 } from '@fortawesome/free-solid-svg-icons';
 import { getSession, signOut } from '@/lib/auth';
 import { Sermon } from '@/lib/sermons';
@@ -154,12 +151,12 @@ export default function AdminClient({ locale }: { locale: string }) {
       if (!session) {
         router.push(`/${locale}/login`);
       } else {
-        // Check if user has admin role
-        const { isAdmin } = await import('@/lib/roles');
-        const hasAdminRole = await isAdmin(session.user.id);
+        // Check if user has admin or trainee role
+        const { getUserRole } = await import('@/lib/roles');
+        const userRole = await getUserRole(session.user.id);
 
-        if (!hasAdminRole) {
-          // User is not an admin, redirect to member area
+        if (userRole !== 'admin' && userRole !== 'trainee') {
+          // User is not an admin or trainee, redirect to member area
           router.push(`/${locale}/member`);
           return;
         }
@@ -336,10 +333,10 @@ export default function AdminClient({ locale }: { locale: string }) {
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Quick Links Section */}
-        <div className="mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="mb-8 max-w-md">
           <Link
             href={`/${locale}/admin/vine-kids-gallery`}
-            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200 border-l-4 border-accent-600"
+            className="block bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200 border-l-4 border-accent-600"
           >
             <div className="flex items-center gap-3 mb-2 text-accent-700">
               <FontAwesomeIcon icon={faImages} className="h-5 w-5" />
@@ -349,51 +346,6 @@ export default function AdminClient({ locale }: { locale: string }) {
             </div>
             <p className="text-gray-600 text-sm">
               {locale === 'pt' ? 'Gerenciar imagens da galeria Vine Kids' : 'Manage Vine Kids gallery images'}
-            </p>
-          </Link>
-
-          <Link
-            href={`/${locale}/admin/members`}
-            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200 border-l-4 border-secondary-600"
-          >
-            <div className="flex items-center gap-3 mb-2 text-secondary-700">
-              <FontAwesomeIcon icon={faUsers} className="h-5 w-5" />
-              <h3 className="text-lg font-semibold text-gray-900">
-                {locale === 'pt' ? 'Perfis de Membros' : 'Member Profiles'}
-              </h3>
-            </div>
-            <p className="text-gray-600 text-sm">
-              {locale === 'pt' ? 'Visualizar perfis dos membros cadastrados' : 'View registered member profiles'}
-            </p>
-          </Link>
-
-          <Link
-            href={`/${locale}/admin/visitors`}
-            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200 border-l-4 border-purple-600"
-          >
-            <div className="flex items-center gap-3 mb-2 text-purple-700">
-              <FontAwesomeIcon icon={faClipboardList} className="h-5 w-5" />
-              <h3 className="text-lg font-semibold text-gray-900">
-                {locale === 'pt' ? 'Gerenciar Visitantes' : 'Manage Visitors'}
-              </h3>
-            </div>
-            <p className="text-gray-600 text-sm">
-              {locale === 'pt' ? 'Visualizar registros de visitantes' : 'View visitor registrations'}
-            </p>
-          </Link>
-
-          <Link
-            href={`/${locale}/kids-checkin`}
-            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200 border-l-4 border-primary-600"
-          >
-            <div className="flex items-center gap-3 mb-2 text-primary-700">
-              <FontAwesomeIcon icon={faChild} className="h-5 w-5" />
-              <h3 className="text-lg font-semibold text-gray-900">
-                {locale === 'pt' ? 'Check-in de Crianças' : 'Kids Check-in'}
-              </h3>
-            </div>
-            <p className="text-gray-600 text-sm">
-              {locale === 'pt' ? 'Acessar o sistema de check-in de crianças' : 'Access the kids check-in system'}
             </p>
           </Link>
         </div>

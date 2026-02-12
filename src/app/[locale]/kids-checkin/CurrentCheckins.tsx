@@ -17,7 +17,9 @@ import {
   faCheck,
   faSpinner,
   faPhone,
-  faCircleExclamation
+  faCircleExclamation,
+  faTrashCan,
+  faXmark
 } from '@fortawesome/free-solid-svg-icons';
 import { formatLocalDate } from '@/lib/utils';
 
@@ -68,6 +70,8 @@ export default function CurrentCheckins({
   const [checkingOutId, setCheckingOutId] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [authToken, setAuthToken] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; name: string } | null>(null);
 
   useEffect(() => {
     const getAuthToken = async () => {
@@ -121,6 +125,39 @@ export default function CurrentCheckins({
       fetchCurrentCheckins();
     }
   }, [refreshTrigger, authToken, t, fetchCurrentCheckins]);
+
+  const handleDelete = async (checkInId: string) => {
+    if (!authToken) {
+      setError(t('kidsCheckin.errors.authenticationFailed'));
+      return;
+    }
+
+    try {
+      setDeletingId(checkInId);
+      setError(null);
+
+      const response = await fetch(`/api/check-ins?id=${checkInId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(t('kidsCheckin.errors.deleteFailed'));
+      }
+
+      setChildren(children.filter((c) => c.checked_in_id !== checkInId));
+      setDeleteConfirm(null);
+      onCheckOutSuccess();
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : t('kidsCheckin.errors.deleteFailed')
+      );
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   const handleCheckOut = async (checkInId: string, childName: string) => {
     if (!confirm(t('kidsCheckin.confirmations.checkOut', { name: childName }))) {
@@ -374,7 +411,7 @@ export default function CurrentCheckins({
                   <div className="flex gap-3 pt-4 border-t-2 border-gray-200">
                     <button
                       onClick={() => handleCheckOut(child.checked_in_id, child.child_name)}
-                      disabled={checkingOutId === child.checked_in_id}
+                      disabled={checkingOutId === child.checked_in_id || deletingId === child.checked_in_id}
                       className="flex-1 inline-flex justify-center items-center gap-2 px-6 py-3 border border-transparent text-base font-semibold rounded-xl text-white bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transition-all duration-200"
                     >
                       {checkingOutId === child.checked_in_id ? (
@@ -389,6 +426,14 @@ export default function CurrentCheckins({
                         </>
                       )}
                     </button>
+                    <button
+                      onClick={() => setDeleteConfirm({ id: child.checked_in_id, name: child.child_name })}
+                      disabled={checkingOutId === child.checked_in_id || deletingId === child.checked_in_id}
+                      className="inline-flex justify-center items-center gap-2 px-4 py-3 border-2 border-red-200 text-sm font-semibold rounded-xl text-red-600 bg-white hover:bg-red-50 hover:border-red-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                      title={t('kidsCheckin.buttons.delete')}
+                    >
+                      <FontAwesomeIcon icon={faTrashCan} className="h-4 w-4" />
+                    </button>
                   </div>
                 </div>
               )}
@@ -396,6 +441,61 @@ export default function CurrentCheckins({
           );
         })}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+            onClick={() => setDeleteConfirm(null)}
+          />
+          <div className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-4 animate-in fade-in zoom-in-95">
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0 w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+                <FontAwesomeIcon icon={faTrashCan} className="h-5 w-5 text-red-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-bold text-gray-900">
+                  {t('kidsCheckin.deleteModal.title')}
+                </h3>
+                <p className="mt-1 text-sm text-gray-600">
+                  {t('kidsCheckin.deleteModal.message', { name: deleteConfirm.name })}
+                </p>
+                <p className="mt-2 text-xs text-gray-500">
+                  {t('kidsCheckin.deleteModal.warning')}
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-3 pt-2">
+              <button
+                onClick={() => setDeleteConfirm(null)}
+                disabled={deletingId === deleteConfirm.id}
+                className="flex-1 inline-flex justify-center items-center gap-2 px-4 py-2.5 border-2 border-gray-200 text-sm font-semibold rounded-xl text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 disabled:opacity-50 transition-all"
+              >
+                <FontAwesomeIcon icon={faXmark} className="h-4 w-4" />
+                {t('kidsCheckin.cancel')}
+              </button>
+              <button
+                onClick={() => handleDelete(deleteConfirm.id)}
+                disabled={deletingId === deleteConfirm.id}
+                className="flex-1 inline-flex justify-center items-center gap-2 px-4 py-2.5 border border-transparent text-sm font-semibold rounded-xl text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 transition-all"
+              >
+                {deletingId === deleteConfirm.id ? (
+                  <>
+                    <FontAwesomeIcon icon={faSpinner} className="animate-spin h-4 w-4" />
+                    {t('kidsCheckin.buttons.deleting')}
+                  </>
+                ) : (
+                  <>
+                    <FontAwesomeIcon icon={faTrashCan} className="h-4 w-4" />
+                    {t('kidsCheckin.deleteModal.confirmButton')}
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

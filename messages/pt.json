@@ -779,6 +779,8 @@
       "submitting": "Enviando...",
       "checkout": "Fazer Check-out",
       "checkingOut": "Fazendo check-out...",
+      "delete": "Excluir check-in",
+      "deleting": "Excluindo...",
       "retry": "Tentar Novamente",
       "refresh": "Atualizar",
       "reset": "Resetar",
@@ -791,15 +793,24 @@
       "selectChild": "Por favor, selecione uma criança",
       "creationFailed": "Falha ao criar visitante",
       "checkInFailed": "Erro ao fazer check-in",
-      "alreadyCheckedIn": "Esta criança já está no check-in"
+      "alreadyCheckedIn": "Esta criança já está no check-in",
+      "deleteFailed": "Erro ao excluir check-in",
+      "authenticationFailed": "Falha na autenticação"
     },
     "success": {
       "checkedIn": "Check-in realizado com sucesso!",
       "checkedOut": "Check-out realizado com sucesso!",
-      "visitorCreated": "Visitante criado com sucesso!"
+      "visitorCreated": "Visitante criado com sucesso!",
+      "deleted": "Check-in excluído com sucesso!"
     },
     "confirmations": {
       "checkOut": "Confirmar check-out de {name}?"
+    },
+    "deleteModal": {
+      "title": "Excluir Check-in",
+      "message": "Tem certeza que deseja excluir o check-in de {name}? Essa ação foi feita por engano?",
+      "warning": "Esta ação não pode ser desfeita. O registro será removido permanentemente.",
+      "confirmButton": "Sim, Excluir"
     },
     "status": {
       "checkedIn": "Presente",

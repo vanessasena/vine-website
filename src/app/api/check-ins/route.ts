@@ -297,3 +297,81 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
+
+// DELETE /api/check-ins - Delete a check-in made by mistake
+export async function DELETE(request: NextRequest) {
+  try {
+    const authHeader = request.headers.get('Authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Verify user has teacher, leader, or admin role
+    const { data: userData, error: userError } = await supabase
+      .from('users')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    if (
+      userError ||
+      !userData ||
+      (userData.role !== 'teacher' && userData.role !== 'leader' && userData.role !== 'admin')
+    ) {
+      return NextResponse.json({ error: 'Forbidden: Teacher, leader, or admin role required' }, { status: 403 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'id is required' },
+        { status: 400 }
+      );
+    }
+
+    // Verify the check-in exists and is still in checked_in status
+    const { data: existing, error: fetchError } = await supabase
+      .from('check_ins')
+      .select('id, status')
+      .eq('id', id)
+      .single();
+
+    if (fetchError || !existing) {
+      return NextResponse.json({ error: 'Check-in not found' }, { status: 404 });
+    }
+
+    if (existing.status !== 'checked_in') {
+      return NextResponse.json(
+        { error: 'Only active check-ins can be deleted' },
+        { status: 400 }
+      );
+    }
+
+    // Delete the check-in record
+    const { error: deleteError } = await supabase
+      .from('check_ins')
+      .delete()
+      .eq('id', id);
+
+    if (deleteError) {
+      console.error('Error deleting check-in:', deleteError);
+      return NextResponse.json({ error: 'Failed to delete check-in' }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Error in DELETE /api/check-ins:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}

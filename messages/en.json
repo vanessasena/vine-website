@@ -780,6 +780,8 @@
       "submitting": "Submitting...",
       "checkout": "Check Out",
       "checkingOut": "Checking out...",
+      "delete": "Delete check-in",
+      "deleting": "Deleting...",
       "retry": "Retry",
       "refresh": "Refresh",
       "reset": "Reset",
@@ -792,15 +794,24 @@
       "selectChild": "Please select a child",
       "creationFailed": "Failed to create visitor",
       "checkInFailed": "Error during check-in",
-      "alreadyCheckedIn": "This child is already checked in"
+      "alreadyCheckedIn": "This child is already checked in",
+      "deleteFailed": "Failed to delete check-in",
+      "authenticationFailed": "Authentication failed"
     },
     "success": {
       "checkedIn": "Check-in successful!",
       "checkedOut": "Check-out successful!",
-      "visitorCreated": "Visitor created successfully!"
+      "visitorCreated": "Visitor created successfully!",
+      "deleted": "Check-in deleted successfully!"
     },
     "confirmations": {
       "checkOut": "Confirm check-out for {name}?"
+    },
+    "deleteModal": {
+      "title": "Delete Check-in",
+      "message": "Are you sure you want to delete the check-in for {name}? Was this done by mistake?",
+      "warning": "This action cannot be undone. The record will be permanently removed.",
+      "confirmButton": "Yes, Delete"
     },
     "status": {
       "checkedIn": "Checked in",

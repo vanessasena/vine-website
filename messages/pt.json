@@ -363,6 +363,7 @@
     "passwordMismatch": "As senhas não coincidem",
     "passwordTooShort": "A senha deve ter pelo menos 6 caracteres",
     "emailInUse": "Este e-mail já está em uso",
+    "emailNotConfirmed": "Seu email ainda não foi confirmado. Verifique sua caixa de entrada ou solicite um novo email de confirmação.",
     "accountCreated": "Conta criada com sucesso! Você será redirecionado...",    "checkEmailConfirmation": "Conta criada com sucesso! Por favor, verifique seu email para confirmar sua conta antes de fazer login.",    "databaseError": "Banco de dados não configurado. Entre em contato com o administrador.",
     "noAccount": "Não tem uma conta?",
     "createAccount": "Criar conta",
@@ -387,7 +388,14 @@
     "updatingPassword": "Atualizando...",
     "passwordUpdated": "Senha atualizada com sucesso! Redirecionando para login...",
     "passwordUpdateError": "Erro ao atualizar senha. Tente novamente.",
-    "invalidResetLink": "Link de redefinição inválido ou expirado. Solicite um novo."
+    "invalidResetLink": "Link de redefinição inválido ou expirado. Solicite um novo.",
+    "resendConfirmationTitle": "Reenviar Email de Confirmação",
+    "resendConfirmationSubtitle": "Digite seu email para receber um novo link de confirmação",
+    "resendConfirmation": "Reenviar Email",
+    "resendingConfirmation": "Reenviando...",
+    "resendConfirmationSent": "Email de confirmação reenviado! Verifique sua caixa de entrada.",
+    "resendConfirmationError": "Erro ao reenviar email de confirmação. Tente novamente.",
+    "didNotReceiveConfirmation": "Não recebeu o email de confirmação?"
   },
   "volunteers": {
     "title": "Voluntários",

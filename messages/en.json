@@ -364,6 +364,7 @@
     "passwordMismatch": "Passwords do not match",
     "passwordTooShort": "Password must be at least 6 characters",
     "emailInUse": "This email is already in use",
+    "emailNotConfirmed": "Your email has not been confirmed yet. Check your inbox or request a new confirmation email.",
     "accountCreated": "Account created successfully! You will be redirected...",
     "checkEmailConfirmation": "Account created successfully! Please check your email to confirm your account before logging in.",
     "databaseError": "Database not configured. Please contact administrator.",
@@ -390,7 +391,14 @@
     "updatingPassword": "Updating...",
     "passwordUpdated": "Password updated successfully! Redirecting to login...",
     "passwordUpdateError": "Error updating password. Please try again.",
-    "invalidResetLink": "Invalid or expired reset link. Please request a new one."
+    "invalidResetLink": "Invalid or expired reset link. Please request a new one.",
+    "resendConfirmationTitle": "Resend Confirmation Email",
+    "resendConfirmationSubtitle": "Enter your email to receive a new confirmation link",
+    "resendConfirmation": "Resend Email",
+    "resendingConfirmation": "Resending...",
+    "resendConfirmationSent": "Confirmation email resent! Check your inbox.",
+    "resendConfirmationError": "Error resending confirmation email. Please try again.",
+    "didNotReceiveConfirmation": "Didn't receive the confirmation email?"
   },
   "volunteers": {
     "title": "Volunteers",

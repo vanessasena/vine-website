@@ -16,6 +16,7 @@ export default function LoginClient({ locale }: LoginClientProps) {
   const router = useRouter();
   const [isSignUp, setIsSignUp] = useState(false);
   const [isResetPassword, setIsResetPassword] = useState(false);
+  const [isResendConfirmation, setIsResendConfirmation] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -24,6 +25,7 @@ export default function LoginClient({ locale }: LoginClientProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [showResendHint, setShowResendHint] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -38,6 +40,37 @@ export default function LoginClient({ locale }: LoginClientProps) {
     }
 
     try {
+      if (isResendConfirmation) {
+        // Resend confirmation email
+        const { error: resendError } = await supabase.auth.resend({
+          type: 'signup',
+          email,
+          options: {
+            emailRedirectTo: `${window.location.origin}/${locale}/member`,
+          },
+        });
+
+        if (resendError) {
+          if (resendError.message) {
+            setError(resendError.message);
+          } else {
+            setError(t('resendConfirmationError'));
+          }
+          setLoading(false);
+          return;
+        }
+
+        setSuccessMessage(t('resendConfirmationSent'));
+        setEmail('');
+        setLoading(false);
+        // Switch back to login after 3 seconds
+        setTimeout(() => {
+          setIsResendConfirmation(false);
+          setSuccessMessage('');
+        }, 3000);
+        return;
+      }
+
       if (isResetPassword) {
         // Send password reset email
         const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
@@ -120,8 +153,11 @@ export default function LoginClient({ locale }: LoginClientProps) {
         });
 
         if (signInError) {
-          // Display the actual error message from the API
-          if (signInError.message) {
+          // Detect unconfirmed email error and show resend hint
+          if (signInError.message?.toLowerCase().includes('email not confirmed')) {
+            setError(t('emailNotConfirmed'));
+            setShowResendHint(true);
+          } else if (signInError.message) {
             setError(signInError.message);
           } else {
             setError(t('invalidCredentials'));
@@ -175,10 +211,10 @@ export default function LoginClient({ locale }: LoginClientProps) {
             <FontAwesomeIcon icon={faLock} className="h-6 w-6 text-primary-600" />
           </div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            {isResetPassword ? t('resetPasswordTitle') : isSignUp ? t('signUpTitle') : t('title')}
+            {isResendConfirmation ? t('resendConfirmationTitle') : isResetPassword ? t('resetPasswordTitle') : isSignUp ? t('signUpTitle') : t('title')}
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            {isResetPassword ? t('resetPasswordSubtitle') : isSignUp ? t('signUpSubtitle') : t('subtitle')}
+            {isResendConfirmation ? t('resendConfirmationSubtitle') : isResetPassword ? t('resetPasswordSubtitle') : isSignUp ? t('signUpSubtitle') : t('subtitle')}
           </p>
         </div>
 
@@ -188,6 +224,19 @@ export default function LoginClient({ locale }: LoginClientProps) {
               <div className="flex">
                 <div className="ml-3">
                   <h3 className="text-sm font-medium text-red-800">{error}</h3>
+                  {showResendHint && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsResendConfirmation(true);
+                        setShowResendHint(false);
+                        setError('');
+                      }}
+                      className="mt-2 text-sm text-primary-600 hover:text-primary-700 font-medium underline"
+                    >
+                      {t('didNotReceiveConfirmation')}
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -228,7 +277,7 @@ export default function LoginClient({ locale }: LoginClientProps) {
               </div>
             </div>
 
-            {!isResetPassword && (
+            {!isResetPassword && !isResendConfirmation && (
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                   {t('password')}
@@ -262,7 +311,7 @@ export default function LoginClient({ locale }: LoginClientProps) {
             </div>
             )}
 
-            {isSignUp && !isResetPassword && (
+            {isSignUp && !isResetPassword && !isResendConfirmation && (
               <div>
                 <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
                   {t('confirmPassword')}
@@ -306,22 +355,23 @@ export default function LoginClient({ locale }: LoginClientProps) {
               {loading ? (
                 <>
                   <FontAwesomeIcon icon={faSpinner} className="animate-spin h-5 w-5 mr-2" />
-                  {isResetPassword ? t('sendingResetLink') : isSignUp ? t('signingUp') : t('signingIn')}
+                  {isResendConfirmation ? t('resendingConfirmation') : isResetPassword ? t('sendingResetLink') : isSignUp ? t('signingUp') : t('signingIn')}
                 </>
               ) : (
-                isResetPassword ? t('sendResetLink') : isSignUp ? t('signUp') : t('signIn')
+                isResendConfirmation ? t('resendConfirmation') : isResetPassword ? t('sendResetLink') : isSignUp ? t('signUp') : t('signIn')
               )}
             </button>
           </div>
 
           <div className="text-center space-y-2">
-            {!isResetPassword && !isSignUp && (
+            {!isResetPassword && !isSignUp && !isResendConfirmation && (
               <button
                 type="button"
                 onClick={() => {
                   setIsResetPassword(true);
                   setError('');
                   setSuccessMessage('');
+                  setShowResendHint(false);
                 }}
                 className="text-sm text-primary-600 hover:text-primary-700 font-medium block w-full"
               >
@@ -334,6 +384,8 @@ export default function LoginClient({ locale }: LoginClientProps) {
               onClick={() => {
                 if (isResetPassword) {
                   setIsResetPassword(false);
+                } else if (isResendConfirmation) {
+                  setIsResendConfirmation(false);
                 } else {
                   setIsSignUp(!isSignUp);
                 }
@@ -341,10 +393,11 @@ export default function LoginClient({ locale }: LoginClientProps) {
                 setSuccessMessage('');
                 setPassword('');
                 setConfirmPassword('');
+                setShowResendHint(false);
               }}
               className="text-sm text-primary-600 hover:text-primary-700 font-medium"
             >
-              {isResetPassword ? (
+              {isResetPassword || isResendConfirmation ? (
                 <span className="underline">{t('backToLoginLink')}</span>
               ) : isSignUp ? (
                 <>

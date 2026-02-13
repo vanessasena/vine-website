@@ -14,7 +14,6 @@ import {
   faCalendar,
 } from '@fortawesome/free-solid-svg-icons';
 import { Database } from '@/lib/database.types';
-import { formatLocalDate } from '@/lib/utils';
 
 type ScheduleEvent = Database['public']['Tables']['schedule_events']['Row'];
 
@@ -164,7 +163,16 @@ export default function ScheduleClient({ locale }: Props) {
                     )}
                     {event.special_date ? (
                       <div className="text-xl font-bold text-secondary-700 mb-2">
-                        {formatLocalDate(event.special_date)}
+                        {(() => {
+                          const [year, month, day] = event.special_date.split('T')[0].split('-');
+                          const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+                          return date.toLocaleDateString(locale === 'pt' ? 'pt-BR' : 'en-CA', {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                          });
+                        })()}
                       </div>
                     ) : !event.frequency_pt && (
                       <div className="text-xl font-bold text-secondary-700 mb-2">

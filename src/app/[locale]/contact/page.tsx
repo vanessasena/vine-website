@@ -22,7 +22,19 @@ interface PageProps {
 
 export async function generateMetadata({ params: { locale } }: PageProps): Promise<Metadata> {
   const baseUrl = 'https://vinechurch.ca';
+
+  const titles = {
+    pt: 'Contato - Igreja Brasileira em Kitchener | Vine Church KWC',
+    en: 'Contact - Brazilian Church in Kitchener | Vine Church KWC',
+  };
+  const descriptions = {
+    pt: 'Entre em contato com a Vine Church KWC, igreja brasileira em Kitchener. Endereço: 417 King St W, Kitchener, ON. Cultos aos domingos 10AM. Venha nos visitar!',
+    en: 'Contact Vine Church KWC, Brazilian church in Kitchener. Address: 417 King St W, Kitchener, ON. Sunday services at 10AM. Come visit us!',
+  };
+
   return {
+    title: titles[locale as keyof typeof titles] || titles.pt,
+    description: descriptions[locale as keyof typeof descriptions] || descriptions.pt,
     alternates: {
       canonical: `${baseUrl}/${locale}/contact`,
       languages: {

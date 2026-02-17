@@ -25,7 +25,19 @@ interface PageProps {
 
 export async function generateMetadata({ params: { locale } }: PageProps): Promise<Metadata> {
   const baseUrl = 'https://vinechurch.ca';
+
+  const titles = {
+    pt: 'Células - Igreja Brasileira em Kitchener | Vine Church KWC',
+    en: 'Life Groups - Brazilian Church in Kitchener | Vine Church KWC',
+  };
+  const descriptions = {
+    pt: 'Conheça as células da Vine Church KWC, igreja brasileira em Kitchener. Pequenos grupos que se reúnem nas casas para comunhão, estudo da Palavra e oração.',
+    en: 'Discover the life groups at Vine Church KWC, Brazilian church in Kitchener. Small groups meeting in homes for fellowship, Bible study and prayer.',
+  };
+
   return {
+    title: titles[locale as keyof typeof titles] || titles.pt,
+    description: descriptions[locale as keyof typeof descriptions] || descriptions.pt,
     alternates: {
       canonical: `${baseUrl}/${locale}/cells`,
       languages: {

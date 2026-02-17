@@ -21,7 +21,19 @@ interface PageProps {
 
 export async function generateMetadata({ params: { locale } }: PageProps): Promise<Metadata> {
   const baseUrl = 'https://vinechurch.ca';
+
+  const titles = {
+    pt: 'Quem Somos - Igreja Brasileira em Kitchener | Vine Church KWC',
+    en: 'About Us - Brazilian Church in Kitchener | Vine Church KWC',
+  };
+  const descriptions = {
+    pt: 'Conheça a Vine Church KWC (Igreja Videira), uma igreja brasileira em Kitchener, Ontario. Nossa história, visão e valores. Comunidade cristã brasileira na região de Waterloo.',
+    en: 'Learn about Vine Church KWC, a Brazilian church in Kitchener, Ontario. Our history, vision and values. Brazilian Christian community in the Waterloo Region.',
+  };
+
   return {
+    title: titles[locale as keyof typeof titles] || titles.pt,
+    description: descriptions[locale as keyof typeof descriptions] || descriptions.pt,
     alternates: {
       canonical: `${baseUrl}/${locale}/about`,
       languages: {

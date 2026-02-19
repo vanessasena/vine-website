@@ -21,7 +21,7 @@ import {
   faTrashCan,
   faXmark
 } from '@fortawesome/free-solid-svg-icons';
-import { formatWrittenDate } from '@/lib/utils';
+import { formatWrittenDate, formatPhoneNumber } from '@/lib/utils';
 import { useLocale } from 'next-intl';
 
 // Helper function to calculate age from date string
@@ -355,7 +355,7 @@ export default function CurrentCheckins({
                           <FontAwesomeIcon icon={faPhone} className="h-3.5 w-3.5 mr-1" /> {t('kidsCheckin.form.parentPhone')}
                         </p>
                         <p className="text-sm text-gray-900 font-medium font-mono">
-                          {child.parent_phone}
+                          {formatPhoneNumber(child.parent_phone)}
                         </p>
                       </div>
                     )}
@@ -392,7 +392,7 @@ export default function CurrentCheckins({
                         {child.emergency_contact_name}
                         {child.emergency_contact_phone && (
                           <span className="ml-2 font-mono">
-                            ({child.emergency_contact_phone})
+                            ({formatPhoneNumber(child.emergency_contact_phone)})
                           </span>
                         )}
                       </p>

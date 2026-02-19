@@ -15,7 +15,7 @@ import {
   faCircleXmark,
   faCircleInfo
 } from '@fortawesome/free-solid-svg-icons';
-import { formatLocalDate, getLocalISODate } from '@/lib/utils';
+import { formatLocalDate, getLocalISODate, formatPhoneNumber } from '@/lib/utils';
 import { useApiCall } from '@/lib/hooks/useApiCall';
 
 interface Child {
@@ -429,7 +429,7 @@ export default function CheckinForm({
                               {child.parent_phone && (
                                 <div className="flex items-center gap-2 text-sm text-gray-500">
                                   <FontAwesomeIcon icon={faPhone} className="h-4 w-4 text-gray-500" />
-                                  <span className="font-mono">{child.parent_phone}</span>
+                                  <span className="font-mono">{formatPhoneNumber(child.parent_phone)}</span>
                                 </div>
                               )}
                             </div>

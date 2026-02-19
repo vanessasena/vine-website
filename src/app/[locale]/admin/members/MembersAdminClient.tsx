@@ -147,7 +147,8 @@ export default function MembersAdminClient({ locale }: MembersAdminClientProps) 
 
   const calculateAge = (dateOfBirth: string): number => {
     const today = new Date();
-    const birthDate = new Date(dateOfBirth);
+    const [year, month, day] = dateOfBirth.split('T')[0].split('-');
+    const birthDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
 
@@ -159,12 +160,13 @@ export default function MembersAdminClient({ locale }: MembersAdminClientProps) 
   };
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString(locale === 'pt' ? 'pt-BR' : 'en-US', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
+    const [year, month, day] = dateString.split('T')[0].split('-');
+    const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+    const monthName = date.toLocaleDateString(locale === 'pt' ? 'pt-BR' : 'en-US', { month: 'long' });
+    if (locale === 'pt') {
+      return `${parseInt(day)} de ${monthName}, ${year}`;
+    }
+    return `${monthName} ${parseInt(day)}, ${year}`;
   };
 
   // Enhanced filtering logic with multiple criteria

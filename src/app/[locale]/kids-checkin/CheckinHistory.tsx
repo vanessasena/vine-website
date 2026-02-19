@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { createClient } from '@supabase/supabase-js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -17,7 +17,7 @@ import {
   faUsers,
   faNoteSticky
 } from '@fortawesome/free-solid-svg-icons';
-import { formatLocalDate } from '@/lib/utils';
+import { formatWrittenDate } from '@/lib/utils';
 
 // Helper function to calculate age from date string
 function calculateAge(dateStr: string): number {
@@ -49,6 +49,7 @@ interface CheckInRecord {
 
 export default function CheckinHistory() {
   const t = useTranslations();
+  const locale = useLocale();
   const [records, setRecords] = useState<CheckInRecord[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -320,7 +321,7 @@ export default function CheckinHistory() {
                             {t('kidsCheckin.form.dateOfBirth')}
                           </p>
                           <p className="text-sm text-gray-900 font-medium">
-                            {formatLocalDate(record.child_dob)}
+                            {formatWrittenDate(record.child_dob, locale)}
                           </p>
                         </div>
                         <div className="bg-white p-3 rounded-lg border border-gray-200">

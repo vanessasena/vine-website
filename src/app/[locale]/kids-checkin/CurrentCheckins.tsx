@@ -21,7 +21,8 @@ import {
   faTrashCan,
   faXmark
 } from '@fortawesome/free-solid-svg-icons';
-import { formatLocalDate } from '@/lib/utils';
+import { formatWrittenDate } from '@/lib/utils';
+import { useLocale } from 'next-intl';
 
 // Helper function to calculate age from date string
 function calculateAge(dateStr: string): number {
@@ -64,6 +65,7 @@ export default function CurrentCheckins({
   onCheckOutSuccess,
 }: CurrentCheckinsProps) {
   const t = useTranslations();
+  const locale = useLocale();
   const [children, setChildren] = useState<CheckedInChild[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -344,7 +346,7 @@ export default function CurrentCheckins({
                         {t('kidsCheckin.form.dateOfBirth')}
                       </p>
                       <p className="text-sm text-gray-900 font-medium">
-                        {formatLocalDate(child.child_dob)}
+                        {formatWrittenDate(child.child_dob, locale)}
                       </p>
                     </div>
                     {child.parent_phone && (

@@ -29,6 +29,24 @@ export function formatLocalDate(dateString: string): string {
 }
 
 /**
+ * Formats a date string in written format, e.g. "29 de dezembro, 1987" (pt) or "December 29, 1987" (en).
+ * Avoids UTC timezone offset issues.
+ *
+ * @param dateString - ISO date string (e.g., "2020-01-15")
+ * @param locale - Locale string, e.g. "pt" or "en" (defaults to "pt")
+ * @returns Written date string
+ */
+export function formatWrittenDate(dateString: string, locale: string = 'pt'): string {
+  const [year, month, day] = dateString.split('T')[0].split('-');
+  const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+  const monthName = date.toLocaleDateString(locale === 'pt' ? 'pt-BR' : 'en-US', { month: 'long' });
+  if (locale === 'pt') {
+    return `${parseInt(day)} de ${monthName}, ${year}`;
+  }
+  return `${monthName} ${parseInt(day)}, ${year}`;
+}
+
+/**
  * Returns the local date in YYYY-MM-DD format for use in HTML date inputs.
  * Avoids using `toISOString()` which is UTC-based and can shift the date.
  */

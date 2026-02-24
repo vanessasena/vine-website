@@ -145,6 +145,9 @@ export default function AdminClient({ locale }: { locale: string }) {
   // Delete confirmation
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
+  // ID validation
+  const [idError, setIdError] = useState<string | null>(null);
+
   // Check authentication on mount
   useEffect(() => {
     async function checkAuthentication() {
@@ -204,8 +207,36 @@ export default function AdminClient({ locale }: { locale: string }) {
     }
   }, [successMessage, error]);
 
+  const sanitizeId = (value: string): string => {
+    return value
+      .toLowerCase()
+      .replace(/\s+/g, '-')        // spaces → hyphens
+      .replace(/[^a-z0-9-]/g, '')  // strip anything else
+      .replace(/-{2,}/g, '-');      // collapse consecutive hyphens
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+
+    if (name === 'id') {
+      const sanitized = sanitizeId(value);
+      setFormData(prev => ({ ...prev, id: sanitized }));
+      if (sanitized !== value) {
+        setIdError(
+          locale === 'pt'
+            ? 'Apenas letras minúsculas, números e hífens são permitidos.'
+            : 'Only lowercase letters, numbers, and hyphens are allowed.'
+        );
+      } else if (!sanitized) {
+        setIdError(
+          locale === 'pt' ? 'O ID é obrigatório.' : 'ID is required.'
+        );
+      } else {
+        setIdError(null);
+      }
+      return;
+    }
+
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
@@ -239,10 +270,24 @@ export default function AdminClient({ locale }: { locale: string }) {
     setEditingSermon(null);
     setFormData(emptyFormData);
     setShowPreview(false);
+    setIdError(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!editingSermon) {
+      const sanitized = sanitizeId(formData.id);
+      if (!sanitized || sanitized !== formData.id || !/^[a-z0-9-]+$/.test(sanitized)) {
+        setIdError(
+          locale === 'pt'
+            ? 'Apenas letras minúsculas, números e hífens são permitidos.'
+            : 'Only lowercase letters, numbers, and hyphens are allowed.'
+        );
+        return;
+      }
+    }
+
     setSaving(true);
     setError(null);
 
@@ -489,11 +534,16 @@ export default function AdminClient({ locale }: { locale: string }) {
                     onChange={handleInputChange}
                     disabled={!!editingSermon}
                     required
-                    pattern="[a-z0-9-]+"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 disabled:bg-gray-100"
+                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 disabled:bg-gray-100 ${
+                      idError ? 'border-red-400 focus:ring-red-400' : 'border-gray-300'
+                    }`}
                     placeholder="sermon-title-2025-01-01"
                   />
-                  <p className="mt-1 text-sm text-gray-500">{t('form.idHelp')}</p>
+                  {idError ? (
+                    <p className="mt-1 text-sm text-red-600">{idError}</p>
+                  ) : (
+                    <p className="mt-1 text-sm text-gray-500">{t('form.idHelp')}</p>
+                  )}
                 </div>
 
                 {/* Titles */}

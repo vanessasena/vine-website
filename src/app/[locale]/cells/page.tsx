@@ -65,11 +65,6 @@ export default function CellsPage({ params: { locale } }: PageProps) {
       altText: 'Kitchener Roots Life Group'
     },
     {
-      id: 'kitchener',
-      image: 'https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/lifegroups/kitchener.jpg',
-      altText: 'Kitchener Life Group'
-    },
-    {
       id: 'cambridge',
       image: 'https://muoxstvqqsuhgsywddhr.supabase.co/storage/v1/object/public/website/lifegroups/Cambridge.jpg',
       altText: 'Cambridge Life Group'

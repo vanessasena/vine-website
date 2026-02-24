@@ -16,6 +16,15 @@ export const VOLUNTEER_AREA_OPTIONS = [
 
 export type VolunteerArea = typeof VOLUNTEER_AREA_OPTIONS[number];
 
+export const LIFE_GROUP_OPTIONS = [
+  'roots',
+  'cambridge',
+  'waterloo',
+  'youth',
+] as const;
+
+export type LifeGroupOption = typeof LIFE_GROUP_OPTIONS[number];
+
 export const GENDER_OPTIONS = [
   'female',
   'male',

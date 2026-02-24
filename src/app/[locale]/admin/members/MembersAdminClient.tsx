@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { VOLUNTEER_AREA_OPTIONS, GENDER_OPTIONS, SPIRITUAL_COURSE_OPTIONS } from '@/lib/constants';
+import { VOLUNTEER_AREA_OPTIONS, GENDER_OPTIONS, SPIRITUAL_COURSE_OPTIONS, LIFE_GROUP_OPTIONS } from '@/lib/constants';
 import {
   faUsers,
   faFilter,
@@ -233,15 +233,14 @@ export default function MembersAdminClient({ locale }: MembersAdminClientProps) 
     });
   }, [members, searchName, selectedLifeGroup, selectedGender, selectedMaritalStatus, selectedTithe, selectedBaptized, selectedEncounter, selectedCourse, selectedArea, memberChildren]);
 
-  // Get unique life groups for filter dropdown
-  const lifeGroups = useMemo(() => {
-    const groups = members
-      .filter((m) => m.life_group)
-      .map((m) => m.life_group as string)
-      .filter((value, index, self) => self.indexOf(value) === index)
-      .sort();
-    return groups;
-  }, [members]);
+  // Helper function to get translation for life groups
+  const getLifeGroupLabel = (key: string): string => {
+    try {
+      return t(`lifeGroupOptions.${key}`);
+    } catch {
+      return key;
+    }
+  };
 
   // Paginate filtered results
   const totalPages = Math.ceil(filteredMembers.length / ITEMS_PER_PAGE);
@@ -371,9 +370,9 @@ export default function MembersAdminClient({ locale }: MembersAdminClientProps) 
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             >
               <option value="all">{locale === 'pt' ? 'Todas' : 'All'}</option>
-              {lifeGroups.map((group) => (
-                <option key={group} value={group}>
-                  {group}
+              {LIFE_GROUP_OPTIONS.map((key) => (
+                <option key={key} value={key}>
+                  {getLifeGroupLabel(key)}
                 </option>
               ))}
             </select>
@@ -528,7 +527,7 @@ export default function MembersAdminClient({ locale }: MembersAdminClientProps) 
                         <h3 className="text-xl font-bold text-gray-900">{member.name}</h3>
                         <div className="flex flex-wrap gap-3 mt-2">
                           <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
-                            {member.life_group || (locale === 'pt' ? 'Sem célula' : 'No life group')}
+                            {member.life_group ? getLifeGroupLabel(member.life_group) : (locale === 'pt' ? 'Sem célula' : 'No life group')}
                           </span>
                           {member.gender && (
                             <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
@@ -803,7 +802,7 @@ export default function MembersAdminClient({ locale }: MembersAdminClientProps) 
                         <FontAwesomeIcon icon={faUsers} className="mr-2 text-primary-600" />
                         {locale === 'pt' ? 'Célula' : 'Life Group'}
                       </label>
-                      <p className="text-gray-900 mt-1 font-semibold">{selectedMember.life_group}</p>
+                      <p className="text-gray-900 mt-1 font-semibold">{selectedMember.life_group ? getLifeGroupLabel(selectedMember.life_group) : ''}</p>
                     </div>
                   )}
 

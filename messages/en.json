@@ -626,6 +626,12 @@
     },
     "lifeGroup": "Life Group",
     "lifeGroupPlaceholder": "Select your life group",
+    "lifeGroupOptions": {
+      "roots": "Kitchener Life Group (Roots)",
+      "cambridge": "Cambridge Life Group (Morada 70)",
+      "waterloo": "Waterloo Life Group (Sinai)",
+      "youth": "Youth Life Group (Next Generation)"
+    },
     "volunteerAreas": "Volunteer Areas",
     "volunteerIntro": "Serving as a volunteer is an opportunity to use your gifts and talents to glorify God and bless others. We seek committed volunteers who want to be part of the Vine Church family and regularly contribute their time and talents. We will have work schedules to ensure no one is overwhelmed. Select one or more areas of interest:",
     "volunteerOptions": {

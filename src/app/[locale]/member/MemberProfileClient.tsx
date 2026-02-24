@@ -17,7 +17,7 @@ import {
   faArrowLeft,
   faCross,
 } from '@fortawesome/free-solid-svg-icons';
-import { VOLUNTEER_AREA_OPTIONS, GENDER_OPTIONS, SPIRITUAL_COURSE_OPTIONS, CHURCH_ROLE_OPTIONS } from '@/lib/constants';
+import { VOLUNTEER_AREA_OPTIONS, GENDER_OPTIONS, SPIRITUAL_COURSE_OPTIONS, CHURCH_ROLE_OPTIONS, LIFE_GROUP_OPTIONS } from '@/lib/constants';
 import ProfileSection from '@/components/ProfileSection';
 
 interface Child {
@@ -1264,14 +1264,11 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                   >
                     <option value="">{t('lifeGroupPlaceholder')}</option>
-                    {['roots', 'kitchener', 'cambridge', 'waterloo', 'youth'].map((groupKey) => {
-                      const groupName = tCells(`groups.${groupKey}.name`);
-                      return (
-                        <option key={groupKey} value={groupName}>
-                          {groupName}
-                        </option>
-                      );
-                    })}
+                    {LIFE_GROUP_OPTIONS.map((groupKey) => (
+                      <option key={groupKey} value={groupKey}>
+                        {t(`lifeGroupOptions.${groupKey}`)}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </>
@@ -1336,7 +1333,11 @@ export default function MemberProfileClient({ locale }: MemberProfileClientProps
                       <FontAwesomeIcon icon={faUsers} className="mr-2 text-primary-600" />
                       {t('lifeGroup')}
                     </div>
-                    <div className="text-lg text-gray-900">{profile.life_group}</div>
+                    <div className="text-lg text-gray-900">
+                      {LIFE_GROUP_OPTIONS.includes(profile.life_group as typeof LIFE_GROUP_OPTIONS[number])
+                        ? t(`lifeGroupOptions.${profile.life_group}`)
+                        : profile.life_group}
+                    </div>
                   </div>
                 )}
               </div>

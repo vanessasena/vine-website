@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useMemo, useState, useRef, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { getLocalISODate } from '@/lib/utils';
+import { getLocalISODate, formatPhoneNumber } from '@/lib/utils';
 import { useApiCall } from '@/lib/hooks/useApiCall';
 
 type HowFoundOption = 'friend' | 'google' | 'social' | 'passing' | 'other' | '';
@@ -481,8 +481,7 @@ export default function RegisterVisitorClient() {
 												ref={phoneInputRef}
 												type="tel"
 												value={visitor.phone}
-												onChange={(e) => handleVisitorChange('phone', e.target.value)}
-												className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+												onChange={(e) => handleVisitorChange('phone', e.target.value)}											onBlur={(e) => handleVisitorChange('phone', formatPhoneNumber(e.target.value.trim()))}												className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
 												required
 											/>
 											{visitorErrors.phone && (

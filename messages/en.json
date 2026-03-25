@@ -527,6 +527,7 @@
     "errorMessage": "An error occurred while submitting your registration. Please try again.",
     "requiredField": "This field is required",
     "invalidPhone": "Invalid phone number. Please use a valid format like (519) 123-4567",
+    "phoneTooLong": "Phone number is too long. Please enter up to 11 digits.",
     "yesButton": "Yes",
     "noButton": "No"
   },

@@ -36,7 +36,7 @@ interface VisitorErrors {
 	how_found_details?: string;
 }
 
-const phoneRegex = /^(?:\+?\d{1,3}[\s-]?)?(?:\(?\d{3}\)?[\s-]?)?\d{3}[\s-]?\d{4}$/;
+const phoneRegex = /^(?:\+?1[\s-]?)?\(?\d{3}\)?[\s-]?\d{3}[\s-]?\d{4}$/;
 
 // Helper mandated by requirements: calculate age from YYYY-MM-DD
 function calculateAge(dateStr: string): number {
@@ -171,6 +171,8 @@ export default function RegisterVisitorClient() {
 
 		if (!data.phone.trim()) {
 			errors.phone = t('requiredField');
+		} else if (data.phone.trim().replace(/\D/g, '').length > 11) {
+			errors.phone = t('phoneTooLong');
 		} else if (!phoneRegex.test(data.phone.trim())) {
 			errors.phone = t('invalidPhone');
 		}

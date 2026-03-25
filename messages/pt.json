@@ -524,6 +524,7 @@
     "errorMessage": "Ocorreu um erro ao enviar seu registro. Por favor, tente novamente.",
     "requiredField": "Este campo é obrigatório",
     "invalidPhone": "Número de telefone inválido. Use um formato válido como (519) 123-4567",
+    "phoneTooLong": "O número de telefone é muito longo. Digite no máximo 11 dígitos.",
     "yesButton": "Sim",
     "noButton": "Não"
   },

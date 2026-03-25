@@ -59,12 +59,18 @@ export default function RegisterVisitorClient() {
 	const [hasChildren, setHasChildren] = useState<boolean | null>(null);
 	const [showChildForm, setShowChildForm] = useState(false);
 	const [visitor, setVisitor] = useState<VisitorForm>({
-		visit_date: getLocalISODate(),
+		visit_date: '',
 		name: '',
 		phone: '',
 		how_found: '',
 		how_found_details: '',
 	});
+
+	// Set visit_date on client only to avoid hydration mismatch
+	// (server in UTC vs client in local timezone can produce different dates)
+	useEffect(() => {
+		setVisitor((prev) => prev.visit_date ? prev : { ...prev, visit_date: getLocalISODate() });
+	}, []);
 	const [childForm, setChildForm] = useState<ChildForm>({
 		name: '',
 		date_of_birth: '',

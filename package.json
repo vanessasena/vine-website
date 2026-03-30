@@ -10,16 +10,19 @@
     "backup:prod": "docker run --rm -e PGPASSWORD=\"%SUPABASE_DB_PASSWORD%\" -v \"%CD%\\backups:/backup\" postgres:17 pg_dump -h %SUPABASE_DB_HOST% -p %SUPABASE_DB_PORT% -U %SUPABASE_DB_USER% -d postgres -F p --no-owner --no-privileges -f /backup/vine-prod-backup.sql"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^3.0.48",
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
     "@fortawesome/free-brands-svg-icons": "^7.1.0",
     "@fortawesome/free-solid-svg-icons": "^7.1.0",
     "@fortawesome/react-fontawesome": "^3.1.0",
     "@supabase/supabase-js": "^2.83.0",
     "@vercel/analytics": "^1.5.0",
+    "ai": "^6.0.141",
     "next": "^14",
     "next-intl": "^3.0.0",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/node": "^20",

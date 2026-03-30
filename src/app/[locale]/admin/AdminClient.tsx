@@ -18,7 +18,8 @@ import {
   faUser,
   faCheck,
   faImages,
-  faCalendar
+  faCalendar,
+  faWandMagicSparkles,
 } from '@fortawesome/free-solid-svg-icons';
 import { getSession, signOut } from '@/lib/auth';
 import { Sermon } from '@/lib/sermons';
@@ -148,6 +149,14 @@ export default function AdminClient({ locale }: { locale: string }) {
   // ID validation
   const [idError, setIdError] = useState<string | null>(null);
 
+  // AI assistant step state
+  const [showAiStep, setShowAiStep] = useState(false);
+  const [aiRawText, setAiRawText] = useState('');
+  const [aiPreacher, setAiPreacher] = useState('');
+  const [aiDate, setAiDate] = useState('');
+  const [aiProcessing, setAiProcessing] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
+
   // Check authentication on mount
   useEffect(() => {
     async function checkAuthentication() {
@@ -241,10 +250,93 @@ export default function AdminClient({ locale }: { locale: string }) {
   };
 
   const handleAddNew = () => {
+    setAiRawText('');
+    setAiPreacher('');
+    setAiDate('');
+    setAiError(null);
+    setShowAiStep(true);
+  };
+
+  const handleSkipAi = () => {
+    setShowAiStep(false);
     setEditingSermon(null);
     setFormData(emptyFormData);
     setShowForm(true);
     setShowPreview(false);
+  };
+
+  const handleAiProcess = async () => {
+    setAiError(null);
+
+    if (!aiRawText.trim()) {
+      setAiError(t('ai.errorEmpty'));
+      return;
+    }
+    if (!aiPreacher.trim()) {
+      setAiError(t('ai.errorPreacher'));
+      return;
+    }
+    if (!aiDate) {
+      setAiError(t('ai.errorDate'));
+      return;
+    }
+
+    setAiProcessing(true);
+    try {
+      const session = await getSession();
+      const token = session?.access_token;
+
+      if (!token) {
+        setAiError(locale === 'pt' ? 'Sessão expirada. Por favor, faça login novamente.' : 'Session expired. Please log in again.');
+        return;
+      }
+
+      const response = await fetch('/api/ai/format-sermon', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ text: aiRawText }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        const msg = result?.error?.message || t('messages.error');
+        setAiError(msg);
+        return;
+      }
+
+      const { data } = result;
+      const generatedId = sanitizeId(data.title_pt)
+        .replace(/-+$/, '')
+        .substring(0, 60);
+
+      setFormData({
+        id: generatedId,
+        title_pt: data.title_pt,
+        title_en: data.title_en,
+        preacher: aiPreacher.trim(),
+        date: aiDate,
+        excerpt_pt: data.excerpt_pt,
+        excerpt_en: data.excerpt_en,
+        content_pt: data.content_pt,
+        content_en: data.content_en,
+        scripture: data.scripture,
+      });
+
+      setShowAiStep(false);
+      setEditingSermon(null);
+      setShowForm(true);
+      setShowPreview(false);
+      setIdError(null);
+      setSuccessMessage(t('ai.successFilled'));
+    } catch {
+      setAiError(t('messages.error'));
+    } finally {
+      setAiProcessing(false);
+    }
   };
 
   const handleEdit = (sermon: Sermon) => {
@@ -267,10 +359,12 @@ export default function AdminClient({ locale }: { locale: string }) {
 
   const handleCancel = () => {
     setShowForm(false);
+    setShowAiStep(false);
     setEditingSermon(null);
     setFormData(emptyFormData);
     setShowPreview(false);
     setIdError(null);
+    setAiError(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -434,7 +528,7 @@ export default function AdminClient({ locale }: { locale: string }) {
 
         {/* Add Sermon Button */}
         <div className="mb-6 flex items-center justify-end">
-          {!showForm && (
+          {!showForm && !showAiStep && (
             <button
               onClick={handleAddNew}
               className="inline-flex items-center bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
@@ -444,6 +538,110 @@ export default function AdminClient({ locale }: { locale: string }) {
             </button>
           )}
         </div>
+
+        {/* AI Assistant Step */}
+        {showAiStep && (
+          <div className="bg-white rounded-lg shadow-lg p-6 mb-8 border-t-4 border-accent-500">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <div className="flex items-center gap-3 mb-1">
+                  <FontAwesomeIcon icon={faWandMagicSparkles} className="h-5 w-5 text-accent-600" />
+                  <h2 className="text-2xl font-bold text-gray-900">{t('ai.title')}</h2>
+                </div>
+                <p className="text-gray-500 text-sm">{t('ai.subtitle')}</p>
+              </div>
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="inline-flex items-center bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+              >
+                <FontAwesomeIcon icon={faTimes} className="mr-2" />
+                {t('cancel')}
+              </button>
+            </div>
+
+            {aiError && (
+              <div className="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-sm">
+                {aiError}
+              </div>
+            )}
+
+            <div className="space-y-5">
+              {/* Preacher + Date */}
+              <div className="grid md:grid-cols-2 gap-5">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t('ai.preacherLabel')} *
+                  </label>
+                  <input
+                    type="text"
+                    value={aiPreacher}
+                    onChange={(e) => setAiPreacher(e.target.value)}
+                    placeholder="Pr Boris Carvalho"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t('ai.dateLabel')} *
+                  </label>
+                  <input
+                    type="date"
+                    value={aiDate}
+                    onChange={(e) => setAiDate(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500"
+                  />
+                </div>
+              </div>
+
+              {/* Raw text */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('ai.pasteLabel')} *
+                </label>
+                <textarea
+                  value={aiRawText}
+                  onChange={(e) => setAiRawText(e.target.value)}
+                  placeholder={t('ai.pastePlaceholder')}
+                  rows={14}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500 text-sm"
+                />
+                <p className="mt-1 text-xs text-gray-400">
+                  {aiRawText.length.toLocaleString()} / 50,000 {locale === 'pt' ? 'caracteres' : 'characters'}
+                </p>
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center justify-between pt-2">
+                <button
+                  type="button"
+                  onClick={handleSkipAi}
+                  className="text-sm text-gray-500 hover:text-gray-700 underline"
+                >
+                  {t('ai.skipButton')}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleAiProcess}
+                  disabled={aiProcessing}
+                  className="inline-flex items-center bg-accent-600 hover:bg-accent-700 text-white font-medium py-2 px-6 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {aiProcessing ? (
+                    <>
+                      <FontAwesomeIcon icon={faSpinner} className="mr-2 animate-spin" />
+                      {t('ai.processing')}
+                    </>
+                  ) : (
+                    <>
+                      <FontAwesomeIcon icon={faWandMagicSparkles} className="mr-2" />
+                      {t('ai.processButton')}
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Form */}
         {showForm && (

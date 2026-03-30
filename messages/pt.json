@@ -257,7 +257,22 @@
     "source": "Fonte dos dados",
     "database": "Banco de dados",
     "static": "Arquivos estáticos",
-    "backToSite": "Voltar ao Site"
+    "backToSite": "Voltar ao Site",
+    "ai": {
+      "title": "Assistente IA",
+      "subtitle": "Cole o texto do sermão em português e a IA vai formatar, traduzir e criar os resumos automaticamente.",
+      "pasteLabel": "Texto do Sermão (Português)",
+      "pastePlaceholder": "Cole aqui o texto do sermão em português, sem formatação...",
+      "preacherLabel": "Pregador",
+      "dateLabel": "Data",
+      "processButton": "Formatar com IA",
+      "processing": "Processando com IA...",
+      "skipButton": "Preencher manualmente",
+      "errorEmpty": "Por favor, cole o texto do sermão.",
+      "errorPreacher": "Por favor, informe o nome do pregador.",
+      "errorDate": "Por favor, informe a data do sermão.",
+      "successFilled": "Campos preenchidos pela IA! Revise e salve."
+    }
   },
   "adminSchedule": {
     "title": "Gerenciar Agenda",

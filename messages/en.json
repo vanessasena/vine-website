@@ -256,7 +256,22 @@
     "source": "Data source",
     "database": "Database",
     "static": "Static files",
-    "backToSite": "Back to Site"
+    "backToSite": "Back to Site",
+    "ai": {
+      "title": "AI Assistant",
+      "subtitle": "Paste the sermon text in Portuguese and AI will format it, translate it, and generate summaries automatically.",
+      "pasteLabel": "Sermon Text (Portuguese)",
+      "pastePlaceholder": "Paste the sermon text in Portuguese here, without formatting...",
+      "preacherLabel": "Preacher",
+      "dateLabel": "Date",
+      "processButton": "Format with AI",
+      "processing": "Processing with AI...",
+      "skipButton": "Fill in manually",
+      "errorEmpty": "Please paste the sermon text.",
+      "errorPreacher": "Please enter the preacher's name.",
+      "errorDate": "Please enter the sermon date.",
+      "successFilled": "Fields filled by AI! Please review and save."
+    }
   },
   "adminSchedule": {
     "title": "Manage Schedule",

@@ -43,6 +43,54 @@ This is a bilingual (Portuguese/English) church website built with Next.js for V
 - **Authentication**: Uses Supabase Auth with session management
 - **Data Source Indicator**: Shows whether data is from database or static fallback
 
+## API Route Authentication Pattern
+**IMPORTANT**: Supabase sessions in this app are stored in **localStorage** (not HTTP cookies). API routes cannot read cookies for auth.
+
+**Always use Bearer token authentication in API routes:**
+```typescript
+// In the API route:
+const authHeader = request.headers.get('Authorization');
+if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+}
+const token = authHeader.replace('Bearer ', '');
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
+const { data: { user }, error } = await supabase.auth.getUser(token);
+```
+
+```typescript
+// In the client component making the request:
+import { getSession } from '@/lib/auth';
+const session = await getSession();
+const token = session?.access_token;
+fetch('/api/some-route', {
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`,
+  },
+});
+```
+
+- **Never use** `createSupabaseServerClient()` + `supabase.auth.getUser()` (no cookies) for auth in API routes
+- **Always use** `createClient(supabaseUrl, supabaseServiceKey)` + `supabase.auth.getUser(token)` with the Bearer token
+- See `src/app/api/check-ins/route.ts` as the reference implementation
+
+## Role Checks in API Routes
+**IMPORTANT**: Never call `getUserRole()` from `src/lib/roles.ts` inside API routes. It uses the **anon key** client, and RLS on the `users` table blocks it from reading roles server-side.
+
+**Always query the role directly using the service role client** (which bypasses RLS):
+```typescript
+const { data } = await supabase  // supabase created with supabaseServiceKey
+  .from('users')
+  .select('role')
+  .eq('id', user.id)
+  .single();
+const role = data?.role;
+```
+
+- `getUserRole()` is safe to use **client-side** (the user is authenticated and RLS allows self-reads)
+- In API routes, always reuse the service role `supabase` client already created for auth verification
+
 ## User Roles & Permissions
 The application uses a role-based access control system with the following roles:
 - **admin**: Full access to all features (profile, kids check-in, member management, visitor management, admin panel)

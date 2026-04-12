@@ -1,5 +1,6 @@
 import { useTranslations } from 'next-intl';
 import Navigation from '@/components/Navigation';
+import Banner from '@/components/Banner';
 import Footer from '@/components/Footer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -82,6 +83,7 @@ export default function EncontroComDeusPage({
   return (
     <main className="min-h-screen">
       <Navigation locale={locale} />
+      <Banner locale={locale} />
 
       {/* Hero Section */}
       <section className="relative text-white pt-32 pb-20 min-h-[500px] flex items-center">

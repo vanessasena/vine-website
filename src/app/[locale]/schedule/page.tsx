@@ -1,5 +1,6 @@
 import { useTranslations } from 'next-intl';
 import Navigation from '@/components/Navigation';
+import Banner from '@/components/Banner';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -48,6 +49,7 @@ export default function SchedulePage({ params: { locale } }: PageProps) {
   return (
     <main>
       <Navigation locale={locale} />
+      <Banner locale={locale} />
 
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-primary-600 via-secondary-600 to-accent-600 text-white py-20">

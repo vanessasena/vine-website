@@ -1,5 +1,6 @@
 import { useTranslations } from 'next-intl';
 import Navigation from '@/components/Navigation';
+import Banner from '@/components/Banner';
 import Hero from '@/components/Hero';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
@@ -61,8 +62,9 @@ export default function HomePage({ params: { locale } }: PageProps) {
   return (
     <main className="min-h-screen">
       <Navigation locale={locale} />
+      <Banner locale={locale} />
 
-      <Hero locale={locale} />
+      <Hero />
 
       {/* About Section */}
       <section id="about" className="py-16 bg-gray-50">

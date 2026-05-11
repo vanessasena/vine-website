@@ -224,7 +224,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to create check-in' }, { status: 500 });
     }
 
-    logger.request('POST /api/check-ins: check-in created', { checkInId: checkIn.id, userId: user.id });
+    logger.request('POST /api/check-ins: check-in created', { checkInId: (checkIn as { id: string })?.id, userId: user.id });
     return NextResponse.json({ data: checkIn }, { status: 201 });
   } catch (error) {
     logger.error('POST /api/check-ins: unexpected error', { error: error instanceof Error ? error.message : error });

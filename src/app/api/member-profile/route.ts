@@ -315,7 +315,7 @@ export async function PUT(request: NextRequest) {
     if (spouse_id && is_married) {
       // Get current user's name and ID for the spouse's denormalization
       const currentUserName = name;
-      const currentUserId = data.id;
+      const currentUserId = (data as { id: string }).id;
 
       // Update spouse's profile to link back to current user (use service role to bypass RLS)
       await supabaseServiceRole
@@ -356,7 +356,7 @@ export async function PUT(request: NextRequest) {
         .eq('id', oldSpouseId);
 
       // Also clear children second-parent links referencing the old spouse
-      const currentUserId = data.id;
+      const currentUserId = (data as { id: string }).id;
 
       // 1) Children where current user is parent1 and old spouse was parent2
       await supabaseServiceRole

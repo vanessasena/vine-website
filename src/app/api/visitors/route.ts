@@ -60,6 +60,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const visitorId = (visitorData as { id: string })?.id;
+
     // If children are provided, insert them with visitor_id reference
     if (Array.isArray(children) && children.length > 0) {
       const childrenWithVisitorId = children.map(child => ({
@@ -73,7 +75,7 @@ export async function POST(request: NextRequest) {
         emergency_contact_name: child.emergency_contact_name || null,
         emergency_contact_phone: child.emergency_contact_phone || null,
         photo_permission: child.photo_permission || false,
-        visitor_id: visitorData.id,
+        visitor_id: visitorId,
       }));
 
       const { error: childrenError } = await supabase
@@ -81,7 +83,7 @@ export async function POST(request: NextRequest) {
         .insert(childrenWithVisitorId);
 
       if (childrenError) {
-        logger.error('POST /api/visitors: children insert failed', { error: childrenError.message, visitorId: visitorData.id, requestId });
+        logger.error('POST /api/visitors: children insert failed', { error: childrenError.message, visitorId, requestId });
         // This is now a PARTIAL FAILURE - visitor was saved but children weren't
         return NextResponse.json(
           createErrorResponse(
@@ -90,7 +92,7 @@ export async function POST(request: NextRequest) {
             'CHILDREN_INSERT_FAILED',
             {
               visitorSaved: true,
-              visitorId: visitorData.id,
+              visitorId,
               childrenFailed: true,
               supabaseError: childrenError.message,
               childrenCount: childrenWithVisitorId.length,
@@ -102,7 +104,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    logger.request('POST /api/visitors: visitor registered', { visitorId: visitorData.id, requestId });
+    logger.request('POST /api/visitors: visitor registered', { visitorId, requestId });
     return NextResponse.json(
       {
         success: true,

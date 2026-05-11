@@ -169,7 +169,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to create visitor child' }, { status: 500 });
     }
 
-    logger.request('POST /api/visitor-children: visitor child created', { childId: child.id });
+    logger.request('POST /api/visitor-children: visitor child created', { childId: (child as { id: string })?.id });
     return NextResponse.json(child, { status: 201 });
   } catch (error) {
     logger.error('POST /api/visitor-children: unexpected error', { error: error instanceof Error ? error.message : error });

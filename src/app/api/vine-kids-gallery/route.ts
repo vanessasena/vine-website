@@ -119,7 +119,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    logger.request('POST /api/vine-kids-gallery: image created', { imageId: data.id });
+    logger.request('POST /api/vine-kids-gallery: image created', { imageId: (data as { id: string })?.id });
     return NextResponse.json(data, { status: 201 });
   } catch (error) {
     logger.error('POST /api/vine-kids-gallery: unexpected error', { error: error instanceof Error ? error.message : error });

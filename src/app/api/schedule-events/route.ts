@@ -252,7 +252,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    logger.request('POST /api/schedule-events: event created', { eventId: newEvent.id, requestId });
+    logger.request('POST /api/schedule-events: event created', { eventId: (newEvent as { id: string })?.id, requestId });
     return NextResponse.json(
       {
         success: true,

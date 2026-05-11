@@ -110,6 +110,7 @@ export default function CheckinForm({
     });
     if (apiError) {
       console.error('Error fetching member children:', apiError);
+      setError(`${t('kidsCheckin.errors.fetchFailed')} (${apiError.message})`);
       return;
     }
     setMemberChildren(Array.isArray(data) ? data : []);
@@ -121,6 +122,7 @@ export default function CheckinForm({
     });
     if (apiError) {
       console.error('Error fetching visitor children:', apiError);
+      setError(`${t('kidsCheckin.errors.fetchFailed')} (${apiError.message})`);
       return;
     }
     setVisitorChildren(Array.isArray(data) ? data : []);

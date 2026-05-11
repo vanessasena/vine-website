@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { logger } from '@/lib/logger';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -9,6 +10,7 @@ export async function GET(request: NextRequest) {
   try {
     const authHeader = request.headers.get('authorization');
     if (!authHeader) {
+      logger.authFailure('GET /api/member-profile: missing auth header');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -20,6 +22,7 @@ export async function GET(request: NextRequest) {
     // Verify the user session
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     if (authError || !user) {
+      logger.authFailure('GET /api/member-profile: invalid token');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -31,7 +34,7 @@ export async function GET(request: NextRequest) {
       .single();
 
     if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
-      console.error('Error fetching profile:', error);
+      logger.error('GET /api/member-profile: fetch failed', { error });
       return NextResponse.json({ error: 'Failed to fetch profile' }, { status: 500 });
     }
 
@@ -43,7 +46,7 @@ export async function GET(request: NextRequest) {
       .single();
 
     if (userError) {
-      console.error('Error fetching user role:', userError);
+      logger.error('GET /api/member-profile: role fetch failed', { error: userError });
     }
 
     return NextResponse.json({
@@ -51,7 +54,7 @@ export async function GET(request: NextRequest) {
       role: userData?.role || 'member'
     });
   } catch (error) {
-    console.error('Error in GET /api/member-profile:', error);
+    logger.error('GET /api/member-profile: unexpected error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -60,6 +63,7 @@ export async function POST(request: NextRequest) {
   try {
     const authHeader = request.headers.get('authorization');
     if (!authHeader) {
+      logger.authFailure('POST /api/member-profile: missing auth header');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -71,6 +75,7 @@ export async function POST(request: NextRequest) {
     // Verify the user session
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     if (authError || !user) {
+      logger.authFailure('POST /api/member-profile: invalid token');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -169,13 +174,14 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error('Error creating profile:', error);
+      logger.error('POST /api/member-profile: insert failed', { error });
       return NextResponse.json({ error: 'Failed to create profile' }, { status: 500 });
     }
 
+    logger.request('POST /api/member-profile: profile created', { userId: user.id });
     return NextResponse.json({ data }, { status: 201 });
   } catch (error) {
-    console.error('Error in POST /api/member-profile:', error);
+    logger.error('POST /api/member-profile: unexpected error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -184,6 +190,7 @@ export async function PUT(request: NextRequest) {
   try {
     const authHeader = request.headers.get('authorization');
     if (!authHeader) {
+      logger.authFailure('PUT /api/member-profile: missing auth header');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -195,6 +202,7 @@ export async function PUT(request: NextRequest) {
     // Verify the user session
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     if (authError || !user) {
+      logger.authFailure('PUT /api/member-profile: invalid token');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -295,7 +303,7 @@ export async function PUT(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error('Error updating profile:', error);
+      logger.error('PUT /api/member-profile: update failed', { error });
       return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 });
     }
 
@@ -365,9 +373,10 @@ export async function PUT(request: NextRequest) {
         .eq('parent2_id', currentUserId);
     }
 
+    logger.request('PUT /api/member-profile: profile updated', { userId: user.id });
     return NextResponse.json({ data });
   } catch (error) {
-    console.error('Error in PUT /api/member-profile:', error);
+    logger.error('PUT /api/member-profile: unexpected error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

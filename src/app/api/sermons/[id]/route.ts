@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient, createSupabaseAdminClient } from '@/lib/supabase';
 import { type Sermon } from '@/data/sermons';
 import type { Database } from '@/lib/database.types';
+import { logger } from '@/lib/logger';
 
 type SermonUpdate = Database['public']['Tables']['sermons']['Update'];
 
@@ -51,7 +52,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       .single();
 
     if (error) {
-      console.error('Error fetching sermon from database:', error);
+      logger.error('GET /api/sermons/[id]: fetch failed', { error, sermonId: id });
       return NextResponse.json({ error: 'Failed to fetch sermon' }, { status: 500 });
     }
 
@@ -61,7 +62,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
     return NextResponse.json({ sermon: transformDbSermon(data) });
   } catch (err) {
-    console.error('Unexpected error fetching sermon:', err);
+    logger.error('GET /api/sermons/[id]: unexpected error', { error: err instanceof Error ? err.message : err, sermonId: id });
     return NextResponse.json({ error: 'Failed to fetch sermon' }, { status: 500 });
   }
 }
@@ -102,7 +103,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       .single();
 
     if (error) {
-      console.error('Error updating sermon:', error);
+      logger.error('PUT /api/sermons/[id]: update failed', { error, sermonId: id });
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
@@ -110,9 +111,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: 'Sermon not found' }, { status: 404 });
     }
 
+    logger.request('PUT /api/sermons/[id]: sermon updated', { sermonId: id });
     return NextResponse.json({ sermon: transformDbSermon(data) });
   } catch (err) {
-    console.error('Unexpected error updating sermon:', err);
+    logger.error('PUT /api/sermons/[id]: unexpected error', { error: err instanceof Error ? err.message : err, sermonId: id });
     return NextResponse.json({ error: 'Failed to update sermon' }, { status: 500 });
   }
 }
@@ -137,13 +139,14 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       .eq('id', id);
 
     if (error) {
-      console.error('Error deleting sermon:', error);
+      logger.error('DELETE /api/sermons/[id]: delete failed', { error, sermonId: id });
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
+    logger.request('DELETE /api/sermons/[id]: sermon deleted', { sermonId: id });
     return NextResponse.json({ message: 'Sermon deleted successfully' });
   } catch (err) {
-    console.error('Unexpected error deleting sermon:', err);
+    logger.error('DELETE /api/sermons/[id]: unexpected error', { error: err instanceof Error ? err.message : err, sermonId: id });
     return NextResponse.json({ error: 'Failed to delete sermon' }, { status: 500 });
   }
 }

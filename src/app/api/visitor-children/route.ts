@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { logger } from '@/lib/logger';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -64,13 +65,13 @@ export async function GET(request: NextRequest) {
     const { data: children, error } = await query;
 
     if (error) {
-      console.error('Error fetching visitor children:', error);
+      logger.error('GET /api/visitor-children: fetch failed', { error });
       return NextResponse.json({ error: 'Failed to fetch visitor children' }, { status: 500 });
     }
 
     return NextResponse.json(children || []);
   } catch (error) {
-    console.error('Error in GET /api/visitor-children:', error);
+    logger.error('GET /api/visitor-children: unexpected error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -82,6 +83,7 @@ export async function POST(request: NextRequest) {
   try {
     const authHeader = request.headers.get('Authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      logger.authFailure('POST /api/visitor-children: missing token');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -91,6 +93,7 @@ export async function POST(request: NextRequest) {
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
 
     if (authError || !user) {
+      logger.authFailure('POST /api/visitor-children: invalid token');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -106,6 +109,7 @@ export async function POST(request: NextRequest) {
       !userData ||
       (userData.role !== 'teacher' && userData.role !== 'leader' && userData.role !== 'admin')
     ) {
+      logger.authFailure('POST /api/visitor-children: forbidden', { userId: user.id, role: userData?.role });
       return NextResponse.json({ error: 'Forbidden: Teacher, leader, or admin role required' }, { status: 403 });
     }
 
@@ -161,13 +165,14 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error('Error creating visitor child:', error);
+      logger.error('POST /api/visitor-children: insert failed', { error });
       return NextResponse.json({ error: 'Failed to create visitor child' }, { status: 500 });
     }
 
+    logger.request('POST /api/visitor-children: visitor child created', { childId: child.id });
     return NextResponse.json(child, { status: 201 });
   } catch (error) {
-    console.error('Error in POST /api/visitor-children:', error);
+    logger.error('POST /api/visitor-children: unexpected error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

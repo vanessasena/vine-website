@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient, createSupabaseAdminClient } from '@/lib/supabase';
 import { createErrorResponse, generateRequestId } from '@/lib/utils';
+import { logger } from '@/lib/logger';
 
 // GET /api/schedule-events/[id] - Fetch single schedule event
 export async function GET(
@@ -32,7 +33,7 @@ export async function GET(
       .single();
 
     if (error) {
-      console.error('[schedule-events] Fetch error:', error);
+      logger.error('GET /api/schedule-events/[id]: fetch failed', { error: error.message, eventId: id, requestId });
       return NextResponse.json(
         createErrorResponse(
           'not_found',
@@ -54,7 +55,7 @@ export async function GET(
       { status: 200 }
     );
   } catch (error) {
-    console.error('[schedule-events] Unexpected error:', error);
+    logger.error('GET /api/schedule-events/[id]: unexpected error', { error: error instanceof Error ? error.message : 'Unknown error', eventId: id, requestId });
     return NextResponse.json(
       createErrorResponse(
         'server_error',
@@ -80,6 +81,7 @@ export async function PUT(
     // Check authentication
     const authHeader = request.headers.get('authorization');
     if (!authHeader) {
+      logger.authFailure('PUT /api/schedule-events/[id]: missing token', { eventId: id, requestId });
       return NextResponse.json(
         createErrorResponse(
           'unauthorized',
@@ -112,6 +114,7 @@ export async function PUT(
     const { data: { user }, error: authError } = await anonClient.auth.getUser(token);
 
     if (authError || !user) {
+      logger.authFailure('PUT /api/schedule-events/[id]: invalid token', { eventId: id, requestId });
       return NextResponse.json(
         createErrorResponse(
           'unauthorized',
@@ -150,7 +153,7 @@ export async function PUT(
       .single();
 
     if (updateError) {
-      console.error('[schedule-events] Update error:', updateError);
+      logger.error('PUT /api/schedule-events/[id]: update failed', { error: updateError.message, eventId: id, requestId });
 
       if (updateError.code === 'PGRST116') {
         return NextResponse.json(
@@ -177,6 +180,7 @@ export async function PUT(
       );
     }
 
+    logger.request('PUT /api/schedule-events/[id]: event updated', { eventId: id, requestId });
     return NextResponse.json(
       {
         success: true,
@@ -186,7 +190,7 @@ export async function PUT(
       { status: 200 }
     );
   } catch (error) {
-    console.error('[schedule-events] Unexpected error:', error);
+    logger.error('PUT /api/schedule-events/[id]: unexpected error', { error: error instanceof Error ? error.message : 'Unknown error', eventId: id, requestId });
     return NextResponse.json(
       createErrorResponse(
         'server_error',
@@ -212,6 +216,7 @@ export async function DELETE(
     // Check authentication
     const authHeader = request.headers.get('authorization');
     if (!authHeader) {
+      logger.authFailure('DELETE /api/schedule-events/[id]: missing token', { eventId: id, requestId });
       return NextResponse.json(
         createErrorResponse(
           'unauthorized',
@@ -244,6 +249,7 @@ export async function DELETE(
     const { data: { user }, error: authError } = await anonClient.auth.getUser(token);
 
     if (authError || !user) {
+      logger.authFailure('DELETE /api/schedule-events/[id]: invalid token', { eventId: id, requestId });
       return NextResponse.json(
         createErrorResponse(
           'unauthorized',
@@ -277,7 +283,7 @@ export async function DELETE(
       .eq('id', id);
 
     if (deleteError) {
-      console.error('[schedule-events] Delete error:', deleteError);
+      logger.error('DELETE /api/schedule-events/[id]: delete failed', { error: deleteError.message, eventId: id, requestId });
       return NextResponse.json(
         createErrorResponse(
           'server_error',
@@ -290,6 +296,7 @@ export async function DELETE(
       );
     }
 
+    logger.request('DELETE /api/schedule-events/[id]: event deleted', { eventId: id, requestId });
     return NextResponse.json(
       {
         success: true,
@@ -299,7 +306,7 @@ export async function DELETE(
       { status: 200 }
     );
   } catch (error) {
-    console.error('[schedule-events] Unexpected error:', error);
+    logger.error('DELETE /api/schedule-events/[id]: unexpected error', { error: error instanceof Error ? error.message : 'Unknown error', eventId: id, requestId });
     return NextResponse.json(
       createErrorResponse(
         'server_error',

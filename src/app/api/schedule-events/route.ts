@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient, createSupabaseAdminClient } from '@/lib/supabase';
 import { createErrorResponse, generateRequestId } from '@/lib/utils';
+import { logger } from '@/lib/logger';
 
 // GET /api/schedule-events - Fetch all active schedule events
 export async function GET(request: NextRequest) {
@@ -31,7 +32,7 @@ export async function GET(request: NextRequest) {
       .order('display_order', { ascending: true });
 
     if (error) {
-      console.error('[schedule-events] Database error:', error);
+      logger.error('GET /api/schedule-events: DB error', { error: error.message, requestId });
       return NextResponse.json(
         createErrorResponse(
           'server_error',
@@ -53,7 +54,7 @@ export async function GET(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error('[schedule-events] Unexpected error:', error);
+    logger.error('GET /api/schedule-events: unexpected error', { error: error instanceof Error ? error.message : 'Unknown error', requestId });
     return NextResponse.json(
       createErrorResponse(
         'server_error',
@@ -75,6 +76,7 @@ export async function POST(request: NextRequest) {
     // Check authentication
     const authHeader = request.headers.get('authorization');
     if (!authHeader) {
+      logger.authFailure('POST /api/schedule-events: missing token', { requestId });
       return NextResponse.json(
         createErrorResponse(
           'unauthorized',
@@ -107,6 +109,7 @@ export async function POST(request: NextRequest) {
     const { data: { user }, error: authError } = await anonClient.auth.getUser(token);
 
     if (authError || !user) {
+      logger.authFailure('POST /api/schedule-events: invalid token', { requestId });
       return NextResponse.json(
         createErrorResponse(
           'unauthorized',
@@ -236,7 +239,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (insertError) {
-      console.error('[schedule-events] Insert error:', insertError);
+      logger.error('POST /api/schedule-events: insert failed', { error: insertError.message, requestId });
       return NextResponse.json(
         createErrorResponse(
           'server_error',
@@ -249,6 +252,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    logger.request('POST /api/schedule-events: event created', { eventId: newEvent.id, requestId });
     return NextResponse.json(
       {
         success: true,
@@ -258,7 +262,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error('[schedule-events] Unexpected error:', error);
+    logger.error('POST /api/schedule-events: unexpected error', { error: error instanceof Error ? error.message : 'Unknown error', requestId });
     return NextResponse.json(
       createErrorResponse(
         'server_error',

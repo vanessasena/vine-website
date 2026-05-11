@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient, createSupabaseAdminClient } from '@/lib/supabase';
 import { type Sermon } from '@/data/sermons';
 import type { Database } from '@/lib/database.types';
+import { logger } from '@/lib/logger';
 
 // Transform database sermon to app sermon format
 function transformDbSermon(dbSermon: any): Sermon {
@@ -41,7 +42,7 @@ export async function GET() {
       .order('date', { ascending: false });
 
     if (error) {
-      console.error('Error fetching sermons:', error);
+      logger.error('GET /api/sermons: fetch failed', { error });
       return NextResponse.json({ error: 'Failed to fetch sermons' }, { status: 500 });
     }
 
@@ -51,7 +52,7 @@ export async function GET() {
 
     return NextResponse.json({ sermons: data.map(transformDbSermon) });
   } catch (err) {
-    console.error('Unexpected error fetching sermons:', err);
+    logger.error('GET /api/sermons: unexpected error', { error: err instanceof Error ? err.message : err });
     return NextResponse.json({ error: 'Failed to fetch sermons' }, { status: 500 });
   }
 }
@@ -100,16 +101,17 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error('Error creating sermon:', error);
+      logger.error('POST /api/sermons: insert failed', { error });
       return NextResponse.json(
         { error: error.message },
         { status: 500 }
       );
     }
 
+    logger.request('POST /api/sermons: sermon created', { sermonId: body.id });
     return NextResponse.json({ sermon: transformDbSermon(data) }, { status: 201 });
   } catch (err) {
-    console.error('Unexpected error creating sermon:', err);
+    logger.error('POST /api/sermons: unexpected error', { error: err instanceof Error ? err.message : err });
     return NextResponse.json(
       { error: 'Failed to create sermon' },
       { status: 500 }

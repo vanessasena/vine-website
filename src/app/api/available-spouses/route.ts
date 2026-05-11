@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { logger } from '@/lib/logger';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -12,6 +13,7 @@ export async function GET(request: NextRequest) {
   try {
     const authHeader = request.headers.get('authorization');
     if (!authHeader) {
+      logger.authFailure('GET /api/available-spouses: missing auth header');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -25,6 +27,7 @@ export async function GET(request: NextRequest) {
     // Verify the user session
     const { data: { user }, error: authError } = await supabaseAuth.auth.getUser(token);
     if (authError || !user) {
+      logger.authFailure('GET /api/available-spouses: invalid token');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -39,7 +42,7 @@ export async function GET(request: NextRequest) {
       .single();
 
     if (profileError) {
-      console.error('Error fetching current profile:', profileError);
+      logger.error('GET /api/available-spouses: profile fetch failed', { error: profileError });
       return NextResponse.json({ error: 'Profile not found' }, { status: 404 });
     }
 
@@ -60,7 +63,7 @@ export async function GET(request: NextRequest) {
       .order('name');
 
     if (error) {
-      console.error('Error fetching available spouses:', error);
+      logger.error('GET /api/available-spouses: fetch failed', { error });
       return NextResponse.json({ error: 'Failed to fetch available spouses' }, { status: 500 });
     }
 
@@ -68,7 +71,7 @@ export async function GET(request: NextRequest) {
       data: availableSpouses || []
     });
   } catch (error) {
-    console.error('Error in GET /api/available-spouses:', error);
+    logger.error('GET /api/available-spouses: unexpected error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

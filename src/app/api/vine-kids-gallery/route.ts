@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient, createSupabaseAdminClient } from '@/lib/supabase';
+import { logger } from '@/lib/logger';
 
 // GET - Fetch all Vine Kids gallery images
 export async function GET() {
@@ -19,7 +20,7 @@ export async function GET() {
       .order('display_order', { ascending: true });
 
     if (error) {
-      console.error('Error fetching vine kids gallery:', error);
+      logger.error('GET /api/vine-kids-gallery: fetch failed', { error });
       return NextResponse.json(
         { error: 'Failed to fetch gallery images' },
         { status: 500 }
@@ -28,7 +29,7 @@ export async function GET() {
 
     return NextResponse.json(data || []);
   } catch (error) {
-    console.error('Unexpected error:', error);
+    logger.error('GET /api/vine-kids-gallery: unexpected error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -42,6 +43,7 @@ export async function POST(request: NextRequest) {
     // Check authentication first
     const authHeader = request.headers.get('authorization');
     if (!authHeader) {
+      logger.authFailure('POST /api/vine-kids-gallery: missing auth header');
       return NextResponse.json(
         { error: 'Unauthorized - No token provided' },
         { status: 401 }
@@ -62,7 +64,7 @@ export async function POST(request: NextRequest) {
     const { data: { user }, error: authError } = await anonClient.auth.getUser(token);
 
     if (authError || !user) {
-      console.error('Auth error:', authError);
+      logger.authFailure('POST /api/vine-kids-gallery: invalid token');
       return NextResponse.json(
         { error: 'Unauthorized - Invalid token' },
         { status: 401 }
@@ -110,16 +112,17 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error('Error creating gallery image:', error);
+      logger.error('POST /api/vine-kids-gallery: insert failed', { error });
       return NextResponse.json(
         { error: `Failed to create gallery image: ${error.message}` },
         { status: 500 }
       );
     }
 
+    logger.request('POST /api/vine-kids-gallery: image created', { imageId: data.id });
     return NextResponse.json(data, { status: 201 });
   } catch (error) {
-    console.error('Unexpected error:', error);
+    logger.error('POST /api/vine-kids-gallery: unexpected error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

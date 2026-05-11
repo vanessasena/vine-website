@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { sermonModel } from '@/lib/ai';
 import { createClient } from '@supabase/supabase-js';
 import { createErrorResponse, generateRequestId } from '@/lib/utils';
+import { logger } from '@/lib/logger';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -52,6 +53,7 @@ export async function POST(request: NextRequest) {
   // Auth check via Bearer token (session is stored in localStorage, not cookies)
   const authHeader = request.headers.get('Authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    logger.authFailure('POST /api/ai/format-sermon: missing token', { requestId });
     return NextResponse.json(
       createErrorResponse('unauthorized', 'Authentication required', 'UNAUTHORIZED', undefined, requestId),
       { status: 401 }
@@ -63,6 +65,7 @@ export async function POST(request: NextRequest) {
   const { data: { user }, error: authError } = await supabase.auth.getUser(token);
 
   if (authError || !user) {
+    logger.authFailure('POST /api/ai/format-sermon: invalid token', { requestId });
     return NextResponse.json(
       createErrorResponse('unauthorized', 'Authentication required', 'UNAUTHORIZED', undefined, requestId),
       { status: 401 }
@@ -71,6 +74,7 @@ export async function POST(request: NextRequest) {
 
   const role = await getUserRoleWithServiceClient(supabase, user.id);
   if (role !== 'admin' && role !== 'trainee') {
+    logger.authFailure('POST /api/ai/format-sermon: forbidden', { userId: user.id, role, requestId });
     return NextResponse.json(
       createErrorResponse('forbidden', 'Insufficient permissions', 'FORBIDDEN', undefined, requestId),
       { status: 403 }
@@ -143,9 +147,10 @@ ${text.trim()}
 ---`,
     });
 
+    logger.request('POST /api/ai/format-sermon: sermon formatted', { userId: user.id, requestId });
     return NextResponse.json({ success: true, data: object, requestId }, { status: 200 });
   } catch (err) {
-    console.error('AI processing error:', err);
+    logger.error('POST /api/ai/format-sermon: AI error', { error: err instanceof Error ? err.message : err, requestId });
     return NextResponse.json(
       createErrorResponse(
         'server_error',

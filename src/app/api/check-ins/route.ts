@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { logger } from '@/lib/logger';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -28,6 +29,7 @@ export async function GET(request: NextRequest) {
   try {
     const authHeader = request.headers.get('Authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      logger.authFailure('GET /api/check-ins: missing token');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -37,6 +39,7 @@ export async function GET(request: NextRequest) {
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
 
     if (authError || !user) {
+      logger.authFailure('GET /api/check-ins: invalid token');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -54,7 +57,7 @@ export async function GET(request: NextRequest) {
         .order('checked_in_at', { ascending: false });
 
       if (error) {
-        console.error('Error fetching from view:', error);
+        logger.error('GET /api/check-ins: view query failed', { error });
         return NextResponse.json({ error: 'Failed to fetch check-ins' }, { status: 500 });
       }
 
@@ -107,7 +110,7 @@ export async function GET(request: NextRequest) {
     const { data: checkIns, error } = await query;
 
     if (error) {
-      console.error('Error fetching check-ins:', error);
+      logger.error('GET /api/check-ins: query failed', { error });
       return NextResponse.json({ error: 'Failed to fetch check-ins' }, { status: 500 });
     }
 
@@ -145,7 +148,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(transformed);
   } catch (error) {
-    console.error('Error in GET /api/check-ins:', error);
+    logger.error('GET /api/check-ins: unexpected error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -155,6 +158,7 @@ export async function POST(request: NextRequest) {
   try {
     const authHeader = request.headers.get('Authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      logger.authFailure('POST /api/check-ins: missing token');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -164,6 +168,7 @@ export async function POST(request: NextRequest) {
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
 
     if (authError || !user) {
+      logger.authFailure('POST /api/check-ins: invalid token');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -179,6 +184,7 @@ export async function POST(request: NextRequest) {
       !userData ||
       (userData.role !== 'teacher' && userData.role !== 'leader' && userData.role !== 'admin')
     ) {
+      logger.authFailure('POST /api/check-ins: forbidden', { userId: user.id, role: userData?.role });
       return NextResponse.json({ error: 'Forbidden: Teacher, leader, or admin role required' }, { status: 403 });
     }
 
@@ -214,13 +220,14 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error('Error creating check-in:', error);
+      logger.error('POST /api/check-ins: insert failed', { error });
       return NextResponse.json({ error: 'Failed to create check-in' }, { status: 500 });
     }
 
+    logger.request('POST /api/check-ins: check-in created', { checkInId: checkIn.id, userId: user.id });
     return NextResponse.json({ data: checkIn }, { status: 201 });
   } catch (error) {
-    console.error('Error in POST /api/check-ins:', error);
+    logger.error('POST /api/check-ins: unexpected error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -230,6 +237,7 @@ export async function PUT(request: NextRequest) {
   try {
     const authHeader = request.headers.get('Authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      logger.authFailure('PUT /api/check-ins: missing token');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -239,6 +247,7 @@ export async function PUT(request: NextRequest) {
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
 
     if (authError || !user) {
+      logger.authFailure('PUT /api/check-ins: invalid token');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -254,6 +263,7 @@ export async function PUT(request: NextRequest) {
       !userData ||
       (userData.role !== 'teacher' && userData.role !== 'leader' && userData.role !== 'admin')
     ) {
+      logger.authFailure('PUT /api/check-ins: forbidden', { userId: user.id, role: userData?.role });
       return NextResponse.json({ error: 'Forbidden: Teacher, leader, or admin role required' }, { status: 403 });
     }
 
@@ -287,13 +297,14 @@ export async function PUT(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error('Error updating check-in:', error);
+      logger.error('PUT /api/check-ins: update failed', { error, checkInId: id });
       return NextResponse.json({ error: 'Failed to update check-in' }, { status: 500 });
     }
 
+    logger.request('PUT /api/check-ins: check-out completed', { checkInId: id, userId: user.id });
     return NextResponse.json({ data: checkIn });
   } catch (error) {
-    console.error('Error in PUT /api/check-ins:', error);
+    logger.error('PUT /api/check-ins: unexpected error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -303,6 +314,7 @@ export async function DELETE(request: NextRequest) {
   try {
     const authHeader = request.headers.get('Authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      logger.authFailure('DELETE /api/check-ins: missing token');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -312,6 +324,7 @@ export async function DELETE(request: NextRequest) {
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
 
     if (authError || !user) {
+      logger.authFailure('DELETE /api/check-ins: invalid token');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -327,6 +340,7 @@ export async function DELETE(request: NextRequest) {
       !userData ||
       (userData.role !== 'teacher' && userData.role !== 'leader' && userData.role !== 'admin')
     ) {
+      logger.authFailure('DELETE /api/check-ins: forbidden', { userId: user.id, role: userData?.role });
       return NextResponse.json({ error: 'Forbidden: Teacher, leader, or admin role required' }, { status: 403 });
     }
 
@@ -365,13 +379,14 @@ export async function DELETE(request: NextRequest) {
       .eq('id', id);
 
     if (deleteError) {
-      console.error('Error deleting check-in:', deleteError);
+      logger.error('DELETE /api/check-ins: delete failed', { error: deleteError, checkInId: id });
       return NextResponse.json({ error: 'Failed to delete check-in' }, { status: 500 });
     }
 
+    logger.request('DELETE /api/check-ins: check-in deleted', { checkInId: id, userId: user.id });
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error in DELETE /api/check-ins:', error);
+    logger.error('DELETE /api/check-ins: unexpected error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

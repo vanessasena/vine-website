@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { logger } from '@/lib/logger';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -9,6 +10,7 @@ export async function GET(request: NextRequest) {
   try {
     const authHeader = request.headers.get('Authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      logger.authFailure('GET /api/children: missing token');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -19,6 +21,7 @@ export async function GET(request: NextRequest) {
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
 
     if (authError || !user) {
+      logger.authFailure('GET /api/children: invalid token');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -36,6 +39,7 @@ export async function GET(request: NextRequest) {
         .single();
 
       if (userData?.role !== 'teacher' && userData?.role !== 'leader' && userData?.role !== 'admin') {
+        logger.authFailure('GET /api/children: forbidden', { userId: user.id, role: userData?.role });
         return NextResponse.json({ error: 'Forbidden - requires teacher, leader, or admin role' }, { status: 403 });
       }
 
@@ -50,7 +54,7 @@ export async function GET(request: NextRequest) {
         .order('name', { ascending: true });
 
       if (error) {
-        console.error('Error fetching all children:', error);
+        logger.error('GET /api/children: fetch all failed', { error });
         return NextResponse.json({ error: 'Failed to fetch children' }, { status: 500 });
       }
 
@@ -76,13 +80,13 @@ export async function GET(request: NextRequest) {
       .order('date_of_birth', { ascending: true });
 
     if (error) {
-      console.error('Error fetching children:', error);
+      logger.error('GET /api/children: fetch by parent failed', { error });
       return NextResponse.json({ error: 'Failed to fetch children' }, { status: 500 });
     }
 
     return NextResponse.json({ data: children || [] });
   } catch (error) {
-    console.error('Error in GET /api/children:', error);
+    logger.error('GET /api/children: unexpected error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -92,6 +96,7 @@ export async function POST(request: NextRequest) {
   try {
     const authHeader = request.headers.get('Authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      logger.authFailure('POST /api/children: missing token');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -102,6 +107,7 @@ export async function POST(request: NextRequest) {
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
 
     if (authError || !user) {
+      logger.authFailure('POST /api/children: invalid token');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -146,13 +152,14 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error('Error creating child:', error);
+      logger.error('POST /api/children: insert failed', { error });
       return NextResponse.json({ error: 'Failed to create child' }, { status: 500 });
     }
 
+    logger.request('POST /api/children: child created', { childId: child.id });
     return NextResponse.json({ data: child }, { status: 201 });
   } catch (error) {
-    console.error('Error in POST /api/children:', error);
+    logger.error('POST /api/children: unexpected error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -162,6 +169,7 @@ export async function DELETE(request: NextRequest) {
   try {
     const authHeader = request.headers.get('Authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      logger.authFailure('DELETE /api/children: missing token');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -172,6 +180,7 @@ export async function DELETE(request: NextRequest) {
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
 
     if (authError || !user) {
+      logger.authFailure('DELETE /api/children: invalid token');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -189,13 +198,14 @@ export async function DELETE(request: NextRequest) {
       .eq('id', child_id);
 
     if (error) {
-      console.error('Error deleting child:', error);
+      logger.error('DELETE /api/children: delete failed', { error, childId: child_id });
       return NextResponse.json({ error: 'Failed to delete child' }, { status: 500 });
     }
 
+    logger.request('DELETE /api/children: child deleted', { childId: child_id });
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error in DELETE /api/children:', error);
+    logger.error('DELETE /api/children: unexpected error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -205,6 +215,7 @@ export async function PUT(request: NextRequest) {
   try {
     const authHeader = request.headers.get('Authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      logger.authFailure('PUT /api/children: missing token');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -215,6 +226,7 @@ export async function PUT(request: NextRequest) {
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
 
     if (authError || !user) {
+      logger.authFailure('PUT /api/children: invalid token');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -257,13 +269,14 @@ export async function PUT(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error('Error updating child:', error);
+      logger.error('PUT /api/children: update failed', { error, childId: id });
       return NextResponse.json({ error: 'Failed to update child' }, { status: 500 });
     }
 
+    logger.request('PUT /api/children: child updated', { childId: id });
     return NextResponse.json({ data: child });
   } catch (error) {
-    console.error('Error in PUT /api/children:', error);
+    logger.error('PUT /api/children: unexpected error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

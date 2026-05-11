@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { createErrorResponse, generateRequestId } from '@/lib/utils';
+import { logger } from '@/lib/logger';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -46,7 +47,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (visitorError) {
-      console.error('Error inserting visitor:', visitorError);
+      logger.error('POST /api/visitors: insert failed', { error: visitorError.message, requestId });
       return NextResponse.json(
         createErrorResponse(
           'server_error',
@@ -80,7 +81,7 @@ export async function POST(request: NextRequest) {
         .insert(childrenWithVisitorId);
 
       if (childrenError) {
-        console.error('Error inserting visitor children:', childrenError);
+        logger.error('POST /api/visitors: children insert failed', { error: childrenError.message, visitorId: visitorData.id, requestId });
         // This is now a PARTIAL FAILURE - visitor was saved but children weren't
         return NextResponse.json(
           createErrorResponse(
@@ -101,6 +102,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    logger.request('POST /api/visitors: visitor registered', { visitorId: visitorData.id, requestId });
     return NextResponse.json(
       {
         success: true,
@@ -110,7 +112,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error('Error in POST /api/visitors:', error);
+    logger.error('POST /api/visitors: unexpected error', { error: error instanceof Error ? error.message : 'Unknown error', requestId });
     return NextResponse.json(
       createErrorResponse(
         'server_error',
@@ -133,6 +135,7 @@ export async function GET(request: NextRequest) {
     // Get auth token from request headers
     const authHeader = request.headers.get('authorization');
     if (!authHeader) {
+      logger.authFailure('GET /api/visitors: missing auth header', { requestId });
       return NextResponse.json(
         createErrorResponse(
           'unauthorized',
@@ -150,6 +153,7 @@ export async function GET(request: NextRequest) {
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
 
     if (authError || !user) {
+      logger.authFailure('GET /api/visitors: invalid token', { requestId });
       return NextResponse.json(
         createErrorResponse(
           'unauthorized',
@@ -170,6 +174,7 @@ export async function GET(request: NextRequest) {
       .single();
 
     if (userData?.role !== 'admin' && userData?.role !== 'leader') {
+      logger.authFailure('GET /api/visitors: forbidden', { userId: user.id, role: userData?.role, requestId });
       return NextResponse.json(
         createErrorResponse(
           'forbidden',
@@ -189,7 +194,7 @@ export async function GET(request: NextRequest) {
       .order('visit_date', { ascending: false });
 
     if (error) {
-      console.error('Error fetching visitors:', error);
+      logger.error('GET /api/visitors: fetch failed', { error: error.message, requestId });
       return NextResponse.json(
         createErrorResponse(
           'server_error',
@@ -208,7 +213,7 @@ export async function GET(request: NextRequest) {
       requestId,
     });
   } catch (error) {
-    console.error('Error in GET /api/visitors:', error);
+    logger.error('GET /api/visitors: unexpected error', { error: error instanceof Error ? error.message : 'Unknown error', requestId });
     return NextResponse.json(
       createErrorResponse(
         'server_error',

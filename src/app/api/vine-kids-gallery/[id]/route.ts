@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient, createSupabaseAdminClient } from '@/lib/supabase';
+import { logger } from '@/lib/logger';
 
 // DELETE - Delete a gallery image
 export async function DELETE(
@@ -10,6 +11,7 @@ export async function DELETE(
     // Check authentication
     const authHeader = request.headers.get('authorization');
     if (!authHeader) {
+      logger.authFailure('DELETE /api/vine-kids-gallery/[id]: missing auth header');
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -30,6 +32,7 @@ export async function DELETE(
     const { data: { user }, error: authError } = await anonClient.auth.getUser(token);
 
     if (authError || !user) {
+      logger.authFailure('DELETE /api/vine-kids-gallery/[id]: invalid token');
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -68,7 +71,7 @@ export async function DELETE(
       .eq('id', id);
 
     if (deleteError) {
-      console.error('Error deleting gallery image:', deleteError);
+      logger.error('DELETE /api/vine-kids-gallery/[id]: delete failed', { error: deleteError, imageId: id });
       return NextResponse.json(
         { error: 'Failed to delete gallery image' },
         { status: 500 }
@@ -88,14 +91,15 @@ export async function DELETE(
             .remove([decodeURIComponent(filePath)]);
         }
       } catch (storageError) {
-        console.error('Error deleting from storage:', storageError);
+        logger.error('DELETE /api/vine-kids-gallery/[id]: storage deletion failed', { error: storageError, imageId: id });
         // Continue even if storage deletion fails
       }
     }
 
+    logger.request('DELETE /api/vine-kids-gallery/[id]: image deleted', { imageId: id });
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Unexpected error:', error);
+    logger.error('DELETE /api/vine-kids-gallery/[id]: unexpected error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -112,6 +116,7 @@ export async function PATCH(
     // Check authentication
     const authHeader = request.headers.get('authorization');
     if (!authHeader) {
+      logger.authFailure('PATCH /api/vine-kids-gallery/[id]: missing auth header');
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -132,6 +137,7 @@ export async function PATCH(
     const { data: { user }, error: authError } = await anonClient.auth.getUser(token);
 
     if (authError || !user) {
+      logger.authFailure('PATCH /api/vine-kids-gallery/[id]: invalid token', { imageId: params.id });
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -158,16 +164,17 @@ export async function PATCH(
       .single();
 
     if (error) {
-      console.error('Error updating gallery image:', error);
+      logger.error('PATCH /api/vine-kids-gallery/[id]: update failed', { error, imageId: id });
       return NextResponse.json(
         { error: 'Failed to update gallery image' },
         { status: 500 }
       );
     }
 
+    logger.request('PATCH /api/vine-kids-gallery/[id]: image updated', { imageId: id });
     return NextResponse.json(data);
   } catch (error) {
-    console.error('Unexpected error:', error);
+    logger.error('PATCH /api/vine-kids-gallery/[id]: unexpected error', { error: error instanceof Error ? error.message : error });
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

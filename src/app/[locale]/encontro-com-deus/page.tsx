@@ -83,7 +83,7 @@ export default function EncontroComDeusPage({
   return (
     <main className="min-h-screen">
       <Navigation locale={locale} />
-      <Banner locale={locale} />
+      {/* <Banner locale={locale} /> */}
 
       {/* Hero Section */}
       <section className="relative text-white pt-32 pb-20 min-h-[500px] flex items-center">
@@ -102,7 +102,7 @@ export default function EncontroComDeusPage({
           <p className="text-xl md:text-2xl mb-8 text-white text-opacity-90 drop-shadow">
             {t('heroSubtitle')}
           </p>
-          <a
+          {/* <a
             href={GOOGLE_FORMS_URL}
             target="_blank"
             rel="noopener noreferrer"
@@ -110,7 +110,7 @@ export default function EncontroComDeusPage({
           >
             {t('ctaButton')}
             <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
-          </a>
+          </a> */}
         </div>
       </section>
 
@@ -246,7 +246,7 @@ export default function EncontroComDeusPage({
           <p className="text-xl text-white text-opacity-90 mb-8">
             {t('ctaDescription')}
           </p>
-          <a
+          {/* <a
             href={GOOGLE_FORMS_URL}
             target="_blank"
             rel="noopener noreferrer"
@@ -254,7 +254,7 @@ export default function EncontroComDeusPage({
           >
             {t('ctaButton')}
             <FontAwesomeIcon icon={faArrowRight} className="ml-3" />
-          </a>
+          </a> */}
         </div>
       </section>
 

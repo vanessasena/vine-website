@@ -62,7 +62,7 @@ export default function HomePage({ params: { locale } }: PageProps) {
   return (
     <main className="min-h-screen">
       <Navigation locale={locale} />
-      <Banner locale={locale} />
+      {/* <Banner locale={locale} /> */}
 
       <Hero />
 

@@ -73,7 +73,7 @@ export default function VineKidsPage({ params: { locale } }: PageProps) {
   return (
     <main>
       <Navigation locale={locale} />
-      <Banner locale={locale} />
+      {/* <Banner locale={locale} /> */}
 
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-primary-100 via-secondary-100 to-accent-100 py-12">

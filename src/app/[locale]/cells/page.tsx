@@ -85,7 +85,7 @@ export default function CellsPage({ params: { locale } }: PageProps) {
   return (
     <main>
       <Navigation locale={locale} />
-      <Banner locale={locale} />
+      {/* <Banner locale={locale} /> */}
 
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-primary-600 via-secondary-600 to-accent-600 text-white py-20">

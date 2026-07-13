@@ -24,6 +24,9 @@ import type { Metadata } from 'next';
 const CTL_FORMS_URL =
   'https://docs.google.com/forms/d/e/1FAIpQLScct63ak6_WDeNSs-AYcz3rZU68AggL1fOYvOGLPp0DjveCHA/viewform';
 
+const MATURIDADE_FORMS_URL =
+  'https://docs.google.com/forms/d/e/1FAIpQLScOCK9fOWvNCT4XPI0txJvOfx-7DIkILIK15KqU03-X18aJlA/viewform';
+
 interface PageProps {
   params: {
     locale: string;
@@ -40,8 +43,8 @@ export async function generateMetadata({
     en: 'Courses - Vine Church KWC',
   };
   const descriptions = {
-    pt: 'Cursos da Vine Church KWC: Maturidade no Espírito e Treinamento de Líderes. Aulas às terças-feiras às 7:30pm. Inscreva-se!',
-    en: 'Vine Church KWC Courses: Maturity in the Spirit and Leadership Training. Classes on Tuesdays at 7:30pm. Register now!',
+    pt: 'Cursos da Vine Church KWC: Maturidade no Espírito e Treinamento de Líderes. Aulas às terças-feiras às 7:15pm. Inscreva-se!',
+    en: 'Vine Church KWC Courses: Maturity in the Spirit and Leadership Training. Classes on Tuesdays at 7:15pm. Register now!',
   };
 
   return {
@@ -201,9 +204,15 @@ export default function CursosPage({ params: { locale } }: PageProps) {
                   ))}
                 </ul>
                 <div className="mt-6 pt-4 border-t border-gray-200">
-                  <p className="text-sm text-gray-500 italic">
-                    {t('maturidadeLinkNote')}
-                  </p>
+                  <a
+                    href={MATURIDADE_FORMS_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center bg-accent-600 text-white font-semibold py-2 px-6 rounded-lg text-sm transition duration-300 hover:bg-accent-700"
+                  >
+                    {t('ctaButton')}
+                    <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
+                  </a>
                 </div>
               </div>
             </div>

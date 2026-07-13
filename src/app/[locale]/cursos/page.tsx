@@ -84,7 +84,7 @@ export default function CursosPage({ params: { locale } }: PageProps) {
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage:
-              "url('https://static.wixstatic.com/media/450325_8a5f3afaa5814c9a875a90d882f9616b~mv2.png/v1/fill/w_1521,h_770,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/450325_8a5f3afaa5814c9a875a90d882f9616b~mv2.png')",
+              "url('https://cdn.pixabay.com/photo/2024/04/18/15/19/ai-generated-8704527_1280.jpg')",
           }}
         ></div>
         <div className="absolute inset-0 bg-black opacity-60"></div>

@@ -9,7 +9,8 @@
     "cells": "Life Groups",
     "contact": "Contact",
     "kidsCheckin": "Kids Check-in",
-    "portal": "Portal"
+    "portal": "Portal",
+    "cursos": "Courses"
   },
   "hero": {
     "title": "Vine Church KWC",
@@ -974,8 +975,10 @@
     "paymentStep1Desc": "By August 11th, the student must be enrolled and the $25.00 registration fee paid. Study materials are included.",
     "paymentStep2Title": "Monthly Fee",
     "paymentStep2Desc": "On the 1st of each month, the monthly fee of $25.00 must be paid.",
-    "paymentStep3Title": "Proof of Payment",
-    "paymentStep3Desc": "After payment, the receipt must be sent to the Vine Church secretary.",
+    "paymentStep3Title": "Payment Methods",
+    "paymentStep3Desc": "Payment can be made via e-transfer to giving@vinechurch.ca or by card on-site.",
+    "paymentStep4Title": "Proof of Payment",
+    "paymentStep4Desc": "After payment, send your receipt to the course secretary: secretaria@vinechurch.ca.",
     "paymentNote": "Limited spots available! Secure your registration as soon as possible.",
     "ctaTitle": "Invest in your spiritual growth!",
     "ctaDescription": "Register now and take the next step in your walk with God. Limited spots!",

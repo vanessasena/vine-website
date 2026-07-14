@@ -328,6 +328,18 @@ export default function CursosPage({ params: { locale } }: PageProps) {
                   <p className="text-gray-600">{t('paymentStep3Desc')}</p>
                 </div>
               </div>
+
+              <div className="flex items-start space-x-4">
+                <div className="bg-primary-100 rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 mt-1">
+                  <span className="text-primary-700 font-bold">4</span>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1">
+                    {t('paymentStep4Title')}
+                  </h4>
+                  <p className="text-gray-600">{t('paymentStep4Desc')}</p>
+                </div>
+              </div>
             </div>
 
             <div className="mt-8 p-4 bg-amber-50 border border-amber-200 rounded-lg">

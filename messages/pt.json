@@ -9,7 +9,8 @@
     "cells": "Células",
     "contact": "Contato",
     "kidsCheckin": "Kids Check-in",
-    "portal": "Portal"
+    "portal": "Portal",
+    "cursos": "Cursos"
   },
   "hero": {
     "title": "Vine Church KWC",
@@ -974,8 +975,10 @@
     "paymentStep1Desc": "Até o dia 11 de agosto, o aluno deverá estar matriculado e com a taxa de matrícula de $25.00 paga. O material de estudo está incluído.",
     "paymentStep2Title": "Mensalidade",
     "paymentStep2Desc": "Todo dia 1º de cada mês, deverá ser realizado o pagamento da mensalidade de $25.00.",
-    "paymentStep3Title": "Comprovante de Pagamento",
-    "paymentStep3Desc": "Após o pagamento, o comprovante deverá ser encaminhado para a secretaria da Vine Church.",
+    "paymentStep3Title": "Formas de Pagamento",
+    "paymentStep3Desc": "O pagamento pode ser feito por e-transfer para giving@vinechurch.ca ou na máquina de cartão no prédio da igreja.",
+    "paymentStep4Title": "Comprovante de Pagamento",
+    "paymentStep4Desc": "Após o pagamento, envie o comprovante para a secretaria de cursos: secretaria@vinechurch.ca.",
     "paymentNote": "Vagas limitadas! Garanta sua inscrição o quanto antes.",
     "ctaTitle": "Invista no seu crescimento espiritual!",
     "ctaDescription": "Inscreva-se agora e dê o próximo passo na sua caminhada com Deus. Vagas limitadas!",

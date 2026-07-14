@@ -126,11 +126,14 @@ export default function Navigation({ locale }: NavigationProps) {
             <Link href={`/${locale}/vine-kids`} className={getLinkClasses(`/${locale}/vine-kids`)}>
               {t('vineKids')}
             </Link>
-            <Link href={`/${locale}/sermons`} className={getLinkClasses(`/${locale}/sermons`)}>
-              {t('words')}
-            </Link>
             <Link href={`/${locale}/cells`} className={getLinkClasses(`/${locale}/cells`)}>
               {t('cells')}
+            </Link>
+            <Link href={`/${locale}/cursos`} className={getLinkClasses(`/${locale}/cursos`)}>
+              {t('cursos')}
+            </Link>
+            <Link href={`/${locale}/sermons`} className={getLinkClasses(`/${locale}/sermons`)}>
+              {t('words')}
             </Link>
             <Link href={`/${locale}/contact`} className={getLinkClasses(`/${locale}/contact`)}>
               {t('contact')}
@@ -210,6 +213,9 @@ export default function Navigation({ locale }: NavigationProps) {
               </Link>
               <Link href={`/${locale}/cells`} className={getLinkClasses(`/${locale}/cells`, true)}>
                 {t('cells')}
+              </Link>
+              <Link href={`/${locale}/cursos`} className={getLinkClasses(`/${locale}/cursos`, true)}>
+                {t('cursos')}
               </Link>
               <Link href={`/${locale}/contact`} className={getLinkClasses(`/${locale}/contact`, true)}>
                 {t('contact')}

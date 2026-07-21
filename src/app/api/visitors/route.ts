@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { createErrorResponse, generateRequestId } from '@/lib/utils';
 import { logger } from '@/lib/logger';
+import { sendNewVisitorEmail } from '@/lib/email';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -105,6 +106,17 @@ export async function POST(request: NextRequest) {
     }
 
     logger.request('POST /api/visitors: visitor registered', { visitorId, requestId });
+
+    // Send notification email to admins (non-blocking)
+    sendNewVisitorEmail({
+      visit_date,
+      name,
+      phone,
+      how_found,
+      how_found_details: how_found_details || null,
+      children: Array.isArray(children) ? children : [],
+    });
+
     return NextResponse.json(
       {
         success: true,

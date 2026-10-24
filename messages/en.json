@@ -593,6 +593,11 @@
     "rights": "All rights reserved",
     "backToWebsite": "Back to Website"
   },
+  "offline": {
+    "title": "You're offline",
+    "message": "It looks like you've lost your internet connection. Please check your connection and try again.",
+    "hint": "This page will update automatically once you're back online."
+  },
   "member": {
     "title": "Member Area",
     "subtitle": "Manage your member profile",

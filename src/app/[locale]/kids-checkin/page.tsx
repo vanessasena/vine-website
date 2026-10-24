@@ -1,6 +1,7 @@
 import KidsCheckinClient from './KidsCheckinClient';
 import Breadcrumb from '@/components/Breadcrumb';
 import PortalFooter from '@/components/PortalFooter';
+import OfflineOverlay from '@/components/OfflineOverlay';
 
 interface KidsCheckinPageProps {
   params: Promise<{ locale: string }>;
@@ -13,6 +14,7 @@ export default async function KidsCheckinPage({
 
   return (
     <main className="min-h-screen flex flex-col">
+      <OfflineOverlay />
       <Breadcrumb
         locale={locale}
         items={[

@@ -590,6 +590,11 @@
     "rights": "Todos os direitos reservados",
     "backToWebsite": "Voltar ao Website"
   },
+  "offline": {
+    "title": "Você está offline",
+    "message": "Parece que você perdeu a conexão com a internet. Verifique sua conexão e tente novamente.",
+    "hint": "Esta página será atualizada automaticamente assim que você voltar a ficar online."
+  },
   "member": {
     "title": "Área do Membro",
     "subtitle": "Gerencie seu perfil de membro",

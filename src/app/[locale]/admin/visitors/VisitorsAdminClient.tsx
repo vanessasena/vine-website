@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type FormEvent } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
@@ -36,6 +36,13 @@ export default function VisitorsAdminClient() {
   const [filteredVisitors, setFilteredVisitors] = useState<Visitor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [accessToken, setAccessToken] = useState('');
+  const [notificationEmails, setNotificationEmails] = useState<string[]>([]);
+  const [newNotificationEmail, setNewNotificationEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [emailLoading, setEmailLoading] = useState(false);
+  const [emailSaving, setEmailSaving] = useState(false);
 
   const [filterType, setFilterType] = useState<'all' | 'day' | 'month'>('all');
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
@@ -81,6 +88,8 @@ export default function VisitorsAdminClient() {
         return;
       }
 
+      setAccessToken(session.access_token);
+
       // Check if user is leader or admin
       const { data: userData } = await supabase
         .from('users')
@@ -93,6 +102,8 @@ export default function VisitorsAdminClient() {
         setLoading(false);
         return;
       }
+
+      setIsAdmin(userData?.role === 'admin');
 
       const response = await fetch('/api/visitors', {
         headers: {
@@ -108,11 +119,81 @@ export default function VisitorsAdminClient() {
       // Extract array from structured response format
       const visitorsArray = Array.isArray(responseData) ? responseData : (responseData.data || []);
       setVisitors(visitorsArray);
+
+      if (userData?.role === 'admin') {
+        setEmailLoading(true);
+        try {
+          const emailResponse = await fetch('/api/visitor-notification-emails', {
+            headers: { Authorization: 'Bearer ' + session.access_token },
+          });
+          if (!emailResponse.ok) throw new Error('Failed to fetch notification emails');
+          const emailData = await emailResponse.json();
+          setNotificationEmails(Array.isArray(emailData.data) ? emailData.data : []);
+        } catch {
+          setEmailError(t('emailFetchError'));
+        } finally {
+          setEmailLoading(false);
+        }
+      }
+
       setLoading(false);
     } catch (err) {
       console.error('Error fetching visitors:', err);
       setError(t('fetchError'));
       setLoading(false);
+    }
+  };
+
+  const addNotificationEmail = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setEmailError('');
+    setEmailSaving(true);
+
+    try {
+      const response = await fetch('/api/visitor-notification-emails', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + accessToken,
+        },
+        body: JSON.stringify({ email: newNotificationEmail }),
+      });
+
+      if (response.status === 409) {
+        setEmailError(t('emailAlreadyExists'));
+        return;
+      }
+      if (!response.ok) throw new Error('Failed to add notification email');
+
+      const { data } = await response.json();
+      setNotificationEmails((emails) => [...emails, data.email].sort());
+      setNewNotificationEmail('');
+    } catch {
+      setEmailError(t('emailSaveError'));
+    } finally {
+      setEmailSaving(false);
+    }
+  };
+
+  const removeNotificationEmail = async (email: string) => {
+    setEmailError('');
+    setEmailSaving(true);
+
+    try {
+      const response = await fetch('/api/visitor-notification-emails', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + accessToken,
+        },
+        body: JSON.stringify({ email }),
+      });
+      if (!response.ok) throw new Error('Failed to remove notification email');
+      setNotificationEmails((emails) => emails.filter((address) => address !== email));
+    } catch {
+      setEmailError(t('emailSaveError'));
+    } finally {
+      setEmailSaving(false);
     }
   };
 
@@ -231,6 +312,61 @@ export default function VisitorsAdminClient() {
           <h1 className="text-3xl font-bold text-gray-900 mb-4">{t('title')}</h1>
           <p className="text-gray-600">{t('subtitle')}</p>
         </div>
+
+        {isAdmin && (
+          <section className="bg-white rounded-lg shadow p-6 mb-6" aria-labelledby="notification-emails-title">
+            <h2 id="notification-emails-title" className="text-lg font-semibold text-gray-900 mb-2">
+              {t('notificationEmailsTitle')}
+            </h2>
+            <p className="text-sm text-gray-600 mb-4">{t('notificationEmailsDescription')}</p>
+
+            <form onSubmit={addNotificationEmail} className="flex flex-col sm:flex-row gap-3 mb-4">
+              <label htmlFor="notification-email" className="sr-only">
+                {t('notificationEmailLabel')}
+              </label>
+              <input
+                id="notification-email"
+                type="email"
+                required
+                maxLength={254}
+                value={newNotificationEmail}
+                onChange={(event) => setNewNotificationEmail(event.target.value)}
+                placeholder={t('notificationEmailPlaceholder')}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+              />
+              <button
+                type="submit"
+                disabled={emailSaving}
+                className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50"
+              >
+                {emailSaving ? t('savingEmail') : t('addNotificationEmail')}
+              </button>
+            </form>
+
+            {emailError && <p role="alert" className="text-sm text-red-600 mb-3">{emailError}</p>}
+            {emailLoading ? (
+              <p className="text-sm text-gray-500">{t('loadingEmails')}</p>
+            ) : notificationEmails.length === 0 ? (
+              <p className="text-sm text-gray-500">{t('noNotificationEmails')}</p>
+            ) : (
+              <ul className="divide-y divide-gray-200">
+                {notificationEmails.map((email) => (
+                  <li key={email} className="flex items-center justify-between gap-4 py-3">
+                    <span className="text-sm text-gray-900 break-all">{email}</span>
+                    <button
+                      type="button"
+                      disabled={emailSaving}
+                      onClick={() => removeNotificationEmail(email)}
+                      className="text-sm text-red-600 hover:text-red-800 disabled:opacity-50"
+                    >
+                      {t('removeNotificationEmail')}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        )}
 
         {/* Filters */}
         <div className="bg-white rounded-lg shadow p-6 mb-6">

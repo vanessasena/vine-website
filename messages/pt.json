@@ -357,7 +357,19 @@
     "phone": "Telefone",
     "howFound": "Como Conheceu",
     "details": "Detalhes",
-    "noVisitors": "Nenhum visitante encontrado para este período"
+    "noVisitors": "Nenhum visitante encontrado para este período",
+    "notificationEmailsTitle": "E-mails de Notificação de Visitantes",
+    "notificationEmailsDescription": "Estes endereços recebem um e-mail sempre que um novo visitante se cadastra.",
+    "notificationEmailLabel": "Endereço de e-mail",
+    "notificationEmailPlaceholder": "nome@exemplo.com",
+    "addNotificationEmail": "Adicionar e-mail",
+    "removeNotificationEmail": "Remover",
+    "loadingEmails": "Carregando e-mails de notificação...",
+    "noNotificationEmails": "Nenhum e-mail de notificação cadastrado.",
+    "savingEmail": "Salvando...",
+    "emailAlreadyExists": "Este e-mail já está na lista.",
+    "emailFetchError": "Não foi possível carregar os e-mails de notificação.",
+    "emailSaveError": "Não foi possível salvar esta alteração."
   },
   "auth": {
     "title": "Login",

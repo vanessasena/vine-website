@@ -73,7 +73,25 @@ export async function POST(request: NextRequest) {
 
     // Wait for the notification request to finish before the serverless function exits.
     // Email failures are logged by sendNewVisitorEmail and do not block registration.
-    await sendNewVisitorEmail(visitorEmail);
+    try {
+      const { data: notificationEmails, error: notificationEmailsError } = await supabase
+        .from('visitor_notification_emails')
+        .select('email');
+
+      if (notificationEmailsError) {
+        logger.error('POST /api/visitors: notification email lookup failed', {
+          error: notificationEmailsError.message,
+          requestId,
+        });
+      } else {
+        await sendNewVisitorEmail(visitorEmail, notificationEmails.map(({ email }) => email));
+      }
+    } catch (error) {
+      logger.error('POST /api/visitors: notification failed', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        requestId,
+      });
+    }
 
     // If children are provided, insert them with visitor_id reference
     if (Array.isArray(children) && children.length > 0) {

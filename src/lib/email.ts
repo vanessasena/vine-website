@@ -1,11 +1,5 @@
 import { Resend } from 'resend';
 
-const ADMIN_EMAILS = [
-  'nessa.aline@gmail.com',
-  'teixeira.lipe@gmail.com',
-  'prboris@vinechurch.ca',
-];
-
 const HOW_FOUND_LABELS: Record<string, string> = {
   friend: 'Amigo ou Familiar',
   google: 'Google',
@@ -104,14 +98,16 @@ function buildEmailHtml(visitor: VisitorEmailData): string {
   `;
 }
 
-export async function sendNewVisitorEmail(visitor: VisitorEmailData): Promise<void> {
+export async function sendNewVisitorEmail(visitor: VisitorEmailData, recipients: string[]): Promise<void> {
+  if (recipients.length === 0) return;
+
   const visitDateFormatted = formatDateBR(visitor.visit_date);
 
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
     const { error } = await resend.emails.send({
       from: 'Vine Church KWC <noreply@vinechurch.ca>',
-      to: ADMIN_EMAILS,
+      to: recipients,
       subject: `Novo Visitante: ${visitor.name} — ${visitDateFormatted}`,
       html: buildEmailHtml(visitor),
     });

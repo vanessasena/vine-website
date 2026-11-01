@@ -307,3 +307,17 @@ CREATE POLICY "Allow authenticated users to read" ON public.visitors
     FOR SELECT
     TO authenticated
     USING (true);
+
+-- Store the recipients of new visitor registration notifications
+CREATE TABLE IF NOT EXISTS public.visitor_notification_emails (
+    email TEXT PRIMARY KEY CHECK (email = lower(email)),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+ALTER TABLE public.visitor_notification_emails ENABLE ROW LEVEL SECURITY;
+
+INSERT INTO public.visitor_notification_emails (email) VALUES
+    ('nessa.aline@gmail.com'),
+    ('teixeira.lipe@gmail.com'),
+    ('prboris@vinechurch.ca')
+ON CONFLICT (email) DO NOTHING;

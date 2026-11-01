@@ -358,7 +358,19 @@
     "phone": "Phone",
     "howFound": "How Found",
     "details": "Details",
-    "noVisitors": "No visitors found for this period"
+    "noVisitors": "No visitors found for this period",
+    "notificationEmailsTitle": "Visitor Notification Emails",
+    "notificationEmailsDescription": "These addresses receive an email whenever a new visitor registers.",
+    "notificationEmailLabel": "Email address",
+    "notificationEmailPlaceholder": "name@example.com",
+    "addNotificationEmail": "Add email",
+    "removeNotificationEmail": "Remove",
+    "loadingEmails": "Loading notification emails...",
+    "noNotificationEmails": "No notification emails added.",
+    "savingEmail": "Saving...",
+    "emailAlreadyExists": "This email is already on the list.",
+    "emailFetchError": "Could not load notification emails.",
+    "emailSaveError": "Could not save this change."
   },
   "auth": {
     "title": "Login",

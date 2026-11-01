@@ -124,7 +124,7 @@ export default function VisitorsAdminClient() {
         setEmailLoading(true);
         try {
           const emailResponse = await fetch('/api/visitor-notification-emails', {
-            headers: { Authorization: `****** },
+            headers: { Authorization: 'Bearer ' + accessToken },
           });
           if (!emailResponse.ok) throw new Error('Failed to fetch notification emails');
           const emailData = await emailResponse.json();
@@ -154,7 +154,7 @@ export default function VisitorsAdminClient() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `******
+          Authorization: 'Bearer ' + accessToken,
         },
         body: JSON.stringify({ email: newNotificationEmail }),
       });
@@ -184,7 +184,7 @@ export default function VisitorsAdminClient() {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `******
+          Authorization: 'Bearer ' + accessToken,
         },
         body: JSON.stringify({ email }),
       });

@@ -1,7 +1,5 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 const ADMIN_EMAILS = [
   'nessa.aline@gmail.com',
   'teixeira.lipe@gmail.com',
@@ -110,12 +108,16 @@ export async function sendNewVisitorEmail(visitor: VisitorEmailData): Promise<vo
   const visitDateFormatted = formatDateBR(visitor.visit_date);
 
   try {
-    await resend.emails.send({
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const { error } = await resend.emails.send({
       from: 'Vine Church KWC <noreply@vinechurch.ca>',
       to: ADMIN_EMAILS,
       subject: `Novo Visitante: ${visitor.name} — ${visitDateFormatted}`,
       html: buildEmailHtml(visitor),
     });
+    if (error) {
+      console.error('sendNewVisitorEmail: failed to send email', error);
+    }
   } catch (error) {
     // Log but do not throw — email failure should not block visitor registration
     console.error('sendNewVisitorEmail: failed to send email', error);

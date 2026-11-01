@@ -62,6 +62,18 @@ export async function POST(request: NextRequest) {
     }
 
     const visitorId = (visitorData as { id: string })?.id;
+    const visitorEmail = {
+      visit_date,
+      name,
+      phone,
+      how_found,
+      how_found_details: how_found_details || null,
+      children: Array.isArray(children) ? children : [],
+    };
+
+    // Wait for the notification request to finish before the serverless function exits.
+    // Email failures are logged by sendNewVisitorEmail and do not block registration.
+    await sendNewVisitorEmail(visitorEmail);
 
     // If children are provided, insert them with visitor_id reference
     if (Array.isArray(children) && children.length > 0) {
@@ -106,16 +118,6 @@ export async function POST(request: NextRequest) {
     }
 
     logger.request('POST /api/visitors: visitor registered', { visitorId, requestId });
-
-    // Send notification email to admins (non-blocking)
-    sendNewVisitorEmail({
-      visit_date,
-      name,
-      phone,
-      how_found,
-      how_found_details: how_found_details || null,
-      children: Array.isArray(children) ? children : [],
-    });
 
     return NextResponse.json(
       {

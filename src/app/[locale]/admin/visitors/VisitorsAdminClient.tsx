@@ -124,7 +124,7 @@ export default function VisitorsAdminClient() {
         setEmailLoading(true);
         try {
           const emailResponse = await fetch('/api/visitor-notification-emails', {
-            headers: { Authorization: 'Bearer ' + accessToken },
+            headers: { Authorization: 'Bearer ' + session.access_token },
           });
           if (!emailResponse.ok) throw new Error('Failed to fetch notification emails');
           const emailData = await emailResponse.json();

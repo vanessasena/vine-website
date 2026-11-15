@@ -917,13 +917,13 @@
   },
   "encontro": {
     "metaTitle": "Encontro com Deus - Vine Church KWC",
-    "metaDescription": "Encontro com Deus - May 23rd, 2026. A transformative event at Vine Church KWC in Kitchener, Ontario. Register now!",
+    "metaDescription": "Encounter with God - December 12th, 2026. A transformative event at Vine Church KWC in Kitchener, Ontario. Register now!",
     "heroTitle": "Encontro com Deus",
     "heroSubtitle": "A transformative experience that will change your life",
-    "date": "Saturday, May 23rd, 2026",
-    "time": "From 8am to 7pm",
+    "date": "Saturday, December 12th, 2026",
+    "time": "From 8am to 6pm",
     "location": "Vine Church KWC - 417 King St W, Kitchener",
-    "price": "$70 (for meal expenses)",
+    "price": "$60 (for meal expenses)",
     "dateLabel": "Date",
     "timeLabel": "Time",
     "locationLabel": "Location",
@@ -954,7 +954,7 @@
     "ctaDescription": "Don't miss this opportunity to transform your life. Spots are limited!",
     "ctaButton": "Register Now",
     "bannerTitle": "Encounter with God",
-    "bannerSubtitle": "May 23rd, 2026 - An experience that will transform your life",
+    "bannerSubtitle": "December 12th, 2026 - An experience that will transform your life",
     "bannerCta": "Learn more and register"
   },
   "cursos": {

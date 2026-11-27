@@ -22,8 +22,10 @@ import {
 import '@/lib/fontawesome';
 import type { Metadata } from 'next';
 
-const GOOGLE_FORMS_URL =
+const PORTUGUESE_GOOGLE_FORMS_URL =
   'https://docs.google.com/forms/d/e/1FAIpQLSdQF1B1O2opOFXAkM1UZZt0oOl-gd6hpODVV0RYKfV228viLg/viewform';
+const ENGLISH_GOOGLE_FORMS_URL =
+  'https://docs.google.com/forms/d/e/1FAIpQLScIErSvwRpscYU6dGloDnRgRZa9AsoqJ8EH_QXVSp0bpTkLpw/viewform';
 
 interface PageProps {
   params: {
@@ -64,6 +66,8 @@ export default function EncontroComDeusPage({
   params: { locale },
 }: PageProps) {
   const t = useTranslations('encontro');
+  const googleFormsUrl =
+    locale === 'en' ? ENGLISH_GOOGLE_FORMS_URL : PORTUGUESE_GOOGLE_FORMS_URL;
 
   const painPoints = [
     { title: t('painTitle1'), desc: t('painDesc1'), icon: faHeartBroken },
@@ -103,7 +107,7 @@ export default function EncontroComDeusPage({
             {t('heroSubtitle')}
           </p>
           <a
-            href={GOOGLE_FORMS_URL}
+            href={googleFormsUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center bg-white text-accent-700 font-bold py-3 px-8 rounded-lg text-lg transition duration-300 shadow-lg hover:bg-accent-50"
@@ -247,7 +251,7 @@ export default function EncontroComDeusPage({
             {t('ctaDescription')}
           </p>
           <a
-            href={GOOGLE_FORMS_URL}
+            href={googleFormsUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center bg-white text-accent-700 font-bold py-4 px-10 rounded-lg text-xl transition duration-300 shadow-lg hover:bg-accent-50 hover:scale-105 transform"
